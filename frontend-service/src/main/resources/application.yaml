@@ -1,0 +1,22 @@
+server:
+  port: 18080
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:18761/eureka
+#properties:
+#  adultAgeCriteria: 16
+
+spring:
+  application:
+    name: frontend
+logging:
+  level:
+    org.springframework: INFO
+    org.pablos.backend: DEBUG
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 5
+  file:
+    name: ./logs/${spring.application.name}.log

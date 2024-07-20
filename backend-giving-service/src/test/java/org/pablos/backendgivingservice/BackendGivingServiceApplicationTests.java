@@ -1,10 +1,10 @@
-package org.pablos.eureka;
+package org.pablos.backendgivingservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EurekaApplicationTests {
+class BackendGivingServiceApplicationTests {
 
     @Test
     void contextLoads() {
