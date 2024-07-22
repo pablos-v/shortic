@@ -1,4 +1,4 @@
-package org.pablos.backendgivingservice.domain.exception.handling.dto;
+package org.pablos.backendgivingservice.service.exception_handling.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

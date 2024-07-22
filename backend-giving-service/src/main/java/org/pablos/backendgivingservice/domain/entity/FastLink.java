@@ -18,7 +18,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "fastlinks") // к какой коллекции обращаемся, создаст если её нет
+//TODO заменить Table на @Document(collection = "fastLinks") // к какой коллекции обращаемся, создаст если её нет
+@Table(name = "fast_links")
 public class FastLink {
     /**
      * Краткая ссылка, она же будет использоваться в качестве идентификатора.

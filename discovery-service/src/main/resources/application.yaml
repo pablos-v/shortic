@@ -1,8 +1,0 @@
-server:
-  port: 18761
-eureka:
-  client:
-    register-with-eureka: false
-spring:
-  application:
-    name: eureka
