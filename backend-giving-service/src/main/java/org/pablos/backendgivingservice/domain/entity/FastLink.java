@@ -7,9 +7,6 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.mongo.MongoProperties;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * Класс, представляющий запись в таблице "fastlinks".

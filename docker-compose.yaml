@@ -83,6 +83,9 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
+    environment:
+      - SERVER_PORT=18761
+      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
     healthcheck:
       # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
       test: curl --fail http://localhost:18761/eureka/apps || exit 1
@@ -108,7 +111,7 @@ services:
       - SERVER_PORT=18082
       - SPRING_DATASOURCE_URL=jdbc:postgresql://shortic-db-postgres/postgres
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
-      - SPRING_CLOUD_URI=http://shortic-config-server:18001
+      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
 
   backend-giving-service:
     image: shortic-backend-giving
@@ -131,7 +134,7 @@ services:
       - SPRING_DATA_MONGODB_HOST=shortic-mongo-db
       - SPRING_DATA_REDIS_HOST=shortic-db-redis
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
-      - SPRING_CLOUD_URI=http://shortic-config-server:18001
+      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
 
   frontend:
     image: shortic-frontend
@@ -149,6 +152,7 @@ services:
     environment:
       - SERVER_PORT=18080
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
+      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
 
 volumes:
   shortic-cache:
