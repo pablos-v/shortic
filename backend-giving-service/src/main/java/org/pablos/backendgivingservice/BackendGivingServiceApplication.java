@@ -16,16 +16,3 @@ public class BackendGivingServiceApplication {
     }
 
 }
-/**
- * контроллер входящий клик PathVariable
- * TODO валидация входных данных клика, не более Х символов (регулярного выражения)
- *  Х брать из конфига Клауд
- *  @ExceptionHandler
- * данные клика отдельным потоком в каунтингСервис
- * в сервис, там @Transactional @Cacheable
- * Запрос из репо
- *  @ExceptionHandler
- * DTO похоже и не надо, удалить из DTO-storage
- * отдать полную ссылку
- *
- */
