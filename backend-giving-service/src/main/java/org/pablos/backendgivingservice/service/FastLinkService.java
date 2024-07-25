@@ -21,7 +21,6 @@ public class FastLinkService {
 
     private final FastLinkRepository repository;
 
-    @Transactional(readOnly = true)
     @Cacheable(value = "FastLinkService::getFullLink", key = "#shortLink")
     public String getFullLink(String shortLink) {
         FastLink fastLink = repository.findById(shortLink).orElseThrow(LinkNotFoundException::new);
