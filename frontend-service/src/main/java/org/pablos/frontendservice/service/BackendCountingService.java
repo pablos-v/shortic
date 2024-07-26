@@ -5,9 +5,7 @@ import lombok.Data;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Data
 @Service
@@ -16,7 +14,7 @@ public class BackendCountingService {
     private RestTemplate restTemplate;
     private String BACKEND_COUNTING_SERVICE_URL;
 
-    public void putStatistics(String link, HttpServletRequest request) {
+    public void postStatistics(String link, HttpServletRequest request) {
         String ipAddress = request.getHeader("X-Forwarded-For") == null ? request.getRemoteAddr() :
                 request.getHeader("X-Forwarded-For");
         String userAgent = request.getHeader("User-Agent");
@@ -31,7 +29,7 @@ public class BackendCountingService {
                 "language", language
         );
 
-        restTemplate.put(BACKEND_COUNTING_SERVICE_URL, body);
+        restTemplate.postForLocation(BACKEND_COUNTING_SERVICE_URL, body);
     }
 
 }

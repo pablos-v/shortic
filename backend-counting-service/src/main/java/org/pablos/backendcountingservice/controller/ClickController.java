@@ -1,25 +1,26 @@
 package org.pablos.backendcountingservice.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.pablos.backendcountingservice.domain.entity.LinkUnit;
-import org.pablos.backendcountingservice.service.LinkUnitService;
+import org.pablos.ClickDTO;
+import org.pablos.backendcountingservice.service.ClickService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
-public class LinkUnitController {
+public class ClickController {
 
-    private final LinkUnitService linkUnitService;
+    private final ClickService clickService;
 
-@PostMapping
-    public ResponseEntity<String> createLinkUnit(@RequestBody String fullLink){
-    // вернёт короткую ссылку
-    return ResponseEntity.ok()
-}
+    @PostMapping
+    public ResponseEntity<?> createClick (@RequestBody ClickDTO click){
+        clickService.createClick(click);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

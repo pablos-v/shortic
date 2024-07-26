@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Data
 @Controller
@@ -23,7 +21,7 @@ public class FrontController {
     @GetMapping("{link}")
     public RedirectView getLink(@PathVariable String link, HttpServletRequest request) {
         // отправка статистики клика
-        new Thread(() -> countingService.putStatistics(link, request)).start();
+        new Thread(() -> countingService.postStatistics(link, request)).start();
 
         String fullLink = givingService.getFullLink(link);
 

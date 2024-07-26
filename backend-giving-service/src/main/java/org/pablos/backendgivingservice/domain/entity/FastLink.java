@@ -1,5 +1,6 @@
 package org.pablos.backendgivingservice.domain.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,13 +16,15 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-//TODO заменить Table на @Document(collection = "fastLinks") // к какой коллекции обращаемся, создаст если её нет
+//TODO заменить Table на @Document(collection = "fastLinks") и убрать @Entity // к какой коллекции обращаемся, создаст если её нет
 @Table(name = "fast_links")
+@Schema(name = "FastLink", description = "Represents short and full links.")
 public class FastLink {
     /**
      * Краткая ссылка, она же будет использоваться в качестве идентификатора.
      */
     @Id
+// TODO   @Indexed(unique = true)
     @Column(name = "short_link")
     private String shortLink;
     /**

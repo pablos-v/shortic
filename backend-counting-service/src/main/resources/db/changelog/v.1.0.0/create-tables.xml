@@ -33,16 +33,16 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="link_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk-link-id" references="shortic.link_units(id)"/>
-            </column>
-            <column name="click_date" type="datetime">
+            <column name="click_time" type="datetime">
                 <constraints nullable="false"/>
             </column>
             <column name="ip_address" type="varchar(45)"/>
             <column name="user_agent" type="varchar(255)"/>
             <column name="referrer" type="varchar(4096)"/>
             <column name="language" type="varchar(30)"/>
+            <column name="link_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk-link-id" references="shortic.link_units(id)"/>
+            </column>
         </createTable>
     </changeSet>
 
