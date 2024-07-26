@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Класс, представляющий запись в таблице "fastlinks".
+ * Класс, для хранения в БД пары ссылок.
  */
 @Data
 @Entity

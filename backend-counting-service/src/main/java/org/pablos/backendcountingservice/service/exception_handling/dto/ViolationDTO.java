@@ -1,11 +1,11 @@
-package org.pablos.backendgivingservice.service.exception_handling.dto;
+package org.pablos.backendcountingservice.service.exception_handling.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class Violation {
+public class ViolationDTO {
 
     private final String fieldName;
     private final String message;

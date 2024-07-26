@@ -22,3 +22,7 @@ spring:
     url: jdbc:h2:file:./dev_data/giving_db
     username: sa
     password:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
