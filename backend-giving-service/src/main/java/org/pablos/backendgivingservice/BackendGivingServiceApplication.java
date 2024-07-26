@@ -18,3 +18,6 @@ public class BackendGivingServiceApplication {
     }
 
 }
+
+// TODO ExceptionHandlingService в бекендах - повторяющийся код как убрать?
+// TODO мапперы переписать на MapSctruct

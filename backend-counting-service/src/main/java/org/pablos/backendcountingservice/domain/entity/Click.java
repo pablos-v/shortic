@@ -18,8 +18,8 @@ public class Click {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column(name = "link_id")
-//    private Long linkId;
+    @Column(name = "link_id")
+    private Long linkId;
 
     @Column(name = "click_time")
     private LocalDateTime clickTime;

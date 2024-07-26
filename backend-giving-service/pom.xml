@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>org.pablos</groupId>
-            <artifactId>dto-storage</artifactId>
+            <artifactId>common-storage</artifactId>
             <version>0.0.1</version>
         </dependency>
         <dependency>
