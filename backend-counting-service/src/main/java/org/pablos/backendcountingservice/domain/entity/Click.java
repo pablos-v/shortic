@@ -35,5 +35,13 @@ public class Click {
 
     @Column(name = "language")
     private String language;
+
+    public Click(LocalDateTime clickTime, String ipAddress, String userAgent, String referrer, String language) {
+        this.clickTime = clickTime;
+        this.ipAddress = ipAddress;
+        this.userAgent = userAgent;
+        this.referrer = referrer;
+        this.language = language;
+    }
 }
 

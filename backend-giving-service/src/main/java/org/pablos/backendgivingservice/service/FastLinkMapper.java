@@ -1,14 +1,13 @@
 package org.pablos.backendgivingservice.service;
 
-import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.backendgivingservice.domain.entity.FastLink;
 
 public class FastLinkMapper {
-    public static FastLinkDTO toDTO (FastLink fl) {
-        return new FastLinkDTO(fl.getShortLink(), fl.getFullLink());
+    public static org.pablos.shortic.dto.FastLinkDTO toDTO (FastLink fl) {
+        return new org.pablos.shortic.dto.FastLinkDTO(fl.getShortLink(), fl.getFullLink());
     }
 
-    public static FastLink toEntity (FastLinkDTO fl) {
-        return new FastLink(fl.shortLink(), fl.fullLink());
+    public static FastLink toEntity (org.pablos.shortic.dto.FastLinkDTO fl) {
+        return new FastLink(fl.getShortLink(), fl.getFullLink());
     }
 }

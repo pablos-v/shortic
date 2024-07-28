@@ -1,6 +1,8 @@
 package org.pablos.shortic.util;
 
+import org.pablos.shortic.IShortLink;
 import org.pablos.shortic.exception.LinkProcessingException;
+import org.pablos.shortic.exception.ObjectNotProvidedException;
 
 import java.security.SecureRandom;
 
@@ -18,26 +20,6 @@ public class CommonUtil {
     private static final SecureRandom random = new SecureRandom();
 
     /**
-     * Валидирует короткую ссылку. Выбрасывает исключения, которые обрабатываются дальше в сервисах.
-     * @param link короткая ссылка.
-     * @throws LinkProcessingException если ссылка не валидна.
-     */
-    public static void validateShortLink(final String link) throws LinkProcessingException{
-        if (link == null || link.isEmpty()) {
-            throw new LinkProcessingException(NOT_PROVIDED);
-        }
-        if (link.length() != SHORT_LINK_LENGTH) {
-            throw new LinkProcessingException(BAD_SIZE);
-        }
-        if (link.contains(" ")) {
-            throw new LinkProcessingException(CONTAINS_SPACES);
-        }
-        if (!link.matches("^[A-Za-z0-9]+$")) {
-            throw new LinkProcessingException(INVALID_CHARS);
-        }
-    }
-
-    /**
      * Генерирует случайную строку с длиной SHORT_LINK_LENGTH.
      * В строке CHARACTERS 62 символа, длина SHORT_LINK_LENGTH по умолчанию 6.
      * Получается всего 62^6 = 56 800 235 584 возможных ссылок.
@@ -50,5 +32,30 @@ public class CommonUtil {
             shortLink.append(CHARACTERS.charAt(index));
         }
         return shortLink.toString();
+    }
+
+    /**
+     * Валидирует короткую ссылку. Выбрасывает исключения, которые обрабатываются дальше в сервисах.
+     * @param dto короткая ссылка.
+     * @throws LinkProcessingException если ссылка не валидна.
+     */
+    public static void validate(IShortLink dto) throws LinkProcessingException{
+        if (dto == null) throw new ObjectNotProvidedException();
+        CommonUtil.validateShortLink(dto.getShortLink());
+    }
+
+    private static void validateShortLink(final String link) throws LinkProcessingException{
+        if (link.isEmpty()) {
+            throw new LinkProcessingException(NOT_PROVIDED);
+        }
+        if (link.length() != SHORT_LINK_LENGTH) {
+            throw new LinkProcessingException(BAD_SIZE);
+        }
+        if (link.contains(" ")) {
+            throw new LinkProcessingException(CONTAINS_SPACES);
+        }
+        if (!link.matches("^[A-Za-z0-9]+$")) {
+            throw new LinkProcessingException(INVALID_CHARS);
+        }
     }
 }

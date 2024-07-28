@@ -1,14 +1,11 @@
 package org.pablos.backendcountingservice.service.exception_handling;
 
+import org.pablos.backendcountingservice.service.exception_handling.dto.ValidationErrorResponse;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.ObjectViolationDTO;
 import org.pablos.shortic.dto.ViolationDTO;
-import org.pablos.backendgivingservice.domain.entity.FastLink;
-import org.pablos.backendgivingservice.domain.exception.LinkNotFoundException;
-import org.pablos.backendgivingservice.domain.exception.LinkProcessingException;
-import org.pablos.backendgivingservice.service.exception_handling.dto.ValidationErrorResponse;
-import org.pablos.backendgivingservice.service.exception_handling.dto.Violation;
 import org.pablos.shortic.exception.LinkProcessingException;
+import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.ObjectNotProvidedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -53,7 +50,7 @@ public class ExceptionHandlingService {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ValidationErrorResponse onLinkNotFoundException(LinkNotFoundException e) {
         final List<ViolationDTO> violations =
-                List.of(new ViolationDTO(FastLink.class.getFields()[0].getName(), e.getMessage()));
+                List.of(new ViolationDTO(SHORT_LINK, e.getMessage()));
         return new ValidationErrorResponse(violations);
     }
 }

@@ -25,7 +25,7 @@
             <column name="created_at" type="datetime">
                 <constraints nullable="false"/>
             </column>
-            <column name="status" type="boolean">
+            <column name="active" type="boolean">
                 <constraints nullable="false"/>
             </column>
         </createTable>

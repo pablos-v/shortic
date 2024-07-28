@@ -14,18 +14,18 @@
             <column name="password" value="password1"/>
             <column name="full_link" value="https://example.com/1"/>
             <column name="created_at" value="2022-01-01 00:00:00"/>
-            <column name="status" value="true"/>
+            <column name="active" value="true"/>
         </insert>
         <insert schemaName="shortic" tableName="link_units">
             <column name="short_link" value="def456"/>
             <column name="password" value="password2"/>
             <column name="full_link" value="https://example.com/2"/>
             <column name="created_at" value="2022-01-02 00:00:00"/>
-            <column name="status" value="false"/>
+            <column name="active" value="false"/>
         </insert>
         <insert schemaName="shortic" tableName="clicks">
             <column name="link_id" value="1"/>
-            <column name="click_date" value="2022-01-01 01:00:00"/>
+            <column name="click_time" value="2022-01-01 01:00:00"/>
             <column name="ip_address" value="192.168.1.1"/>
             <column name="user_agent" value="User-Agent 1"/>
             <column name="referrer" value="https://referrer1.com"/>
@@ -33,7 +33,7 @@
         </insert>
         <insert schemaName="shortic" tableName="clicks">
             <column name="link_id" value="1"/>
-            <column name="click_date" value="2022-01-01 02:00:00"/>
+            <column name="click_time" value="2022-01-01 02:00:00"/>
             <column name="ip_address" value="192.168.1.2"/>
             <column name="user_agent" value="User-Agent 2"/>
             <column name="referrer" value="https://referrer2.com"/>
@@ -41,7 +41,7 @@
         </insert>
         <insert schemaName="shortic" tableName="clicks">
             <column name="link_id" value="1"/>
-            <column name="click_date" value="2022-01-01 03:00:00"/>
+            <column name="click_time" value="2022-01-01 03:00:00"/>
             <column name="ip_address" value="192.168.1.3"/>
             <column name="user_agent" value="User-Agent 3"/>
             <column name="referrer" value="https://referrer3.com"/>
@@ -49,7 +49,7 @@
         </insert>
         <insert schemaName="shortic" tableName="clicks">
             <column name="link_id" value="2"/>
-            <column name="click_date" value="2022-01-02 01:00:00"/>
+            <column name="click_time" value="2022-01-02 01:00:00"/>
             <column name="ip_address" value="192.168.1.4"/>
             <column name="user_agent" value="User-Agent 4"/>
             <column name="referrer" value="https://referrer4.com"/>
@@ -57,7 +57,7 @@
         </insert>
         <insert schemaName="shortic" tableName="clicks">
             <column name="link_id" value="2"/>
-            <column name="click_date" value="2022-01-02 02:00:00"/>
+            <column name="click_time" value="2022-01-02 02:00:00"/>
             <column name="ip_address" value="192.168.1.5"/>
             <column name="user_agent" value="User-Agent 5"/>
             <column name="referrer" value="https://referrer5.com"/>
@@ -65,7 +65,7 @@
         </insert>
         <insert schemaName="shortic" tableName="clicks">
             <column name="link_id" value="2"/>
-            <column name="click_date" value="2022-01-02 03:00:00"/>
+            <column name="click_time" value="2022-01-02 03:00:00"/>
             <column name="ip_address" value="192.168.1.6"/>
             <column name="user_agent" value="User-Agent 6"/>
             <column name="referrer" value="https://referrer6.com"/>

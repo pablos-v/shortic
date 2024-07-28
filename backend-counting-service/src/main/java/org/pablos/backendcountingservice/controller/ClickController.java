@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/click")
 @RequiredArgsConstructor
 public class ClickController {
 
     private final ClickService clickService;
 
     @PostMapping
-    public ResponseEntity<?> createClick (@RequestBody ClickDTO click){
-        clickService.createClick(click);
+    public ResponseEntity<?> createClick (@RequestBody ClickDTO clickDTO){
+        clickService.createClick(clickDTO);
         return ResponseEntity.ok().build();
     }
 

@@ -2,8 +2,8 @@ package org.pablos.backendgivingservice.service;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.backendgivingservice.domain.entity.FastLink;
+import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkProcessingException;
 import org.pablos.shortic.exception.ObjectNotProvidedException;
@@ -30,10 +30,8 @@ public class FastLinkService implements IFastLinkService {
             value = "FastLinkService::getFullLink",
             key = "#shortLink"
     )
-    public String getFullLink(final String shortLink) {
-        CommonUtil.validateShortLink(shortLink);
-        FastLink fastLink = repository.findById(shortLink).orElseThrow(LinkNotFoundException::new);
-        return fastLink.getFullLink();
+    public String getFullLink(final String shortLink){
+        return getFastLink(shortLink).getFullLink();
     }
 
     @Override
@@ -43,9 +41,8 @@ public class FastLinkService implements IFastLinkService {
             key = "#fastLink.shortLink()"
     )
     public FastLinkDTO create(final FastLinkDTO fastLink) {
-        if (fastLink == null) throw new ObjectNotProvidedException();
-        CommonUtil.validateShortLink(fastLink.shortLink());
-        if (repository.existsById(fastLink.shortLink())) throw new LinkProcessingException(CommonUtil.EXISTS);
+        CommonUtil.validate(fastLink);
+        if (repository.existsById(fastLink.getShortLink())) throw new LinkProcessingException(CommonUtil.EXISTS);
 
         FastLink response = repository.save(FastLinkMapper.toEntity(fastLink));
         return FastLinkMapper.toDTO(response);
@@ -58,9 +55,8 @@ public class FastLinkService implements IFastLinkService {
             key = "#fastLink.shortLink()"
     )
     public FastLinkDTO update(final FastLinkDTO fastLink) {
-        if (fastLink == null) throw new ObjectNotProvidedException();
-        CommonUtil.validateShortLink(fastLink.shortLink());
-        repository.findById(fastLink.shortLink()).orElseThrow(LinkNotFoundException::new);
+        CommonUtil.validate(fastLink);
+        repository.findById(fastLink.getShortLink()).orElseThrow(LinkNotFoundException::new);
         FastLink response = repository.save(FastLinkMapper.toEntity(fastLink));
         return FastLinkMapper.toDTO(response);
     }
@@ -72,9 +68,14 @@ public class FastLinkService implements IFastLinkService {
             key = "#shortLink"
     )
     public FastLinkDTO deleteByShortLink(final String shortLink) {
-        FastLink fastLink = repository.findById(shortLink).orElseThrow(LinkNotFoundException::new);
+        FastLink fastLink = getFastLink(shortLink);
         repository.deleteById(shortLink);
         return FastLinkMapper.toDTO(fastLink);
+    }
+
+    private FastLink getFastLink(String shortLink) {
+        CommonUtil.validate(new FastLinkDTO(shortLink,""));
+        return repository.findById(shortLink).orElseThrow(LinkNotFoundException::new);
     }
 
 }

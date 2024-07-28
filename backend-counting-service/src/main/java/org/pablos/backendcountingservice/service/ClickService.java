@@ -5,13 +5,17 @@ import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.domain.entity.Click;
 import org.pablos.shortic.dto.ClickDTO;
 import org.pablos.backendcountingservice.repository.ClickRepository;
+import org.pablos.shortic.dto.LinkUnitDTO;
+import org.pablos.shortic.exception.LinkNotFoundException;
+import org.pablos.shortic.exception.LinkProcessingException;
 import org.pablos.shortic.exception.ObjectNotProvidedException;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-@Data
+//@Data
 @RequiredArgsConstructor
 @Service
 public class ClickService {
@@ -19,13 +23,21 @@ public class ClickService {
     private final ClickRepository clickRepository;
     private final LinkUnitService linkUnitService;
 
-    public void createClick(ClickDTO dto) {
-        if (dto == null) throw new ObjectNotProvidedException();
-        CommonUtil.validateShortLink(dto.shortLink());
+    /**
+     * Метод создания и записи в БД объекта {@link Click}. В процессе валидирует ссылку.
+     *
+     * @param dto DTO с параметрами клика
+     * @throws ObjectNotProvidedException если объект не был передан
+     * @throws LinkNotFoundException если ссылка не найдена
+     * @throws LinkProcessingException если ссылка не прошла валидацию
+     */
+    @Transactional
+    public void createClick(ClickDTO dto) throws ObjectNotProvidedException, LinkNotFoundException, LinkProcessingException {
+        CommonUtil.validate(dto);
 
         Click click = ClickMapper.toEntity(dto);
-        click.setLinkId(linkUnitService.getLinkUnitByShortLink(dto.shortLink()).id());
-        click.setClickTime(LocalDateTime.now());
+        Long link_id = linkUnitService.getLinkUnitIdByShortLink(dto.getShortLink());
+        click.setLinkId(link_id);
 
         clickRepository.save(click);
     }

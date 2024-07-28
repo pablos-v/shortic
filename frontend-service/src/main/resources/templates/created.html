@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:with="pageTitle='Ссылка создана'">
+    <!-- Включение head -->
+    <div th:replace="~{head :: head}" th:fragment="head"></div>
+</th:block>
+<body>
+<nav th:replace="~{menu :: menu}" th:fragment="menu">
+    <!-- Включение меню -->
+</nav>
+
+<!--сказать что ссылка будет проверена на опасность и активирована чуть позже
+при нажатии на "ЗАПОМИНАТЬ СТАТИСТИКУ" оставаться на странице(как? чатГПТ) и
+слать в БОДИ ПУТ - дописывать в БД пароль-->
+
+</body>
+</html>

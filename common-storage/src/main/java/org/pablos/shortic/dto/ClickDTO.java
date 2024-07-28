@@ -1,6 +1,21 @@
 package org.pablos.shortic.dto;
 
-import java.time.LocalDateTime;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.pablos.shortic.IShortLink;
 
-public record ClickDTO(long id, String shortLink, LocalDateTime clickTime, String ipAddress, String language, String referer, String userAgent) {
+import java.time.LocalDateTime;
+import java.util.Objects;
+@Data
+@RequiredArgsConstructor
+public final class ClickDTO implements IShortLink {
+
+    private final long id;
+    private final String shortLink;
+    private final LocalDateTime clickTime;
+    private final String ipAddress;
+    private final String language;
+    private final String referer;
+    private final String userAgent;
+
 }

@@ -5,12 +5,12 @@ import org.pablos.shortic.dto.ClickDTO;
 
 public class ClickMapper {
     public static Click toEntity(ClickDTO dto) {
-        Click click = new Click();
-        click.setReferrer(dto.referer());
-        click.setLanguage(dto.language());
-        click.setUserAgent(dto.userAgent());
-        click.setIpAddress(dto.ipAddress());
-        return click;
+        return new Click(
+                dto.getClickTime(),
+                dto.getIpAddress(),
+                dto.getUserAgent(),
+                dto.getReferer(),
+                dto.getLanguage());
     }
 
     public static ClickDTO toDTO(Click click) {

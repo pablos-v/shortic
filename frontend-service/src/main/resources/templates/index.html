@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:with="pageTitle='Сокращатель ссылок'">
+    <!-- Включение head -->
+    <div th:replace="~{head :: head}" th:fragment="head"></div>
+</th:block>
+<body>
+<nav th:replace="~{menu :: menu}" th:fragment="menu">
+    <!-- Включение меню -->
+</nav>
+
+<form class="col card p-3 mb-5" method="post" th:action="@{/}" th:object="${input}">
+<div class="form-group">
+    <label type="hidden" for="link">Сократитель</label>
+    <input class="form-control"
+           id="link"
+           placeholder="Введите ссылку"
+           required
+           th:field="*{fullLink}"
+           type="text"/>
+    <input class="btn btn-primary" type="submit" value="СОКРАТИТЬ">
+</div>
+</form>
+
+<div th:replace="~{footer :: footer}" th:fragment="footer">
+    <!-- Включение footer -->
+</div>
+</body>
+</html>

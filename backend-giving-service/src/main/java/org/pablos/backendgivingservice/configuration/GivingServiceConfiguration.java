@@ -1,4 +1,4 @@
-package org.pablos.frontendservice.config;
+package org.pablos.backendgivingservice.configuration;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
@@ -8,27 +8,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * TODO
+ */
 @Configuration
 @RequiredArgsConstructor
-public class FrontendConfiguration {
+public class GivingServiceConfiguration {
 
     private final EurekaClient eurekaClient;
 
     @Bean
     public String countingServiceUrl(){
-     return  getBackendIp("BACKEND-COUNTING-SERVICE");
-    }
-
-    @Bean
-    public String givingServiceUrl(){
-        return getBackendIp("BACKEND-GIVING-SERVICE");
+        return  getBackendIp("BACKEND-COUNTING-SERVICE");
     }
 
     @Bean
     public RestTemplate getRestTemplate() {
         return new RestTemplateBuilder().build();
     }
-
 
     /**
      * Вытаскивает из эврики адрес бэкенда
@@ -39,5 +36,4 @@ public class FrontendConfiguration {
         InstanceInfo info = eurekaClient.getApplication(app).getInstances().get(0);
         return "http://" + info.getIPAddr() + ":" + info.getPort();
     }
-
 }
