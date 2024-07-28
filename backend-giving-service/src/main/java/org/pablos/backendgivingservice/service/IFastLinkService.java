@@ -1,11 +1,8 @@
 package org.pablos.backendgivingservice.service;
 
-import org.pablos.FastLinkDTO;
+import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.backendgivingservice.domain.entity.FastLink;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.transaction.annotation.Transactional;
+import org.pablos.shortic.exception.LinkNotFoundException;
 
 public interface IFastLinkService {
 
@@ -14,6 +11,7 @@ public interface IFastLinkService {
      *
      * @param shortLink сокращённая ссылка
      * @return Полная ссылка
+     * @throws LinkNotFoundException если ссылка не найдена
      */
     String getFullLink(final String shortLink);
 
@@ -23,6 +21,7 @@ public interface IFastLinkService {
      *
      * @param fastLink DTO, содержащий ссылки
      * @return {@link FastLinkDTO} DTO созданного объекта
+     * @throws org.pablos.shortic.exception.LinkProcessingException если ссылка не валидна
      */
     FastLinkDTO create(final FastLinkDTO fastLink);
 
@@ -32,9 +31,9 @@ public interface IFastLinkService {
      *
      * @param fastLink DTO, содержащий ссылки
      * @return {@link FastLinkDTO} DTO обновленного объекта
+     * @throws LinkNotFoundException если ссылка не найдена
      */
-
-    FastLinkDTO update(final FastLinkDTO fastLink);
+    FastLinkDTO update(final FastLinkDTO fastLink) throws LinkNotFoundException;
 
     /**
      * Метод удаления объекта {@link FastLink} на основе сокращённой ссылки.
@@ -42,7 +41,7 @@ public interface IFastLinkService {
      *
      * @param shortLink сокращённая ссылка
      * @return {@link FastLinkDTO} DTO удалённого объекта
+     * @throws LinkNotFoundException если ссылка не найдена
      */
-
     FastLinkDTO deleteByShortLink(final String shortLink);
 }

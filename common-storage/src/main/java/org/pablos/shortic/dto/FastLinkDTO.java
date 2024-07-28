@@ -1,4 +1,4 @@
-package org.pablos;
+package org.pablos.shortic.dto;
 
 import java.io.Serializable;
 

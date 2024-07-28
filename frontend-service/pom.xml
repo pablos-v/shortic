@@ -13,19 +13,6 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>frontend-service</name>
     <description>frontend-service</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2023.0.3</spring-cloud.version>
@@ -33,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>org.pablos</groupId>
-            <artifactId>dto-storage</artifactId>
+            <artifactId>common-storage</artifactId>
             <version>0.0.1</version>
         </dependency>
         <dependency>

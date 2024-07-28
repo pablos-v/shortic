@@ -1,4 +1,4 @@
-package org.pablos.backendgivingservice.domain.exception;
+package org.pablos.shortic.exception;
 
 public class LinkProcessingException extends RuntimeException{
     public LinkProcessingException(String message) {
