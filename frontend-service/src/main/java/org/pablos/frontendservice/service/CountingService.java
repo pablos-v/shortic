@@ -14,8 +14,7 @@ public class CountingService {
     private final RestTemplate restTemplate;
     private String countingServiceUrl;
 
-    public FastLinkDTO getLink(FastLinkDTO input) {
-        // TODO VALIDATE
+    public FastLinkDTO getLink(final FastLinkDTO input) {
         return restTemplate.postForObject(countingServiceUrl + "/link", input, FastLinkDTO.class);
     }
 }

@@ -6,7 +6,6 @@ import org.pablos.backendgivingservice.domain.entity.FastLink;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkProcessingException;
-import org.pablos.shortic.exception.ObjectNotProvidedException;
 import org.pablos.backendgivingservice.repository.FastLinkRepository;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.cache.annotation.CacheEvict;
@@ -41,7 +40,7 @@ public class FastLinkService implements IFastLinkService {
             key = "#fastLink.shortLink()"
     )
     public FastLinkDTO create(final FastLinkDTO fastLink) {
-        CommonUtil.validate(fastLink);
+        CommonUtil.validateDTOShortLink(fastLink);
         if (repository.existsById(fastLink.getShortLink())) throw new LinkProcessingException(CommonUtil.EXISTS);
 
         FastLink response = repository.save(FastLinkMapper.toEntity(fastLink));
@@ -55,7 +54,7 @@ public class FastLinkService implements IFastLinkService {
             key = "#fastLink.shortLink()"
     )
     public FastLinkDTO update(final FastLinkDTO fastLink) {
-        CommonUtil.validate(fastLink);
+        CommonUtil.validateDTOShortLink(fastLink);
         repository.findById(fastLink.getShortLink()).orElseThrow(LinkNotFoundException::new);
         FastLink response = repository.save(FastLinkMapper.toEntity(fastLink));
         return FastLinkMapper.toDTO(response);
@@ -74,7 +73,7 @@ public class FastLinkService implements IFastLinkService {
     }
 
     private FastLink getFastLink(String shortLink) {
-        CommonUtil.validate(new FastLinkDTO(shortLink,""));
+        CommonUtil.validateDTOShortLink(new FastLinkDTO(shortLink,""));
         return repository.findById(shortLink).orElseThrow(LinkNotFoundException::new);
     }
 

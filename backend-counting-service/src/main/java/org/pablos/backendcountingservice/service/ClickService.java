@@ -1,19 +1,15 @@
 package org.pablos.backendcountingservice.service;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.domain.entity.Click;
 import org.pablos.shortic.dto.ClickDTO;
 import org.pablos.backendcountingservice.repository.ClickRepository;
-import org.pablos.shortic.dto.LinkUnitDTO;
 import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkProcessingException;
 import org.pablos.shortic.exception.ObjectNotProvidedException;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 //@Data
 @RequiredArgsConstructor
@@ -33,7 +29,7 @@ public class ClickService {
      */
     @Transactional
     public void createClick(ClickDTO dto) throws ObjectNotProvidedException, LinkNotFoundException, LinkProcessingException {
-        CommonUtil.validate(dto);
+        CommonUtil.validateDTOShortLink(dto);
 
         Click click = ClickMapper.toEntity(dto);
         Long link_id = linkUnitService.getLinkUnitIdByShortLink(dto.getShortLink());

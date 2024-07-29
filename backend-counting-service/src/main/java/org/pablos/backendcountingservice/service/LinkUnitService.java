@@ -22,12 +22,13 @@ public class LinkUnitService {
      * @throws LinkNotFoundException если ссылка не найдена
      */
     @Transactional(readOnly = true)
-    public Long getLinkUnitIdByShortLink(String shortLink) throws LinkNotFoundException {
+    public Long getLinkUnitIdByShortLink(final String shortLink) throws LinkNotFoundException {
         LinkUnit linkUnit = linkUnitRepository.findByShortLink(shortLink).orElseThrow(LinkNotFoundException::new);
         return linkUnit.getId();
     }
 
-    public FastLinkDTO createLinkUnit(FastLinkDTO input) {
+    @Transactional
+    public FastLinkDTO createLinkUnit(final FastLinkDTO input) {
         String shortLink;
         do {
             shortLink = CommonUtil.generateShortLink();

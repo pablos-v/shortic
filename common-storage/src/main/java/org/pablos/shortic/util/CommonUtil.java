@@ -1,6 +1,9 @@
 package org.pablos.shortic.util;
 
 import org.pablos.shortic.IShortLink;
+import org.pablos.shortic.dto.FastLinkDTO;
+import org.pablos.shortic.exception.FullLinkNotProvidedException;
+import org.pablos.shortic.exception.FullLinkSizeException;
 import org.pablos.shortic.exception.LinkProcessingException;
 import org.pablos.shortic.exception.ObjectNotProvidedException;
 
@@ -10,8 +13,9 @@ public class CommonUtil {
     /**
      * Здесь задаётся длина сокращённой ссылки.
      */
-    public static final int SHORT_LINK_LENGTH = 6;
     public static final String EXISTS = "This short link already exists";
+    public static final int SHORT_LINK_LENGTH = 6;
+    private static final int FULL_LINK_MAX_LENGTH = 4096;
     private static final String NOT_PROVIDED = "Link was not provided";
     private static final String BAD_SIZE = "Link length is wrong";
     private static final String CONTAINS_SPACES = "Link contains spaces";
@@ -39,23 +43,30 @@ public class CommonUtil {
      * @param dto короткая ссылка.
      * @throws LinkProcessingException если ссылка не валидна.
      */
-    public static void validate(IShortLink dto) throws LinkProcessingException{
-        if (dto == null) throw new ObjectNotProvidedException();
-        CommonUtil.validateShortLink(dto.getShortLink());
-    }
-
-    private static void validateShortLink(final String link) throws LinkProcessingException{
-        if (link.isEmpty()) {
+    public static void validateDTOShortLink(IShortLink dto) throws LinkProcessingException, ObjectNotProvidedException{
+        if (dto == null) {
+            throw new ObjectNotProvidedException();
+        }
+        if (dto.getShortLink().isEmpty()) {
             throw new LinkProcessingException(NOT_PROVIDED);
         }
-        if (link.length() != SHORT_LINK_LENGTH) {
+        if (dto.getShortLink().length() != SHORT_LINK_LENGTH) {
             throw new LinkProcessingException(BAD_SIZE);
         }
-        if (link.contains(" ")) {
+        if (dto.getShortLink().contains(" ")) {
             throw new LinkProcessingException(CONTAINS_SPACES);
         }
-        if (!link.matches("^[A-Za-z0-9]+$")) {
+        if (!dto.getShortLink().matches("^[A-Za-z0-9]+$")) {
             throw new LinkProcessingException(INVALID_CHARS);
+        }
+    }
+
+    public static void validateDTOFullLink(FastLinkDTO input) throws FullLinkNotProvidedException, FullLinkSizeException{
+        if (input == null || input.getFullLink() == null || input.getFullLink().isEmpty()) {
+            throw new FullLinkNotProvidedException();
+        }
+        if (input.getFullLink().length() > FULL_LINK_MAX_LENGTH) {
+            throw new FullLinkSizeException();
         }
     }
 }

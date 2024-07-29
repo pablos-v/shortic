@@ -4,13 +4,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.pablos.shortic.dto.ClickDTO;
+import org.pablos.shortic.dto.FastLinkDTO;
+import org.pablos.shortic.util.CommonUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Data
 @Service
@@ -21,6 +22,7 @@ public class GivingService {
     private String givingServiceUrl;
 
     public String clickProcessing(final String shortLink, final HttpServletRequest request) {
+        CommonUtil.validateDTOShortLink(new FastLinkDTO(shortLink,""));
         // TODO VALIDATE
         String fullLink = null;
         ClickDTO clickDTO = prepareClickDTO(shortLink, request);

@@ -4,10 +4,10 @@ import org.pablos.backendcountingservice.service.exception_handling.dto.Validati
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.ObjectViolationDTO;
 import org.pablos.shortic.dto.ViolationDTO;
-import org.pablos.shortic.exception.LinkProcessingException;
-import org.pablos.shortic.exception.LinkNotFoundException;
-import org.pablos.shortic.exception.ObjectNotProvidedException;
+import org.pablos.shortic.exception.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,6 +18,8 @@ import java.util.List;
 @ControllerAdvice
 public class ExceptionHandlingService {
     private static final String SHORT_LINK = "shortLink";
+    private static final String FULL_LINK = "fullLink";
+
 
     /**
      * Метод обрабатывает исключения {@link LinkProcessingException}, возникающие в процессе валидации ссылки.
@@ -48,9 +50,21 @@ public class ExceptionHandlingService {
     @ResponseBody
     @ExceptionHandler(LinkNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ValidationErrorResponse onLinkNotFoundException(LinkNotFoundException e) {
-        final List<ViolationDTO> violations =
-                List.of(new ViolationDTO(SHORT_LINK, e.getMessage()));
-        return new ValidationErrorResponse(violations);
+    public ViolationDTO onLinkNotFoundException(LinkNotFoundException e) {
+        return new ViolationDTO(SHORT_LINK, e.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(FullLinkNotProvidedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ViolationDTO onFullLinkNotProvidedException(FullLinkNotProvidedException e) {
+        return new ViolationDTO(FULL_LINK, e.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(FullLinkSizeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ViolationDTO onFullLinkSizeException(FullLinkSizeException e) {
+        return new ViolationDTO(FULL_LINK, e.getMessage());
     }
 }
