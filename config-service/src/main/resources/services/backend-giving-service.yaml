@@ -2,6 +2,8 @@ server:
   port: 18081
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
 #  cache:
 #    type: redis
 #    cache-names: redis-cache
@@ -9,13 +11,13 @@ spring:
 #    redis:
 #      host: localhost
 #      port: 16379
-#      password: parole
+#      password: ${REDIS_PASSWORD}
 #    mongodb:
 #      host: localhost
 #      port: 27017
-#      database: giving_db
-#      username: user
-#      password: password
+#      database: ${MONGO_DATABASE}
+#      username: ${MONGO_USERNAME}
+#      password: ${MONGO_PASSWORD}
 
 #  TODO менять на монго!
   datasource:

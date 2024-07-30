@@ -12,8 +12,8 @@ services:
       options:
         max-size: 1g
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=user
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     volumes:
       - shortic-mongo:/data/db
     healthcheck:
@@ -29,9 +29,9 @@ services:
     container_name: shortic-db-postgres
     restart: always
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
     volumes:
       - shortic-db-data:/var/lib/postgresql/data
     healthcheck:
@@ -46,11 +46,11 @@ services:
     container_name: shortic-db-redis
     ports:
       - '16379:16379'
-    command: redis-server --save 20 1 --loglevel warning --requirepass parole
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
     volumes:
       - shortic-cache:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "parole", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 1s
       timeout: 5s
       retries: 10
@@ -107,11 +107,13 @@ services:
         condition: service_healthy
       db-postgres:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
       - SERVER_PORT=18082
       - SPRING_DATASOURCE_URL=jdbc:postgresql://shortic-db-postgres/postgres
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
-      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
+#      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
+#      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
 
   backend-giving-service:
     image: shortic-backend-giving
@@ -129,12 +131,14 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
       - SERVER_PORT=18081
       - SPRING_DATA_MONGODB_HOST=shortic-mongo-db
       - SPRING_DATA_REDIS_HOST=shortic-db-redis
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
-      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
+#      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
+#      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
 
   frontend:
     image: shortic-frontend
@@ -149,10 +153,12 @@ services:
         condition: service_started
       backend-giving-service:
         condition: service_started
+    env_file:
+      - .env
     environment:
       - SERVER_PORT=18080
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
-      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
+#      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
+#      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
 
 volumes:
   shortic-cache:

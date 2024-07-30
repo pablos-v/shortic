@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class ValidationErrorResponse {
-
+// TODO delete if not used
     private final List<ViolationDTO> violations;
 
 }

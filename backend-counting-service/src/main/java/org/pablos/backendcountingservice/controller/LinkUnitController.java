@@ -21,13 +21,9 @@ public class LinkUnitController {
     public ResponseEntity<FastLinkDTO> createLinkUnit(final @RequestBody FastLinkDTO input) {
         CommonUtil.validateDTOFullLink(input);
 
-        // вернёт короткую ссылку
         FastLinkDTO link = linkUnitService.createLinkUnit(input);
-
-        // new Thread check in YA completed future
-        // post to giving if ok
 
         return ResponseEntity.ok(link);
     }
-
+// TODO метод обхода ссылок через linkUnitService.checkLinkSecurity()
 }

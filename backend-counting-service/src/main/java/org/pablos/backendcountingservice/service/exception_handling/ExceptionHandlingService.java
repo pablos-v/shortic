@@ -1,10 +1,14 @@
 package org.pablos.backendcountingservice.service.exception_handling;
 
-import org.pablos.backendcountingservice.service.exception_handling.dto.ValidationErrorResponse;
+import lombok.RequiredArgsConstructor;
+import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkException;
+import org.pablos.backendcountingservice.domain.exception.LinkNotFoundWhileActivationException;
+import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.ObjectViolationDTO;
 import org.pablos.shortic.dto.ViolationDTO;
 import org.pablos.shortic.exception.*;
+import org.slf4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +20,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.List;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class ExceptionHandlingService {
     private static final String SHORT_LINK = "shortLink";
     private static final String FULL_LINK = "fullLink";
+
+    private final Logger logger;
 
 
     /**
@@ -67,4 +74,19 @@ public class ExceptionHandlingService {
     public ViolationDTO onFullLinkSizeException(FullLinkSizeException e) {
         return new ViolationDTO(FULL_LINK, e.getMessage());
     }
+
+    @ExceptionHandler(LinkNotFoundWhileActivationException.class)
+    public void onLinkNotFoundWhileActivationException(LinkNotFoundWhileActivationException e) {
+        logger.error("Link was not found during LinkUnit activation: {}", e.getMessage(), e);
+    }
+    @ExceptionHandler(SavingFastLinkException.class)
+    public void onSavingFastLinkException(SavingFastLinkException e) {
+        logger.error("Link saving failed: {}", e.getMessage(), e);
+    }
+    @ExceptionHandler(DeletingFastLinkException.class)
+    public void onDeletingFastLinkException(DeletingFastLinkException e) {
+        logger.error("Link deleting failed: {}", e.getMessage(), e);
+    }
+
+
 }

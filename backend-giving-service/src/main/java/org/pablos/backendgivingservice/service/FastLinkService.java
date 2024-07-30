@@ -29,7 +29,7 @@ public class FastLinkService implements IFastLinkService {
             value = "FastLinkService::getFullLink",
             key = "#shortLink"
     )
-    public String getFullLink(final String shortLink){
+    public String getFullLink(final String shortLink) throws LinkNotFoundException{
         return getFastLink(shortLink).getFullLink();
     }
 
@@ -39,7 +39,7 @@ public class FastLinkService implements IFastLinkService {
             value = "FastLinkService::getFullLink",
             key = "#fastLink.shortLink()"
     )
-    public FastLinkDTO create(final FastLinkDTO fastLink) {
+    public FastLinkDTO create(final FastLinkDTO fastLink) throws LinkProcessingException{
         CommonUtil.validateDTOShortLink(fastLink);
         if (repository.existsById(fastLink.getShortLink())) throw new LinkProcessingException(CommonUtil.EXISTS);
 
@@ -53,7 +53,7 @@ public class FastLinkService implements IFastLinkService {
             value = "FastLinkService::getFullLink",
             key = "#fastLink.shortLink()"
     )
-    public FastLinkDTO update(final FastLinkDTO fastLink) {
+    public FastLinkDTO update(final FastLinkDTO fastLink) throws LinkNotFoundException{
         CommonUtil.validateDTOShortLink(fastLink);
         repository.findById(fastLink.getShortLink()).orElseThrow(LinkNotFoundException::new);
         FastLink response = repository.save(FastLinkMapper.toEntity(fastLink));
@@ -66,13 +66,13 @@ public class FastLinkService implements IFastLinkService {
             value = "FastLinkService::getFullLink",
             key = "#shortLink"
     )
-    public FastLinkDTO deleteByShortLink(final String shortLink) {
+    public FastLinkDTO deleteByShortLink(final String shortLink) throws LinkNotFoundException{
         FastLink fastLink = getFastLink(shortLink);
         repository.deleteById(shortLink);
         return FastLinkMapper.toDTO(fastLink);
     }
 
-    private FastLink getFastLink(String shortLink) {
+    private FastLink getFastLink(String shortLink) throws LinkNotFoundException{
         CommonUtil.validateDTOShortLink(new FastLinkDTO(shortLink,""));
         return repository.findById(shortLink).orElseThrow(LinkNotFoundException::new);
     }
