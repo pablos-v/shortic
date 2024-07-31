@@ -4,20 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkException;
 import org.pablos.backendcountingservice.domain.exception.LinkNotFoundWhileActivationException;
 import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
+import org.pablos.shortic.exception.WrongPasswordException;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.ObjectViolationDTO;
 import org.pablos.shortic.dto.ViolationDTO;
 import org.pablos.shortic.exception.*;
 import org.slf4j.Logger;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.util.List;
 
 @ControllerAdvice
 @RequiredArgsConstructor
@@ -73,6 +70,13 @@ public class ExceptionHandlingService {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ViolationDTO onFullLinkSizeException(FullLinkSizeException e) {
         return new ViolationDTO(FULL_LINK, e.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(WrongPasswordException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ViolationDTO onWrongPasswordException(WrongPasswordException e) {
+        return new ViolationDTO("password", e.getMessage());
     }
 
     @ExceptionHandler(LinkNotFoundWhileActivationException.class)

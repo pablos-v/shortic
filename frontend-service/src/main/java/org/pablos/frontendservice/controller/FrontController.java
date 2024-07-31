@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.pablos.frontendservice.service.CountingService;
 import org.pablos.frontendservice.service.GivingService;
 import org.pablos.shortic.dto.FastLinkDTO;
+import org.pablos.shortic.dto.LinkUnitDTO;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,9 +23,13 @@ public class FrontController {
     private final CountingService countingService;
 
     @GetMapping
-    public String mainPage(final @ModelAttribute FastLinkDTO input, final Model model){
+    public String mainPage(
+            final @ModelAttribute FastLinkDTO input,
+            final Model model,
+            final @ModelAttribute LinkUnitDTO dto){
 //        model.addAttribute("input", new FastLinkDTO()); TODO можно попробовать вместо @ModelAttribute
         model.addAttribute("input", input);
+        model.addAttribute("dto", dto);
 
         return "index";
     }
@@ -37,13 +42,42 @@ public class FrontController {
     }
 
     @PostMapping
-    public String createLink(final @ModelAttribute FastLinkDTO input, final Model model){
+    public String createLink(
+            final @ModelAttribute FastLinkDTO input,
+            final Model model,
+            final @ModelAttribute LinkUnitDTO dto){
         CommonUtil.validateDTOFullLink(input);
-        FastLinkDTO linkDTO = countingService.getLink(input);
+        FastLinkDTO linkDTO = countingService.createLink(input);
         model.addAttribute("shortLink", linkDTO.getShortLink());
         model.addAttribute("fullLink", linkDTO.getFullLink());
+        model.addAttribute("dto", dto);
 
         return "created";
+    }
+    @GetMapping("/stats")
+    public String showStatistics(final @ModelAttribute LinkUnitDTO dto, final Model model){
+        CommonUtil.validateDTOShortLink(dto);
+
+        LinkUnitDTO linkUnit = countingService.getLinkUnit(dto);
+
+        model.addAttribute("dto", dto);
+        model.addAttribute("linkUnit", linkUnit);
+        return "stats";
+    }
+    @GetMapping("/404")
+    public String notFound(final @ModelAttribute LinkUnitDTO dto, final Model model){
+        model.addAttribute("dto", dto);
+        return "404";
+    }
+    @GetMapping("/400")
+    public String wrongPassword(final @ModelAttribute LinkUnitDTO dto, final Model model){
+        model.addAttribute("dto", dto);
+        return "400";
+    }
+    @GetMapping("/oferta")
+    public String showOffer(final @ModelAttribute LinkUnitDTO dto, final Model model){
+        model.addAttribute("dto", dto);
+        return "oferta";
     }
 
 

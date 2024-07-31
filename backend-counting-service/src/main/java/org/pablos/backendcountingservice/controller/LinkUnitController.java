@@ -3,6 +3,7 @@ package org.pablos.backendcountingservice.controller;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.service.LinkUnitService;
 import org.pablos.shortic.dto.FastLinkDTO;
+import org.pablos.shortic.dto.LinkUnitDTO;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,5 +26,14 @@ public class LinkUnitController {
 
         return ResponseEntity.ok(link);
     }
-// TODO метод обхода ссылок через linkUnitService.checkLinkSecurity()
+
+    @PostMapping
+    public ResponseEntity<LinkUnitDTO> getLinkUnit(final @RequestBody LinkUnitDTO dto) {
+        CommonUtil.validateDTOShortLink(dto);
+
+        LinkUnitDTO link = linkUnitService.getLinkUnit(dto);
+
+        return ResponseEntity.ok(link);
+    }
+
 }
