@@ -7,6 +7,7 @@ import org.pablos.shortic.dto.FastLinkDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -23,7 +24,7 @@ public class YandexAPILinkCheckingService implements ILinkCheckingService {
     private String APIKey;
 
     @Override
-    public boolean checkLink(FastLinkDTO link) {
+    public boolean checkLink(final FastLinkDTO link) throws RestClientException {
         URI url = URI.create(SAFE_BROWSING_URL + APIKey);
         ApiRequestBody apiRequestBody = new ApiRequestBody(link.getFullLink());
 

@@ -5,7 +5,7 @@
     <div th:replace="~{head :: head}" th:fragment="head"></div>
 </th:block>
 <body>
-<nav th:replace="~{menu :: menu}" th:fragment="menu">
+<nav th:replace="~{menu :: menu(dto=${dto})}" th:fragment="menu" >
     <!-- Включение меню -->
 </nav>
 
@@ -17,7 +17,7 @@
            placeholder="Введите ссылку"
            required
            maxlength="4096"
-           th:field="*{fullLink}"
+           th:field="${input.fullLink}"
            type="text"/>
     <input class="btn btn-primary" type="submit" value="СОКРАТИТЬ">
 </div>

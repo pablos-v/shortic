@@ -11,6 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Data
@@ -23,7 +24,7 @@ public class GivingServiceClient implements IGivingServiceClient {
 
 
     @Override
-    public FastLinkDTO saveFastLink(final FastLinkDTO dto) throws SavingFastLinkException{
+    public FastLinkDTO saveFastLink(final FastLinkDTO dto) throws SavingFastLinkException {
         ResponseEntity<?> response = restTemplate.postForEntity(givingServiceUrl, dto, FastLinkDTO.class);
         if (response.getStatusCode().is2xxSuccessful()) {
             return (FastLinkDTO) response.getBody();
