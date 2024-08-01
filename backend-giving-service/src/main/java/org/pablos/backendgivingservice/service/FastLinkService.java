@@ -8,6 +8,7 @@ import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkProcessingException;
 import org.pablos.backendgivingservice.repository.FastLinkRepository;
 import org.pablos.shortic.util.CommonUtil;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,9 +25,15 @@ public class FastLinkService implements IFastLinkService {
 
     private final FastLinkRepository repository;
 
+    /**
+     * TODO
+     * @param shortLink сокращённая ссылка
+     * @return
+     * @throws LinkNotFoundException
+     */
     @Override
     @Cacheable(
-            value = "FastLinkService::getFullLink",
+            cacheNames = "fullLink",
             key = "#shortLink"
     )
     public String getFullLink(final String shortLink) throws LinkNotFoundException{
@@ -35,10 +42,6 @@ public class FastLinkService implements IFastLinkService {
 
     @Override
     @Transactional
-    @Cacheable(
-            value = "FastLinkService::getFullLink",
-            key = "#fastLink.shortLink()"
-    )
     public FastLinkDTO create(final FastLinkDTO fastLink) throws LinkProcessingException{
         CommonUtil.validateDTOShortLink(fastLink);
         if (repository.existsById(fastLink.getShortLink())) throw new LinkProcessingException(CommonUtil.EXISTS);
@@ -49,9 +52,9 @@ public class FastLinkService implements IFastLinkService {
 
     @Override
     @Transactional
-    @CachePut(
-            value = "FastLinkService::getFullLink",
-            key = "#fastLink.shortLink()"
+    @CacheEvict(
+            cacheNames = "fullLink",
+            key = "#fastLink.getShortLink()"
     )
     public FastLinkDTO update(final FastLinkDTO fastLink) throws LinkNotFoundException{
         CommonUtil.validateDTOShortLink(fastLink);
@@ -63,7 +66,7 @@ public class FastLinkService implements IFastLinkService {
     @Override
     @Transactional
     @CacheEvict(
-            value = "FastLinkService::getFullLink",
+            cacheNames = "fullLink",
             key = "#shortLink"
     )
     public FastLinkDTO deleteByShortLink(final String shortLink) throws LinkNotFoundException{

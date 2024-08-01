@@ -10,6 +10,28 @@
 </nav>
 
 <!--тут стата и ПАГИНАЦИЯ!-->
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>CLICK TIME</th>
+        <th>IP ADDRESS</th>
+        <th>LANGUAGE</th>
+        <th>REFERER</th>
+        <th>USER-AGENT</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="click : ${linkUnit.getClicks()}">
+        <td th:text="${click.getId()}">ID</td>
+        <td th:text="${click.getFormattedTime()}">CLICK TIME</td>
+        <td th:text="${click.getIpAddress()}">IP ADDRESS</td>
+        <td th:text="${click.getLanguage()}">LANGUAGE</td>
+        <td th:text="${click.getReferer()}">REFERER</td>
+        <td th:text="${click.getUserAgent()}">USER-AGENT</td>
+    </tr>
+    </tbody>
+</table>
 
 </body>
 </html>
