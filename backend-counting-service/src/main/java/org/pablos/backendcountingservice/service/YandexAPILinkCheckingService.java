@@ -2,6 +2,7 @@ package org.pablos.backendcountingservice.service;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.pablos.backendcountingservice.configuration.ServiceConfiguration;
 import org.pablos.backendcountingservice.domain.dto.ApiRequestBody;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,15 +18,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class YandexAPILinkCheckingService implements ILinkCheckingService {
 
-    private static final String SAFE_BROWSING_URL = "https://sba.yandex.net/v4/threatMatches:find?key=";
+    private final ServiceConfiguration serviceConfiguration;
     private final RestTemplate restTemplate;
-
-    @Value("${api_key}")
-    private String APIKey;
 
     @Override
     public boolean checkLink(final FastLinkDTO link) throws RestClientException {
-        URI url = URI.create(SAFE_BROWSING_URL + APIKey);
+        URI url = URI.create(serviceConfiguration.checkingServiceUrl + serviceConfiguration.getAPIKey(this));
         ApiRequestBody apiRequestBody = new ApiRequestBody(link.getFullLink());
 
         ResponseEntity<List> response = restTemplate.postForEntity(url, apiRequestBody, List.class);

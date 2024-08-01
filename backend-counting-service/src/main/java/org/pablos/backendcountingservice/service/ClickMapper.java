@@ -3,6 +3,8 @@ package org.pablos.backendcountingservice.service;
 import org.pablos.backendcountingservice.domain.entity.Click;
 import org.pablos.shortic.dto.ClickDTO;
 
+import java.util.List;
+
 public class ClickMapper {
     public static Click toEntity(ClickDTO dto) {
         return new Click(
@@ -23,4 +25,12 @@ public class ClickMapper {
                 click.getReferrer(),
                 click.getUserAgent());
     }
+
+    public static List<Click> toEntityList(List<ClickDTO> dto) {
+        return dto.stream().map(ClickMapper::toEntity).toList();
+    }
+    public static List<ClickDTO> toDTOList(List<Click> click) {
+        return click.stream().map(ClickMapper::toDTO).toList();
+    }
+
 }

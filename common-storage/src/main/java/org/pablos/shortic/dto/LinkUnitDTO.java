@@ -17,7 +17,7 @@ public final class LinkUnitDTO implements IShortLink {
     private final String fullLink;
     private final LocalDateTime createdAt;
     private final boolean active;
-    private final List<?> clicks;
+    private final List<ClickDTO> clicks;
 
 }
 
