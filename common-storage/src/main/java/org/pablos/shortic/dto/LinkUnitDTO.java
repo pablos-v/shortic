@@ -1,24 +1,32 @@
 package org.pablos.shortic.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.pablos.shortic.IFullLink;
 import org.pablos.shortic.IShortLink;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
-@RequiredArgsConstructor
-public final class LinkUnitDTO implements IShortLink {
+@NoArgsConstructor
+@AllArgsConstructor
+public final class LinkUnitDTO implements IShortLink, IFullLink {
 
-    private final long id;
-    private final String shortLink;
-    private final String password;
-    private final String fullLink;
-    private final LocalDateTime createdAt;
-    private final boolean active;
-    private final List<ClickDTO> clicks;
+    private long id;
+    private String shortLink;
+    private String password;
+    private String fullLink;
+    private LocalDateTime createdAt;
+    private boolean active;
+    private List<ClickDTO> clicks;
 
+    public String getFormattedTime(){
+        return createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 }
 
 

@@ -22,9 +22,9 @@ public class YandexAPILinkCheckingService implements ILinkCheckingService {
     private final RestTemplate restTemplate;
 
     @Override
-    public boolean checkLink(final FastLinkDTO link) throws RestClientException {
+    public boolean checkLink(final String link) {
         URI url = URI.create(serviceConfiguration.checkingServiceUrl + serviceConfiguration.getAPIKey(this));
-        ApiRequestBody apiRequestBody = new ApiRequestBody(link.getFullLink());
+        ApiRequestBody apiRequestBody = new ApiRequestBody(link);
 
         ResponseEntity<List> response = restTemplate.postForEntity(url, apiRequestBody, List.class);
 

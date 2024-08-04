@@ -8,6 +8,8 @@ import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkProcessingException;
 import org.pablos.shortic.exception.ObjectNotProvidedException;
 import org.pablos.shortic.util.CommonUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,5 +39,17 @@ public class ClickService {
 
         clickRepository.save(click);
     }
+//
+//    /**
+//     * Метод получения страницы пагинации по ID ссылки.
+//     * @param linkId
+//     * @param pageable
+//     * @return
+//     */
+//    @Transactional
+//    public Page<ClickDTO> getPageClicksByLinkId(Long linkId, Pageable pageable) {
+//        Page<Click> clicks = clickRepository.findAllByLinkId(linkId, pageable);
+//        return clicks.map(ClickMapper::toDTO);
+//    }
 
 }

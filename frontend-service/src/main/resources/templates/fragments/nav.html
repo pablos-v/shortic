@@ -1,22 +1,22 @@
-<menu th:fragment="menu(dto)">
-    <a th:if="${#request.requestURI != '/'}" th:href="@{'/'}" th:class="'button'">На главную</a>
+<nav th:fragment="nav(dtoForStats, isMainPage)">
+    <a th:if="${!isMainPage}" th:href="@{'/'}" th:class="'button'">На главную</a>
 <!--TODO remaster form for body-->
-<!--    <form action="/stats" method="get">-->
+<!--    <form action="/stats" th:method="get">-->
 <!--        <input type="text" name="shortLink" placeholder="сокращённая ссылка" maxlength="20">-->
 <!--        <input type="text" name="password" placeholder="пароль" maxlength="5">-->
 <!--        <input type="submit" value="СТАТИСТИКА">-->
 <!--    </form>    -->
-    <form method="get" th:action="@{/stats}" th:object="${dto}">
+    <form th:method="get" th:action="@{/stats}" th:object="${dtoForStats}">
         <input type="text"
                name="shortLink"
                placeholder="сокращённая ссылка"
                maxlength="20"
-               th:field="${dto.shortLink}">
+               th:field="${dtoForStats.shortLink}"/>
         <input type="text"
                name="password"
                placeholder="пароль"
                maxlength="5"
-               th:field="${dto.password}">
-        <input type="submit" value="СТАТИСТИКА">
+               th:field="${dtoForStats.password}"/>
+        <input type="submit" value="СТАТИСТИКА"/>
     </form>
-</menu>
+</nav>

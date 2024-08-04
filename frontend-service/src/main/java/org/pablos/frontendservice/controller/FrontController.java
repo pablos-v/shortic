@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.pablos.frontendservice.service.CountingService;
 import org.pablos.frontendservice.service.GivingService;
 import org.pablos.shortic.dto.FastLinkDTO;
+import org.pablos.shortic.dto.PageDTO;
 import org.pablos.shortic.dto.LinkUnitDTO;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.stereotype.Controller;
@@ -24,12 +25,13 @@ public class FrontController {
 
     @GetMapping
     public String mainPage(
-            final @ModelAttribute FastLinkDTO input,
             final Model model,
-            final @ModelAttribute LinkUnitDTO dto){
-//        model.addAttribute("input", new FastLinkDTO()); TODO можно попробовать вместо @ModelAttribute
+            final @ModelAttribute FastLinkDTO input,
+            final @ModelAttribute LinkUnitDTO dtoForStats){
+        // TODO вместо ModelAttribute просто создавать новые объекты и сетить в модель?
         model.addAttribute("input", input);
-        model.addAttribute("dto", dto);
+        model.addAttribute("dtoForStats", dtoForStats);
+        model.addAttribute("isMainPage", true);
 
         return "index";
     }
@@ -38,45 +40,93 @@ public class FrontController {
     public RedirectView getLink(final @PathVariable String link, final HttpServletRequest request) {
         String fullLink = givingService.clickProcessing(link, request);
 
-        return new RedirectView("/" + Objects.requireNonNullElse(fullLink, "404"));
+        return new RedirectView("/" + Objects.requireNonNullElse(fullLink, "error/404"));
     }
 
     @PostMapping
     public String createLink(
-            final @ModelAttribute FastLinkDTO input,
-            final Model model,
-            final @ModelAttribute LinkUnitDTO dto){
+            final @RequestBody FastLinkDTO input,
+            final @ModelAttribute LinkUnitDTO dtoForStats,
+            final Model model
+    ){
         CommonUtil.validateDTOFullLink(input);
-        FastLinkDTO linkDTO = countingService.createLink(input);
-        model.addAttribute("shortLink", linkDTO.getShortLink());
-        model.addAttribute("fullLink", linkDTO.getFullLink());
-        model.addAttribute("dto", dto);
+        LinkUnitDTO linkUnit = countingService.createLink(input);
+        model.addAttribute("linkUnit", linkUnit);
+        model.addAttribute("dtoForStats", dtoForStats);
+        model.addAttribute("isMainPage", false);
 
         return "created";
     }
+
+    @PutMapping
+    public String updateLink(
+            @RequestBody LinkUnitDTO linkUnit,
+            final @ModelAttribute LinkUnitDTO dtoForStats,
+            final Model model,
+            final @RequestParam(defaultValue = "1") int page,
+            final @RequestParam(defaultValue = "10") int size
+    ){
+        PageDTO pageOfClicks = countingService.updateAndGetPageOfClicks(page, size, linkUnit);
+
+        return preparePageableStats(dtoForStats, model, page, size, pageOfClicks);
+    }
+
     @GetMapping("/stats")
-    public String showStatistics(final @ModelAttribute LinkUnitDTO dto, final Model model){
-        CommonUtil.validateDTOShortLink(dto);
+    public String showStatistics(
+            @RequestBody LinkUnitDTO linkUnit,
+            final @ModelAttribute LinkUnitDTO dtoForStats,
+            final Model model,
+            final @RequestParam(defaultValue = "1") int page,
+            final @RequestParam(defaultValue = "10") int size
+    ){
+        CommonUtil.validateDTOShortLink(linkUnit);
+        PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, linkUnit);
 
-        LinkUnitDTO linkUnit = countingService.getLinkUnit(dto);
+        return preparePageableStats(dtoForStats, model, page, size, pageOfClicks);
+    }
 
-        model.addAttribute("dto", dto);
-        model.addAttribute("linkUnit", linkUnit);
+    private String preparePageableStats(LinkUnitDTO dtoForStats, Model model,
+            int page, int size, PageDTO pageOfClicks) {
+        model.addAttribute("clicks", pageOfClicks.getClicks());
+//        model.addAttribute("totalItems", pageClicks.getTotalElements());
+        model.addAttribute("totalPages", pageOfClicks.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", size);
+
+        model.addAttribute("dtoForStats", dtoForStats);
+        model.addAttribute("linkUnit", pageOfClicks.getLinkUnit());
+        model.addAttribute("isMainPage", false);
+
         return "stats";
     }
-    @GetMapping("/404")
-    public String notFound(final @ModelAttribute LinkUnitDTO dto, final Model model){
-        model.addAttribute("dto", dto);
-        return "404";
+    @GetMapping("/error/404")
+    public String notFound(final @ModelAttribute LinkUnitDTO dtoForStats, final Model model){
+        model.addAttribute("dtoForStats", dtoForStats);
+        model.addAttribute("isMainPage", false);
+        return "error/404";
     }
-    @GetMapping("/400")
-    public String wrongPassword(final @ModelAttribute LinkUnitDTO dto, final Model model){
-        model.addAttribute("dto", dto);
-        return "400";
+    @GetMapping("/error/400")
+    public String wrongInput(final @ModelAttribute LinkUnitDTO dtoForStats, final Model model){
+        model.addAttribute("dtoForStats", dtoForStats);
+        model.addAttribute("isMainPage", false);
+        return "error/400";
+    }
+    @GetMapping("/error/410")
+    public String badLink(final @ModelAttribute LinkUnitDTO dtoForStats, final Model model){
+        model.addAttribute("dtoForStats", dtoForStats);
+        model.addAttribute("isMainPage", false);
+        return "error/410";
+    }
+    @GetMapping("/error/password")
+    public String wrongPassword(final @ModelAttribute LinkUnitDTO dtoForStats, final Model model){
+        model.addAttribute("dtoForStats", dtoForStats);
+        model.addAttribute("isMainPage", false);
+        return "error/password";
     }
     @GetMapping("/oferta")
-    public String showOffer(final @ModelAttribute LinkUnitDTO dto, final Model model){
-        model.addAttribute("dto", dto);
+    public String showOffer(final @ModelAttribute LinkUnitDTO dtoForStats, final Model model){
+        model.addAttribute("dtoForStats", dtoForStats);
+        model.addAttribute("isMainPage", false);
         return "oferta";
     }
 

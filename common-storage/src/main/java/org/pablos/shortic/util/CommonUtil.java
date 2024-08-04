@@ -1,5 +1,6 @@
 package org.pablos.shortic.util;
 
+import org.pablos.shortic.IFullLink;
 import org.pablos.shortic.IShortLink;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.exception.FullLinkNotProvidedException;
@@ -61,11 +62,11 @@ public class CommonUtil {
         }
     }
 
-    public static void validateDTOFullLink(FastLinkDTO input) throws FullLinkNotProvidedException, FullLinkSizeException{
-        if (input == null || input.getFullLink() == null || input.getFullLink().isEmpty()) {
+    public static void validateDTOFullLink(IFullLink dto) throws FullLinkNotProvidedException, FullLinkSizeException{
+        if (dto == null || dto.getFullLink() == null || dto.getFullLink().isEmpty()) {
             throw new FullLinkNotProvidedException();
         }
-        if (input.getFullLink().length() > FULL_LINK_MAX_LENGTH) {
+        if (dto.getFullLink().length() > FULL_LINK_MAX_LENGTH) {
             throw new FullLinkSizeException();
         }
     }

@@ -20,16 +20,16 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class ServiceConfiguration {
 
-    @Value("${threads_number")
+    @Value("${properties.threads_number}")
     public int numberOfThreads;
 
-    @Value("${checking_length")
+    @Value("${properties.checking_length}")
     public int timeLimitForCheckInMinutes;
 
-    @Value("${checking_service_url")
-    public int checkingServiceUrl;
+    @Value("${properties.checking_service_url}")
+    public String checkingServiceUrl;
 
-    @Value("${checking_api_key}")
+    @Value("${properties.checking_api_key}")
     private String APIKey;
 
     private final EurekaClient eurekaClient;

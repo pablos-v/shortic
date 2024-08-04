@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.service.LinkUnitService;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.LinkUnitDTO;
+import org.pablos.shortic.dto.PageDTO;
+import org.pablos.shortic.dto.PageRequestDTO;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/link")
@@ -19,21 +18,30 @@ public class LinkUnitController {
     private final LinkUnitService linkUnitService;
 
     @PostMapping
-    public ResponseEntity<FastLinkDTO> createLinkUnit(final @RequestBody FastLinkDTO input) {
+    public ResponseEntity<LinkUnitDTO> createLinkUnit(final @RequestBody FastLinkDTO input) {
         CommonUtil.validateDTOFullLink(input);
 
-        FastLinkDTO link = linkUnitService.createLinkUnit(input);
+        LinkUnitDTO link = linkUnitService.createLinkUnit(input);
 
         return ResponseEntity.ok(link);
     }
 
-    @PostMapping
-    public ResponseEntity<LinkUnitDTO> getLinkUnit(final @RequestBody LinkUnitDTO dto) {
-        CommonUtil.validateDTOShortLink(dto);
+    @GetMapping
+    public ResponseEntity<PageDTO> getPage(final @RequestBody PageRequestDTO dto) {
+        CommonUtil.validateDTOShortLink(dto.getLinkUnit());
 
-        LinkUnitDTO link = linkUnitService.getLinkUnit(dto);
+        PageDTO pageDTO = linkUnitService.getPage(dto);
 
-        return ResponseEntity.ok(link);
+        return ResponseEntity.ok(pageDTO);
+    }
+
+    @PutMapping
+    public ResponseEntity<PageDTO> updateLinkUnitAndGetPage(final @RequestBody PageRequestDTO dto) {
+        CommonUtil.validateDTOFullLink(dto.getLinkUnit());
+
+        PageDTO pageDTO = linkUnitService.updateLinkUnitAndGetPage(dto);
+
+        return ResponseEntity.ok(pageDTO);
     }
 
 }

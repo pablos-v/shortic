@@ -10,6 +10,6 @@
     </changeSet>
     <include file="create-tables.xml" relativeToChangelogFile="true"/>
 <!--    TODO    убрать для релиза -->
-    <include file="inset-data.xml" relativeToChangelogFile="true"/>
+    <include file="insert-data.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

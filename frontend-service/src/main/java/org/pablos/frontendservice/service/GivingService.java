@@ -6,7 +6,10 @@ import lombok.Data;
 import org.pablos.shortic.dto.ClickDTO;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.util.CommonUtil;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -19,23 +22,35 @@ import java.time.LocalDateTime;
 public class GivingService {
 
     private final RestTemplate restTemplate;
+    private final CountingService countingService;
     private String givingServiceUrl;
 
+    /**
+     * Обрабатывает клик по ссылке: отправляет данные клика для записи статистики клика
+     * @param shortLink
+     * @param request
+     * @return
+     */
     public String clickProcessing(final String shortLink, final HttpServletRequest request) {
         CommonUtil.validateDTOShortLink(new FastLinkDTO(shortLink,""));
-        // TODO VALIDATE
+
+        // отправка статистики клика
+        new Thread(() -> postStatistics(shortLink, request)).start();
+
         String fullLink = null;
-        ClickDTO clickDTO = prepareClickDTO(shortLink, request);
         try {
-            fullLink = restTemplate.postForObject(givingServiceUrl + "/click", clickDTO, String.class);
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+            fullLink = restTemplate.getForObject(givingServiceUrl + "/click/" + shortLink, String.class);
+        } catch (Exception e) {
                 // TODO обработка ошибки 404, может другие тоже будут
                 //  ввобще надо ли так, может ExceptionHandler?
-            }
         }
 //            если такой ссылки нет, вернуть null, т.к. выше во FrontController на этом логика есть
         return fullLink;
+    }
+
+    private void postStatistics(final String shortLink, final HttpServletRequest request){
+        ClickDTO clickDTO = prepareClickDTO(shortLink, request);
+        countingService.postStatistics(clickDTO);
     }
 
     private ClickDTO prepareClickDTO(final String shortLink, final HttpServletRequest request) {

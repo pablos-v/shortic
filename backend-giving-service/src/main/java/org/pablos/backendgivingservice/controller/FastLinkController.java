@@ -6,9 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendgivingservice.domain.entity.FastLink;
-import org.pablos.backendgivingservice.service.ICountingServiceClient;
 import org.pablos.backendgivingservice.service.IFastLinkService;
-import org.pablos.shortic.dto.ClickDTO;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class FastLinkController {
 
     private final IFastLinkService service;
-    private final ICountingServiceClient countingService;
 
 //    /**
 //     * Отдаёт полную ссылку, соответствующую короткой ссылке в запросе.
@@ -43,8 +40,8 @@ public class FastLinkController {
 //    }
 
     /**
-     * Обрабатывает клик по ссылке: отправляет данные клика для записи статистики клика и отдаёт полную ссылку.
-     * @param clickDTO DTO клика
+     * Отдаёт полную ссылку.
+     * @param shortLink короткая ссылка
      * @return полная ссылка
      */
     @Operation(summary = "Sends click statistics to counting service " +
@@ -54,13 +51,10 @@ public class FastLinkController {
             @ApiResponse(responseCode = "400", description = "Bad request if short link is incorrect"),
             @ApiResponse(responseCode = "404", description = "Link not found")
     })
-    @PostMapping("click")
-    public ResponseEntity<String> clickProcessing(@RequestBody final ClickDTO clickDTO){
+    @GetMapping("click/{shortLink}")
+    public ResponseEntity<String> getFullLink(@PathVariable final String shortLink){
 
-        // отправка статистики клика
-        new Thread(() -> countingService.postStatistics(clickDTO)).start();
-
-        String fullLink = service.getFullLink(clickDTO.getShortLink().trim());
+        String fullLink = service.getFullLink(shortLink.trim());
         
         return ResponseEntity.ok(fullLink);
     }

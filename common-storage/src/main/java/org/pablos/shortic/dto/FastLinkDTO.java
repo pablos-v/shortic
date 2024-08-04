@@ -1,24 +1,23 @@
 package org.pablos.shortic.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.pablos.shortic.IFullLink;
 import org.pablos.shortic.IShortLink;
 
 import java.io.Serializable;
 
 @Data
-@RequiredArgsConstructor
-public final class FastLinkDTO implements Serializable, IShortLink {
+@AllArgsConstructor
+@NoArgsConstructor
+public final class FastLinkDTO implements Serializable, IShortLink, IFullLink {
 
-    private final String shortLink;
+    private String shortLink;
 
-    private final String fullLink;
+    private String fullLink;
 
     // TODO нужен для org.pablos.frontendservice.controller.FrontController.mainPage() - или переделать?
-    public FastLinkDTO() {
-        this.shortLink = null;
-        this.fullLink = null;
-    }
+//    public FastLinkDTO() {
+//        this.shortLink = null;
+//        this.fullLink = null;
+//    }
 }

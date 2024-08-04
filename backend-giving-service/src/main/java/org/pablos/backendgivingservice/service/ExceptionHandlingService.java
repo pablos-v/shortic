@@ -1,4 +1,4 @@
-package org.pablos.backendgivingservice.service.exception_handling;
+package org.pablos.backendgivingservice.service;
 
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.ViolationDTO;

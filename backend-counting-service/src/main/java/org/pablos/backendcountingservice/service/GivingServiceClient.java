@@ -41,8 +41,9 @@ public class GivingServiceClient implements IGivingServiceClient {
                 givingServiceUrl,
                 HttpMethod.DELETE,
                 new HttpEntity<>(dto.getShortLink()),
-                new ParameterizedTypeReference<>() {
-                });
+                FastLinkDTO.class
+//                new ParameterizedTypeReference<>() {}
+                );
         if (response.getStatusCode().is2xxSuccessful()) {
             return (FastLinkDTO) response.getBody();
         } else {

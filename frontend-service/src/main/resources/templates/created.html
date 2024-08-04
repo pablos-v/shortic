@@ -1,17 +1,56 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<th:block th:with="pageTitle='Ссылка создана'">
+<div th:replace="~{fragments/head :: head('Создана сокращённая ссылка')}">
     <!-- Включение head -->
-    <div th:replace="~{head :: head}" th:fragment="head"></div>
-</th:block>
+</div>
 <body>
-<nav th:replace="~{menu :: menu(dto=${dto})}" th:fragment="menu" >
+<div th:replace="~{fragments/nav :: nav(${dtoForStats}, ${isMainPage})}">
+    <!--<nav th:replace="~{menu :: menu(dto=${dto})}" th:fragment="menu">-->
     <!-- Включение меню -->
-</nav>
+</div>
+<div>
+    <label class="input-group-text">Полная ссылка:</label>
+    <span th:text="${linkUnit.getFullLink()}"> </span>
+</div>
+<div>
+    <label class="input-group-text">Ваша короткая ссылка:</label>
+    <span id="shortLink" th:text="${linkUnit.getShortLink()}"> </span>
+    <button onclick="copyToClipboard()" class="btn btn-primary">КОПИРОВАТЬ</button>
+</div>
+<div>
+    <p>
+        Обратите внимание, что короткая ССЫЛКА ПОКА НЕ АКТИВНА.
+        Сначала полная ссылка будет проверена на опасность. Мы уже начали проверку.
+        Обычно активация занимает меньше минуты. Иногда дольше.
+    </p>
+</div>
 
-<!--сказать что ссылка будет проверена на опасность и активирована чуть позже
-при нажатии на "ЗАПОМИНАТЬ СТАТИСТИКУ" оставаться на странице(как? чатГПТ) и
-слать в БОДИ ПУТ - дописывать в БД пароль-->
+<form class="col card p-3 mb-5" th:method="put" th:action="@{/}" th:object="${linkUnit}">
+    <div class="form-group">
+        <label type="text" for="link">Можем вести статистику кликов, хотите?</label>
+        <input class="form-control"
+               id="link"
+               placeholder="Придумайте код из 5 цифр"
+               required="true"
+               maxlength="5"
+               pattern="\d{5}"
+               type="text"
+               th:field="${linkUnit.password}"
+        />
+        <input class="btn btn-primary" type="submit" value="ЗАПОМИНАТЬ СТАТИСТИКУ"/>
+    </div>
+</form>
 
+<div th:replace="~{fragments/footer :: footer}" th:fragment="footer">
+    <!-- Включение footer -->
+</div>
+
+<script>
+    function copyToClipboard() {
+        const shortLink = document.getElementById('shortLink').textContent;
+        navigator.clipboard.writeText(shortLink);
+        alert("Ссылка скопирована в буфер обмена.");
+    }
+</script>
 </body>
 </html>

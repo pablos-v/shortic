@@ -3,6 +3,7 @@ package org.pablos.backendcountingservice.service.exception_handling;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkException;
 import org.pablos.backendcountingservice.domain.exception.LinkNotFoundWhileActivationException;
+import org.pablos.shortic.exception.LinkNotSecureException;
 import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
 import org.pablos.shortic.exception.WrongPasswordException;
 import org.pablos.shortic.dto.FastLinkDTO;
@@ -77,6 +78,13 @@ public class ExceptionHandlingService {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ViolationDTO onWrongPasswordException(WrongPasswordException e) {
         return new ViolationDTO("password", e.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(LinkNotSecureException.class)
+    @ResponseStatus(HttpStatus.GONE)
+    public ViolationDTO onLinkNotSecureException(LinkNotSecureException e) {
+        return new ViolationDTO(FULL_LINK, e.getMessage());
     }
 
     @ExceptionHandler(LinkNotFoundWhileActivationException.class)

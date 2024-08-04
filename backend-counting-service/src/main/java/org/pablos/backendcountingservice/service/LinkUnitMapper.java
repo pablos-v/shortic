@@ -30,4 +30,12 @@ public class LinkUnitMapper {
                 ClickMapper.toEntityList(linkUnitDTO.getClicks())
         );
     }
+
+    public static List<LinkUnit> toEntityList(List<LinkUnitDTO> linkUnitDTOList) {
+        return linkUnitDTOList.stream().map(LinkUnitMapper::toEntity).toList();
+    }
+
+    public static List<LinkUnitDTO> toDTOList(List<LinkUnit> linkUnitList) {
+        return linkUnitList.stream().map(LinkUnitMapper::toDto).toList();
+    }
 }

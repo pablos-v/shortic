@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "link_units")
+@Table(schema = "shortic", name = "link_units")
 public class LinkUnit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

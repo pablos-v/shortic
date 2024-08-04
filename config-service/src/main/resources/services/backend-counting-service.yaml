@@ -1,16 +1,19 @@
 server:
   port: 18082
 properties:
-  checking_api_key: ${CHECKING_API_KEY}
-  checking_service_url: ${CHECKING_SERVICE_URL}
-  threads_number: ${NUMBER_OF_THREADS_FOR_SCHEDULED_CHECKING}
-  checking_length: ${TIME_LIMIT_FOR_SCHEDULED_CHECKING_IN_MINUTES}
+  checking_api_key: 0bb48c73-c350-4ea5-a6bd-16134983ff53
+  checking_service_url: "https://sba.yandex.net/v4/threatMatches:find?key="
+  threads_number: 10
+  checking_length: 10
+#  TODO change
+#  checking_api_key: ${CHECKING_API_KEY}
+#  checking_service_url: ${CHECKING_SERVICE_URL}
+#  threads_number: ${NUMBER_OF_THREADS_FOR_SCHEDULED_CHECKING}
+#  checking_length: ${TIME_LIMIT_FOR_SCHEDULED_CHECKING_IN_MINUTES}
 
 spring:
   config:
     import: optional:file:.env[.properties]
-  application:
-    name: backend_counting
   datasource:
     url: jdbc:h2:file:./dev_data/counting_db
     username: sa

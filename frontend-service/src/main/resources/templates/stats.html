@@ -1,37 +1,157 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<th:block th:with="pageTitle='Статистика кликов'">
+<div th:replace="~{fragments/head :: head('Статистика кликов')}">
     <!-- Включение head -->
-    <div th:replace="~{head :: head}" th:fragment="head"></div>
-</th:block>
+</div>
 <body>
-<nav th:replace="~{menu :: menu(dto=${dto})}" th:fragment="menu" >
+<div th:replace="~{fragments/nav :: nav(${dtoForStats}, ${isMainPage})}">
+<!--<nav th:replace="~{menu :: menu(dto=${dto})}" th:fragment="menu">-->
     <!-- Включение меню -->
-</nav>
+</div>
 
-<!--тут стата и ПАГИНАЦИЯ!-->
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>CLICK TIME</th>
-        <th>IP ADDRESS</th>
-        <th>LANGUAGE</th>
-        <th>REFERER</th>
-        <th>USER-AGENT</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="click : ${linkUnit.getClicks()}">
-        <td th:text="${click.getId()}">ID</td>
-        <td th:text="${click.getFormattedTime()}">CLICK TIME</td>
-        <td th:text="${click.getIpAddress()}">IP ADDRESS</td>
-        <td th:text="${click.getLanguage()}">LANGUAGE</td>
-        <td th:text="${click.getReferer()}">REFERER</td>
-        <td th:text="${click.getUserAgent()}">USER-AGENT</td>
-    </tr>
-    </tbody>
-</table>
+<div class="container-fluid" style="max-width: 900px; margin: 0 auto;">
+    <h2 class="text-center">Статистика кликов</h2>
+<!--TODO можно попробовать передавать в message текст ошибки-->
+<!--    <div th:if="${message != null}" class="alert alert-success alert-dismissible fade show text-center message"-->
+<!--         role="alert">-->
+<!--        [[${message}]]-->
+<!--        <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">-->
+<!--            <span aria-hidden="true">&times;</span>-->
+<!--        </button>-->
+<!--    </div>-->
 
+    <div>
+        <span th:class="${linkUnit.isActive()} ? 'active-link' : 'blocked-link'"
+              th:text="${linkUnit.isActive()} ? 'ссылка активна' : 'ссылка не активна или заблокирована'"> </span>
+        <div>
+            <label class="input-group-text">Сокращённая ссылка:</label>
+            <span th:text="${linkUnit.getShortLink()}"> </span>
+        </div>
+
+        <div>
+            <label class="input-group-text">Пароль статистики:</label>
+            <span th:text="${linkUnit.getPassword()}"> </span>
+        </div>
+
+        <div>
+            <label class="input-group-text">Дата создания:</label>
+            <span th:text="${linkUnit.getFormattedTime()}"> </span>
+        </div>
+
+        <div>
+            <label class="input-group-text">Всего кликов:</label>
+            <span th:text="${linkUnit.getClicks().size()}"> </span>
+        </div>
+
+        <div>
+            <label class="input-group-text">Полная ссылка:</label>
+            <span th:text="${linkUnit.getFullLink()}"> </span>
+            <span th:text="${linkUnit.isActive()} ? 'Вы можете изменить ссылку' : 'Вы не можете изменить заблокированную ссылку'"> </span>
+        </div>
+
+        <div th:if="${linkUnit.isActive()}" >
+            <label for="fullLink" class="input-group-text">Замена полной ссылки</label>
+            <form class="col card p-3 mb-5" th:method="put" th:action="@{/}" th:object="${linkUnit}">
+                <input class="form-control"
+                       th:placeholder="Введите новую ссылку"
+                       required="true"
+                       id="fullLink"
+                       maxlength="4096"
+                       th:field="${linkUnit.fullLink}"
+                       type="text"/>
+                <input class="btn btn-primary" type="submit" value="ИЗМЕНИТЬ ССЫЛКУ"/>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${clicks.size() > 0}">
+
+    <div class="my-3">
+        <form th:action="@{/stats(size = ${pageSize})}" id="selectPageSizeForm" th:object="${linkUnit}">
+            <div class="row d-flex">
+                <div class="col-md-3 input-group mt-2">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="pageSize">Показывать на странице:</label>
+                    </div>
+                    <select form="selectPageSizeForm" name="size" th:value="${pageSize}" onchange="changePageSize()" class="size-select"
+                            id="pageSize">
+                        <option th:each="s : ${T(java.util.Arrays).asList(10, 25, 50)}" th:value="${s}" th:text="${s}" th:selected="${s == pageSize}"> </option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+        <table class="table table-hover table-responsive-xl">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">CLICK TIME</th>
+                <th scope="col">IP ADDRESS</th>
+                <th scope="col">LANGUAGE</th>
+                <th scope="col">REFERER</th>
+                <th scope="col">USER-AGENT</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="click : ${clicks}">
+                <td> [[${click.getId()}]] </td>
+                <td> [[${click.getFormattedTime()}]] </td>
+                <td> [[${click.getIpAddress()}]] </td>
+                <td> [[${click.getLanguage()}]] </td>
+                <td> [[${click.getReferer()}]] </td>
+                <td> [[${click.getUserAgent()}]] </td>
+<!--                <td th:text="${click.getId()}">ID</td>-->
+<!--                <td th:text="${click.getFormattedTime()}">CLICK TIME</td>-->
+<!--                <td th:text="${click.getIpAddress()}">IP ADDRESS</td>-->
+<!--                <td th:text="${click.getLanguage()}">LANGUAGE</td>-->
+<!--                <td th:text="${click.getReferer()}">REFERER</td>-->
+<!--                <td th:text="${click.getUserAgent()}">USER-AGENT</td>-->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:unless="${clicks.size() > 0}">
+        <span>Не было кликов по этой ссылке.</span>
+    </div>
+
+    <nav aria-label="Пагинация" th:if="${totalPages > 0}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a th:replace="fragments/paging :: paging(1, '<<', 'Первая страница', pageSize)"> </a>
+            </li>
+            <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a th:replace="fragments/paging :: paging(${currentPage - 1}, 'Пред', 'Предыдущая страница', pageSize)"> </a>
+            </li>
+            <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
+                th:each="page : ${#numbers.sequence((currentPage > 2 ? currentPage - 2 : 1), (currentPage + 2 < totalPages ? currentPage + 2 : totalPages))}">
+                <a th:replace="fragments/paging :: paging(${page}, ${page}, 'Страница ' + ${page}, pageSize)"> </a>
+            </li>
+            <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a th:replace="fragments/paging :: paging(${currentPage + 1},'След', 'Следующая страница', pageSize)"> </a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a th:replace="fragments/paging :: paging(${totalPages}, '>>', 'Последняя страница', pageSize)"> </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script type="text/javascript">
+    function changePageSize() {
+        $("#selectPageSizeForm").submit();
+    }
+</script>
+
+<div th:replace="~{fragments/footer :: footer}" th:fragment="footer">
+    <!-- Включение footer -->
+</div>
 </body>
 </html>

@@ -1,0 +1,8 @@
+<a th:fragment="paging(pageNum, label, tooltip, pageSize)" class="page-link"
+   th:href="@{/stats(page=${pageNum}, size=${pageSize})}"
+   th:title="${tooltip}" rel="tooltip">
+    [[${label}]]
+</a>
+<!--TODO if not works/ может сюда ещё обект linkUnit передавать?
+   th:href="@{'/stats?page=' + ${pageNum} + '&size=' + ${pageSize}}"
+-->

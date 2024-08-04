@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "clicks")
+@Table(schema = "shortic", name = "clicks")
 public class Click {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

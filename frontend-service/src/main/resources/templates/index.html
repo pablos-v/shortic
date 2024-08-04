@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<th:block th:with="pageTitle='Сокращатель ссылок'">
+<div th:replace="~{fragments/head :: head('Сократить ссылку')}">
     <!-- Включение head -->
-    <div th:replace="~{head :: head}" th:fragment="head"></div>
-</th:block>
+</div>
 <body>
-<nav th:replace="~{menu :: menu(dto=${dto})}" th:fragment="menu" >
+<div th:replace="~{fragments/nav :: nav(${dtoForStats}, ${isMainPage})}">
+    <!--<nav th:replace="~{menu :: menu(dto=${dto})}" th:fragment="menu">-->
     <!-- Включение меню -->
-</nav>
+</div>
 
-<form class="col card p-3 mb-5" method="post" th:action="@{/}" th:object="${input}">
+<form class="col card p-3 mb-5" th:method="post" th:action="@{/}" th:object="${input}">
 <div class="form-group">
     <label type="hidden" for="link">Сократитель</label>
     <input class="form-control"
            id="link"
            placeholder="Введите ссылку"
-           required
+           required="true"
            maxlength="4096"
            th:field="${input.fullLink}"
            type="text"/>
-    <input class="btn btn-primary" type="submit" value="СОКРАТИТЬ">
+    <input class="btn btn-primary" type="submit" value="СОКРАТИТЬ"/>
 </div>
 </form>
 
-<div th:replace="~{footer :: footer}" th:fragment="footer">
+<div th:replace="~{fragments/footer :: footer}" th:fragment="footer">
     <!-- Включение footer -->
 </div>
 </body>
