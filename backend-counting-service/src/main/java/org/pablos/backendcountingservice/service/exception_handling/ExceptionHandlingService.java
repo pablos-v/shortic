@@ -75,7 +75,7 @@ public class ExceptionHandlingService {
 
     @ResponseBody
     @ExceptionHandler(WrongPasswordException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ViolationDTO onWrongPasswordException(WrongPasswordException e) {
         return new ViolationDTO("password", e.getMessage());
     }

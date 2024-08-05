@@ -49,11 +49,8 @@ public class CountingService {
 
         if (response.getStatusCode().is2xxSuccessful()) {
             return (PageDTO) response.getBody();
-        } else if (response.getStatusCode().is4xxClientError()) {
-            ViolationDTO violationDTO = (ViolationDTO) response.getBody();
-            if (violationDTO != null && violationDTO.getFieldName().equals("password")) {
+        } else if (response.getStatusCode() == HttpStatusCode.valueOf(410)) {
                 throw new WrongPasswordException();
-            }
         }
         throw new LinkNotFoundException();
     }

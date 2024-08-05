@@ -28,7 +28,6 @@ public class FrontController {
             final Model model,
             final @ModelAttribute FastLinkDTO input,
             final @ModelAttribute LinkUnitDTO dtoForStats){
-        // TODO вместо ModelAttribute просто создавать новые объекты и сетить в модель?
         model.addAttribute("input", input);
         model.addAttribute("dtoForStats", dtoForStats);
         model.addAttribute("isMainPage", true);
@@ -40,18 +39,22 @@ public class FrontController {
     public RedirectView getLink(final @PathVariable String link, final HttpServletRequest request) {
         String fullLink = givingService.clickProcessing(link, request);
 
-        return new RedirectView("/" + Objects.requireNonNullElse(fullLink, "error/404"));
+        return new RedirectView(Objects.requireNonNullElse(fullLink, "/error/404"));
     }
 
     @PostMapping
     public String createLink(
-            final @RequestBody FastLinkDTO input,
+            final FastLinkDTO input,
             final @ModelAttribute LinkUnitDTO dtoForStats,
-            final Model model
+            final Model model,
+            HttpServletRequest request
     ){
         CommonUtil.validateDTOFullLink(input);
         LinkUnitDTO linkUnit = countingService.createLink(input);
+        String serverUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+
         model.addAttribute("linkUnit", linkUnit);
+        model.addAttribute("shortLink", serverUrl + linkUnit.getShortLink());
         model.addAttribute("dtoForStats", dtoForStats);
         model.addAttribute("isMainPage", false);
 
@@ -60,7 +63,7 @@ public class FrontController {
 
     @PutMapping
     public String updateLink(
-            @RequestBody LinkUnitDTO linkUnit,
+            LinkUnitDTO linkUnit,
             final @ModelAttribute LinkUnitDTO dtoForStats,
             final Model model,
             final @RequestParam(defaultValue = "1") int page,
@@ -71,14 +74,27 @@ public class FrontController {
         return preparePageableStats(dtoForStats, model, page, size, pageOfClicks);
     }
 
+    /**
+     * Вызывает страницу с результатами статистики кликов по ссылке.
+     * Предварительно обрезает переданную короткую ссылку, убирая домен, и валидирует.
+     * @param linkUnit
+     * @param dtoForStats
+     * @param model
+     * @param page
+     * @param size
+     * @return
+     */
     @GetMapping("/stats")
     public String showStatistics(
-            @RequestBody LinkUnitDTO linkUnit,
+            LinkUnitDTO linkUnit,
             final @ModelAttribute LinkUnitDTO dtoForStats,
             final Model model,
             final @RequestParam(defaultValue = "1") int page,
             final @RequestParam(defaultValue = "10") int size
     ){
+        int length = linkUnit.getShortLink().length();
+        linkUnit.setShortLink(linkUnit.getShortLink().trim().substring(length-6, length));
+
         CommonUtil.validateDTOShortLink(linkUnit);
         PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, linkUnit);
 

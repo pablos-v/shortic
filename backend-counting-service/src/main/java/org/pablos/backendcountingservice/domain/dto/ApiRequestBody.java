@@ -3,8 +3,6 @@ package org.pablos.backendcountingservice.domain.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class ApiRequestBody {
 
@@ -17,7 +15,8 @@ public class ApiRequestBody {
                 new String[]{"THREAT_TYPE_UNSPECIFIED"},
                 new String[]{"PLATFORM_TYPE_UNSPECIFIED"},
                 new String[]{"THREAT_ENTRY_TYPE_UNSPECIFIED"},
-                new ThreatEntry[]{new ThreatEntry(link)});
+                new ThreatEntry[]{new ThreatEntry(link)}
+        );
     }
 
     @Data
@@ -25,7 +24,6 @@ public class ApiRequestBody {
     public static class Client {
         private String clientId;
         private String clientVersion;
-
     }
 
     @Data
@@ -35,7 +33,6 @@ public class ApiRequestBody {
         private String[] platformTypes;
         private String[] threatEntryTypes;
         private ThreatEntry[] threatEntries;
-
     }
 
     @Data

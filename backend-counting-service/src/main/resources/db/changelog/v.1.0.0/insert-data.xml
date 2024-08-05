@@ -10,15 +10,15 @@
             <tableExists tableName="clicks"/>
         </preConditions>
         <insert schemaName="shortic" tableName="link_units">
-            <column name="short_link" value="abc123"/>
-            <column name="password" value="password1"/>
+            <column name="short_link" value="asdfgh"/>
+            <column name="password" value="12345"/>
             <column name="full_link" value="https://example.com/1"/>
             <column name="created_at" value="2022-01-01 00:00:00"/>
             <column name="active" value="true"/>
         </insert>
         <insert schemaName="shortic" tableName="link_units">
-            <column name="short_link" value="def456"/>
-            <column name="password" value="password2"/>
+            <column name="short_link" value="qwerty"/>
+            <column name="password" value="12345"/>
             <column name="full_link" value="https://example.com/2"/>
             <column name="created_at" value="2022-01-02 00:00:00"/>
             <column name="active" value="false"/>
