@@ -1,5 +1,6 @@
 package org.pablos.frontendservice.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.pablos.frontendservice.exception.WrongInputException;
 import org.pablos.shortic.exception.*;
 import org.springframework.http.HttpHeaders;
@@ -7,6 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.io.IOException;
+import java.net.URI;
 
 /**
  * Класс обработки выбрасываемых исключений
@@ -29,11 +34,8 @@ public class ExceptionHandlingService {
     }
 
     @ExceptionHandler(WrongPasswordException.class)
-    public ResponseEntity<Void> onWrongPasswordException() {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .header(HttpHeaders.LOCATION, "/error/password")
-                .build();
+    public void onWrongPasswordException(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/error/password");
     }
 
     @ExceptionHandler(LinkNotSecureException.class)

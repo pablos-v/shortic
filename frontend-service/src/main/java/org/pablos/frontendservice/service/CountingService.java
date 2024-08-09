@@ -7,14 +7,14 @@ import org.pablos.shortic.dto.*;
 import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkNotSecureException;
 import org.pablos.shortic.exception.WrongPasswordException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Service
@@ -40,17 +40,28 @@ public class CountingService {
         } else throw new WrongInputException();
     }
 
-    public PageDTO getPageOfClicks(int page, int size, LinkUnitDTO dto) throws WrongPasswordException, LinkNotFoundException {
-        ResponseEntity<?> response = restTemplate.exchange(
-                countingServiceUrl + "/link",
-                HttpMethod.GET,
-                new HttpEntity<>(new PageRequestDTO(page, size, dto)),
-                PageDTO.class);
+    public PageDTO getPageOfClicks(int page, int size, String shortLink, String password) throws WrongInputException, WrongPasswordException, LinkNotFoundException {
+        try {
+//            ResponseEntity<PageDTO> response = restTemplate.exchange(
+//                    countingServiceUrl + "/link",
+//                    HttpMethod.GET,
+//                    new HttpEntity<>(new PageRequestDTO(page, size, dto)),
+//                    PageDTO.class);
+            String url = countingServiceUrl + "/link" + "?page=" + page + "&size=" + size + "&shortLink=" + shortLink + "&password=" + password;
+            ResponseEntity<PageDTO> response = restTemplate.getForEntity(url, PageDTO.class);
 
-        if (response.getStatusCode().is2xxSuccessful()) {
-            return (PageDTO) response.getBody();
-        } else if (response.getStatusCode() == HttpStatusCode.valueOf(410)) {
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new WrongPasswordException();
+            } else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new LinkNotFoundException();
+            } else if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                ViolationDTO responseBody = e.getResponseBodyAs(ViolationDTO.class);
+                throw new WrongInputException(Objects.requireNonNullElse(responseBody, "Неизвестная ошибка").toString());
+            }
         }
         throw new LinkNotFoundException();
     }

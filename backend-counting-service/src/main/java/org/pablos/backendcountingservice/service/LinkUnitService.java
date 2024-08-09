@@ -1,6 +1,7 @@
 package org.pablos.backendcountingservice.service;
 
 import lombok.RequiredArgsConstructor;
+import org.pablos.backendcountingservice.domain.entity.Click;
 import org.pablos.backendcountingservice.domain.entity.LinkUnit;
 import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkException;
 import org.pablos.backendcountingservice.domain.exception.LinkNotFoundWhileActivationException;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class LinkUnitService {
      */
     @Transactional(readOnly = true)
     Long getLinkUnitIdByShortLink(final String shortLink) throws LinkNotFoundException {
-        LinkUnit linkUnit = linkUnitRepository.findByShortLink(shortLink).orElseThrow(LinkNotFoundException::new);
+        LinkUnit linkUnit = getLinkUnitByShortLink(shortLink);
         return linkUnit.getId();
     }
 
@@ -64,14 +66,14 @@ public class LinkUnitService {
      * @throws LinkNotSecureException
      */
     @Transactional
-    public PageDTO updateLinkUnitAndGetPage(final PageRequestDTO dto) throws LinkNotSecureException {
-        LinkUnit linkUnit = LinkUnitMapper.toEntity(dto.getLinkUnit());
+    public PageDTO updateLinkUnitAndGetPage(final PageRequestDTO dto) throws LinkNotSecureException, LinkNotFoundException {
+        LinkUnit linkUnit = getLinkUnitByShortLink(dto.getLinkUnit().getShortLink());
+        linkUnit.setFullLink(dto.getLinkUnit().getFullLink());
         boolean secure = checkExistingLinkSecurity(linkUnit);
         if (!secure) {
             throw new LinkNotSecureException();
         }
-        LinkUnit saved = linkUnitRepository.save(linkUnit);
-        return createPage(dto.getPage(), dto.getSize(), LinkUnitMapper.toDto(saved));
+        return createPage(dto.getPage(), dto.getSize(), linkUnitRepository.save(linkUnit));
     }
 
     /**
@@ -81,29 +83,38 @@ public class LinkUnitService {
      * @throws LinkNotFoundException
      * @throws WrongPasswordException
      */
-    public PageDTO getPage(final PageRequestDTO dto) throws LinkNotFoundException, WrongPasswordException {
-        LinkUnit linkUnit = linkUnitRepository.findByShortLink(dto.getLinkUnit().getShortLink())
-                .orElseThrow(LinkNotFoundException::new);
+    public PageDTO getPage(int page, int size, String shortLink, String password) throws LinkNotFoundException, WrongPasswordException {
+        LinkUnit linkUnit = getLinkUnitByShortLink(shortLink);
 
-        if (!dto.getLinkUnit().getPassword().equals(linkUnit.getPassword())) {
+        if (!password.equals(linkUnit.getPassword())) {
             throw new WrongPasswordException();
         }
-        return createPage(dto.getPage(), dto.getSize(), LinkUnitMapper.toDto(linkUnit));
+        return createPage(page, size, linkUnit);
     }
 
-    private PageDTO createPage(int page, int size, LinkUnitDTO linkUnit) {
+    private LinkUnit getLinkUnitByShortLink(String shortLink) throws LinkNotFoundException {
+        return linkUnitRepository.findByShortLink(shortLink).orElseThrow(LinkNotFoundException::new);
+    }
+
+    private PageDTO createPage(int page, int size, LinkUnit linkUnit) {
         Pageable paging = PageRequest.of(page - 1, size);
         Page<ClickDTO> pageClicks = getPageOfClicks(linkUnit.getClicks(), paging);
-        List<ClickDTO> clicks = pageClicks.getContent();
-        clicks.sort(Comparator.comparing(ClickDTO::getClickTime));
-        return new PageDTO (clicks, pageClicks.getTotalPages(), linkUnit);
+        return new PageDTO (pageClicks.getContent(), pageClicks.getTotalPages(), LinkUnitMapper.toDto(linkUnit));
     }
 
-    private Page<ClickDTO> getPageOfClicks(List<ClickDTO> clicks, Pageable paging) {
+    private Page<ClickDTO> getPageOfClicks(List<Click> clicks, Pageable paging) {
         // Получаем подсписок в зависимости от параметров пагинации
         int start = (int) paging.getOffset();
         int end = Math.min(start + paging.getPageSize(), clicks.size());
-        List<ClickDTO> pagedList = clicks.subList(start, end);
+
+//        ArrayList<ClickDTO> DTOclicks = new ArrayList<>(ClickMapper.toDTOList(clicks));
+//        DTOclicks.sort(Comparator.comparing(ClickDTO::getClickTime));
+
+        List<ClickDTO> pagedList = clicks.stream()
+                .map(ClickMapper::toDTO)
+                .sorted(Comparator.comparing(ClickDTO::getClickTime))
+                .toList()
+                .subList(start, end);
 
         return new PageImpl<>(pagedList, paging, clicks.size());
     }

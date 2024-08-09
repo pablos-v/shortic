@@ -22,7 +22,6 @@ public final class LinkUnitDTO implements IShortLink, IFullLink {
     private String fullLink;
     private LocalDateTime createdAt;
     private boolean active;
-    private List<ClickDTO> clicks;
 
     public String getFormattedTime(){
         return createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));

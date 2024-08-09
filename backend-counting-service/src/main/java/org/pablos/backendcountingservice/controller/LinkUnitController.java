@@ -27,10 +27,16 @@ public class LinkUnitController {
     }
 
     @GetMapping
-    public ResponseEntity<PageDTO> getPage(final @RequestBody PageRequestDTO dto) {
-        CommonUtil.validateDTOShortLink(dto.getLinkUnit());
+    public ResponseEntity<PageDTO> getPage(
+//            final @RequestBody PageRequestDTO dto
+            int page,
+            int size,
+            String shortLink,
+            String password
+    ) {
+        CommonUtil.validateDTOShortLink(new FastLinkDTO(shortLink, ""));
 
-        PageDTO pageDTO = linkUnitService.getPage(dto);
+        PageDTO pageDTO = linkUnitService.getPage(page,size, shortLink, password);
 
         return ResponseEntity.ok(pageDTO);
     }

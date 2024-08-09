@@ -4,6 +4,7 @@ import org.pablos.backendcountingservice.domain.entity.Click;
 import org.pablos.backendcountingservice.domain.entity.LinkUnit;
 import org.pablos.shortic.dto.LinkUnitDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LinkUnitMapper {
@@ -14,8 +15,7 @@ public class LinkUnitMapper {
                 linkUnit.getPassword(),
                 linkUnit.getFullLink(),
                 linkUnit.getCreatedAt(),
-                linkUnit.isActive(),
-                ClickMapper.toDTOList(linkUnit.getClicks())
+                linkUnit.isActive()
         );
     }
 // TODO delete if not needed
@@ -27,7 +27,7 @@ public class LinkUnitMapper {
                 linkUnitDTO.getFullLink(),
                 linkUnitDTO.getCreatedAt(),
                 linkUnitDTO.isActive(),
-                ClickMapper.toEntityList(linkUnitDTO.getClicks())
+                new ArrayList<>()
         );
     }
 

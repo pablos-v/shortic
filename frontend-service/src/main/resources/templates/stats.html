@@ -40,7 +40,7 @@
 
         <div>
             <label class="input-group-text">Всего кликов:</label>
-            <span th:text="${linkUnit.getClicks().size()}"> </span>
+            <span th:text="${clicks.size()}"> </span>
         </div>
 
         <div>
@@ -53,7 +53,7 @@
             <label for="fullLink" class="input-group-text">Замена полной ссылки</label>
             <form class="col card p-3 mb-5" th:method="put" th:action="@{/}" th:object="${linkUnit}">
                 <input class="form-control"
-                       th:placeholder="Введите новую ссылку"
+                       placeholder="Введите новую ссылку"
                        required="true"
                        id="fullLink"
                        maxlength="4096"
@@ -67,7 +67,7 @@
     <div th:if="${clicks.size() > 0}">
 
     <div class="my-3">
-        <form th:action="@{/stats(size = ${pageSize})}" id="selectPageSizeForm" th:object="${linkUnit}">
+        <form th:action="@{/stats(size=${pageSize}, shortLink=${linkUnit.getShortLink()}, password=${linkUnit.getPassword()})}" id="selectPageSizeForm" th:object="${linkUnit}">
             <div class="row d-flex">
                 <div class="col-md-3 input-group mt-2">
                     <div class="input-group-prepend">
@@ -75,7 +75,7 @@
                     </div>
                     <select form="selectPageSizeForm" name="size" th:value="${pageSize}" onchange="changePageSize()" class="size-select"
                             id="pageSize">
-                        <option th:each="s : ${T(java.util.Arrays).asList(10, 25, 50)}" th:value="${s}" th:text="${s}" th:selected="${s == pageSize}"> </option>
+                        <option th:each="s : ${clicksPerPage}" th:value="${s}" th:text="${s}" th:selected="${s == pageSize}"> </option>
                     </select>
                 </div>
             </div>
@@ -119,26 +119,27 @@
     <nav aria-label="Пагинация" th:if="${totalPages > 0}">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                <a th:replace="fragments/paging :: paging(1, '<<', 'Первая страница', pageSize)"> </a>
+                <a th:replace="~{fragments/paging :: paging(1, '<<', 'Первая страница', ${pageSize}, ${linkUnit.getShortLink()}, ${linkUnit.getPassword()})}"> </a>
             </li>
             <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
-                <a th:replace="fragments/paging :: paging(${currentPage - 1}, 'Пред', 'Предыдущая страница', pageSize)"> </a>
+                <a th:replace="~{fragments/paging :: paging(${currentPage - 1}, 'Пред', 'Предыдущая страница', ${pageSize}, ${linkUnit.getShortLink()}, ${linkUnit.getPassword()})}"> </a>
             </li>
             <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
                 <a class="page-link" href="#">...</a>
             </li>
             <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
                 th:each="page : ${#numbers.sequence((currentPage > 2 ? currentPage - 2 : 1), (currentPage + 2 < totalPages ? currentPage + 2 : totalPages))}">
-                <a th:replace="fragments/paging :: paging(${page}, ${page}, 'Страница ' + ${page}, pageSize)"> </a>
+                <a th:replace="~{fragments/paging :: paging(${page}, ${page}, 'Страница ' + ${page}, ${pageSize}, ${linkUnit.getShortLink()}, ${linkUnit.getPassword()})}"> </a>
             </li>
             <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
                 <a class="page-link" href="#">...</a>
             </li>
             <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                <a th:replace="fragments/paging :: paging(${currentPage + 1},'След', 'Следующая страница', pageSize)"> </a>
+                <a th:replace="~{fragments/paging :: paging(${currentPage + 1},'След', 'Следующая страница', ${pageSize}, ${linkUnit.getShortLink()}, ${linkUnit.getPassword()})}"> </a>
             </li>
             <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                <a th:replace="fragments/paging :: paging(${totalPages}, '>>', 'Последняя страница', pageSize)"> </a>
+                <a th:replace="~{fragments/paging :: paging(${totalPages}, '>>', 'Последняя страница', ${pageSize},
+                ${linkUnit.getShortLink()}, ${linkUnit.getPassword()})}"> </a>
             </li>
         </ul>
     </nav>
@@ -146,7 +147,7 @@
 
 <script type="text/javascript">
     function changePageSize() {
-        $("#selectPageSizeForm").submit();
+        document.getElementById("selectPageSizeForm").submit();
     }
 </script>
 

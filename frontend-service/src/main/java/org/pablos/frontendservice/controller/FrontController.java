@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Controller
@@ -20,6 +22,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class FrontController {
 
+    public static final List<Integer> CLICKS_PER_PAGE = Arrays.asList(1, 2, 50);
     private final GivingService givingService;
     private final CountingService countingService;
 
@@ -96,7 +99,7 @@ public class FrontController {
         linkUnit.setShortLink(linkUnit.getShortLink().trim().substring(length-6, length));
 
         CommonUtil.validateDTOShortLink(linkUnit);
-        PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, linkUnit);
+        PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, linkUnit.getShortLink(), linkUnit.getPassword());
 
         return preparePageableStats(dtoForStats, model, page, size, pageOfClicks);
     }
@@ -104,7 +107,7 @@ public class FrontController {
     private String preparePageableStats(LinkUnitDTO dtoForStats, Model model,
             int page, int size, PageDTO pageOfClicks) {
         model.addAttribute("clicks", pageOfClicks.getClicks());
-//        model.addAttribute("totalItems", pageClicks.getTotalElements());
+        model.addAttribute("clicksPerPage", CLICKS_PER_PAGE);
         model.addAttribute("totalPages", pageOfClicks.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
