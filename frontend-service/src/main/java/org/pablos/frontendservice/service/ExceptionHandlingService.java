@@ -30,7 +30,7 @@ public class ExceptionHandlingService {
         response.sendRedirect("/error/404");
     }
 
-    @ExceptionHandler(WrongPasswordException.class)
+    @ExceptionHandler({WrongPasswordException.class, PasswordIncorrectException.class})
     public void onWrongPasswordException(HttpServletResponse response) throws IOException {
         response.sendRedirect("/error/password");
     }

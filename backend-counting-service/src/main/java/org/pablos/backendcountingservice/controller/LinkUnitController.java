@@ -5,7 +5,6 @@ import org.pablos.backendcountingservice.service.LinkUnitService;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.LinkUnitDTO;
 import org.pablos.shortic.dto.PageDTO;
-import org.pablos.shortic.dto.PageRequestDTO;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,6 @@ public class LinkUnitController {
 
     @PostMapping
     public ResponseEntity<LinkUnitDTO> createLinkUnit(final @RequestBody FastLinkDTO input) {
-        CommonUtil.validateDTOFullLink(input);
 
         LinkUnitDTO link = linkUnitService.createLinkUnit(input);
 
@@ -42,14 +40,23 @@ public class LinkUnitController {
     }
 
     @PutMapping
-    public ResponseEntity<PageDTO> updateLinkUnitAndGetPage(
-            final @RequestBody PageRequestDTO dto
+    public ResponseEntity<Void> updateFullLinkInLinkUnit(
+            final @RequestParam String shortLink,
+            final @RequestParam String fullLink
     ) {
-        CommonUtil.validateDTOFullLink(dto.getLinkUnit());
+        linkUnitService.updateLinkUnit(shortLink, fullLink);
 
-        PageDTO pageDTO = linkUnitService.updateLinkUnitAndGetPage(dto);
+        return ResponseEntity.ok().build();
+    }
 
-        return ResponseEntity.ok(pageDTO);
+    @PutMapping("/password")
+    public ResponseEntity<Void> setPassword(
+            final @RequestParam String shortLink,
+            final @RequestParam String password
+    ) {
+        linkUnitService.setPassword(shortLink, password);
+
+        return ResponseEntity.ok().build();
     }
 
 }

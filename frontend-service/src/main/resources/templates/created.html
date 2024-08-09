@@ -21,11 +21,11 @@
     <p>
         Обратите внимание, что короткая ССЫЛКА ПОКА НЕ АКТИВНА.
         Сначала полная ссылка будет проверена на опасность. Мы уже начали проверку.
-        Обычно активация занимает меньше минуты. Иногда дольше.
+        Обычно активация занимает меньше 30 секунд.
     </p>
 </div>
 
-<form class="col card p-3 mb-5" th:method="put" th:action="@{/}" th:object="${linkUnit}">
+<form class="col card p-3 mb-5" th:method="put" th:action="@{/password(shortLink=${linkUnit.getShortLink()})}">
     <div class="form-group">
         <label type="text" for="link">Можем вести статистику кликов, хотите?</label>
         <input class="form-control"
@@ -35,7 +35,7 @@
                maxlength="5"
                pattern="\d{5}"
                type="text"
-               th:field="${linkUnit.password}"
+               name="password"
         />
         <input class="btn btn-primary" type="submit" value="ЗАПОМИНАТЬ СТАТИСТИКУ"/>
     </div>

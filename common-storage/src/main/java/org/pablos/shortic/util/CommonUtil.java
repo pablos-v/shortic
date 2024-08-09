@@ -3,10 +3,7 @@ package org.pablos.shortic.util;
 import org.pablos.shortic.IFullLink;
 import org.pablos.shortic.IShortLink;
 import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.exception.FullLinkNotProvidedException;
-import org.pablos.shortic.exception.FullLinkSizeException;
-import org.pablos.shortic.exception.LinkProcessingException;
-import org.pablos.shortic.exception.ObjectNotProvidedException;
+import org.pablos.shortic.exception.*;
 
 import java.security.SecureRandom;
 
@@ -70,8 +67,18 @@ public class CommonUtil {
         if (dto == null || dto.getFullLink() == null || dto.getFullLink().isEmpty()) {
             throw new FullLinkNotProvidedException();
         }
-        if (dto.getFullLink().length() > FULL_LINK_MAX_LENGTH) {
+        validateFullLink(dto.getFullLink());
+    }
+
+    public static void validateFullLink(String link) throws FullLinkSizeException{
+        if (link.length() > FULL_LINK_MAX_LENGTH) {
             throw new FullLinkSizeException();
+        }
+    }
+
+    public static void validatePassword(String password) throws PasswordIncorrectException {
+        if (password == null || !password.matches("\\d{5}")) {
+            throw new PasswordIncorrectException();
         }
     }
 }

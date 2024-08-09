@@ -6,6 +6,7 @@ import org.pablos.frontendservice.exception.WrongInputException;
 import org.pablos.shortic.dto.*;
 import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkNotSecureException;
+import org.pablos.shortic.exception.PasswordIncorrectException;
 import org.pablos.shortic.exception.WrongPasswordException;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Objects;
 
 @Data
@@ -30,14 +30,20 @@ public class CountingService {
      * @return
      */
     public LinkUnitDTO createLink(final FastLinkDTO input) throws WrongInputException {
-        ResponseEntity<?> response = restTemplate.postForEntity(
-                countingServiceUrl + "/link",
-                input,
-                LinkUnitDTO.class);
+        try {
+            ResponseEntity<LinkUnitDTO> response = restTemplate.postForEntity(
+                    countingServiceUrl + "/link",
+                    input,
+                    LinkUnitDTO.class);
 
-        if (response.getStatusCode().is2xxSuccessful()) {
-            return (LinkUnitDTO) response.getBody();
-        } else throw new WrongInputException();
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+        } catch (HttpClientErrorException e) {
+            ViolationDTO violationDTO = e.getResponseBodyAs(ViolationDTO.class);
+            throw new WrongInputException(Objects.requireNonNullElse(violationDTO, "Unknown error").toString());
+        }
+        throw new WrongInputException("Unknown error");
     }
 
     public PageDTO getPageOfClicks(int page, int size, String shortLink, String password) throws WrongInputException, WrongPasswordException, LinkNotFoundException {
@@ -66,23 +72,63 @@ public class CountingService {
         throw new LinkNotFoundException();
     }
 
-    public PageDTO updateAndGetPageOfClicks(int page, int size, LinkUnitDTO dto) throws LinkNotSecureException, WrongInputException {
-        ResponseEntity<?> response = restTemplate.exchange(
-                countingServiceUrl + "/link",
-                HttpMethod.PUT,
-                new HttpEntity<>(new PageRequestDTO(page, size, dto)),
-                PageDTO.class);
-
-        if (response.getStatusCode().is2xxSuccessful()) {
-            return (PageDTO) response.getBody();
-        } else if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(410))){
-            throw new LinkNotSecureException();
-        } else {
-            throw new WrongInputException();
-        }
-    }
+//    public PageDTO updateAndGetPageOfClicks(int page, int size, LinkUnitDTO dto) throws LinkNotSecureException, WrongInputException {
+//        ResponseEntity<?> response = restTemplate.exchange(
+//                countingServiceUrl + "/link",
+//                HttpMethod.PUT,
+//                new HttpEntity<>(new PageRequestDTO(page, size, dto)),
+//                PageDTO.class);
+//
+//        if (response.getStatusCode().is2xxSuccessful()) {
+//            return (PageDTO) response.getBody();
+//        } else if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(410))){
+//            throw new LinkNotSecureException();
+//        } else {
+//            throw new WrongInputException();
+//        }
+//    }
 
     public void postStatistics(ClickDTO clickDTO) {
         restTemplate.postForLocation(countingServiceUrl + "/click", clickDTO);
+    }
+
+    public void updateLink(String shortLink, String fullLink) throws LinkNotSecureException, WrongInputException {
+        try {
+            ResponseEntity<Void> response = restTemplate.exchange(
+                    countingServiceUrl + "/link" + "?shortLink=" + shortLink + "&fullLink=" + fullLink,
+                    HttpMethod.PUT,
+                    null,
+                    Void.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return;
+            }
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(410))){
+                throw new LinkNotSecureException();
+            } else {
+                ViolationDTO responseBody = e.getResponseBodyAs(ViolationDTO.class);
+                throw new WrongInputException(Objects.requireNonNullElse(responseBody, "Неизвестная ошибка").toString());
+            }
+        }
+    }
+
+    public void setPassword(String shortLink, String password) {
+        try {
+            ResponseEntity<Void> response = restTemplate.exchange(
+                        countingServiceUrl + "/link/password" + "?shortLink=" + shortLink + "&password=" + password,
+                        HttpMethod.PUT,
+                        null,
+                        Void.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return;
+            }
+        } catch (HttpClientErrorException e) {
+            ViolationDTO responseBody = e.getResponseBodyAs(ViolationDTO.class);
+            if (responseBody!=null && e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(400))
+            && responseBody.getFieldName().equals("password")) {
+                throw new PasswordIncorrectException();
+            }
+            throw new WrongInputException();
+        }
     }
 }

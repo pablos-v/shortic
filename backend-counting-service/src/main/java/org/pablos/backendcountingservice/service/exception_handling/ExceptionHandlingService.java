@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ExceptionHandlingService {
     private static final String SHORT_LINK = "shortLink";
     private static final String FULL_LINK = "fullLink";
+    public static final String PASSWORD = "password";
 
     private final Logger logger;
 
@@ -67,6 +68,13 @@ public class ExceptionHandlingService {
     }
 
     @ResponseBody
+    @ExceptionHandler(PasswordIncorrectException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ViolationDTO onPasswordIncorrectException(PasswordIncorrectException e) {
+        return new ViolationDTO(PASSWORD, e.getMessage());
+    }
+
+    @ResponseBody
     @ExceptionHandler(FullLinkSizeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ViolationDTO onFullLinkSizeException(FullLinkSizeException e) {
@@ -77,7 +85,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(WrongPasswordException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ViolationDTO onWrongPasswordException(WrongPasswordException e) {
-        return new ViolationDTO("password", e.getMessage());
+        return new ViolationDTO(PASSWORD, e.getMessage());
     }
 
     @ResponseBody

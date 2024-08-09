@@ -8,6 +8,7 @@ import org.pablos.backendcountingservice.domain.exception.LinkNotFoundWhileActiv
 import org.pablos.shortic.dto.*;
 import org.pablos.shortic.exception.LinkNotSecureException;
 import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
+import org.pablos.shortic.exception.PasswordIncorrectException;
 import org.pablos.shortic.exception.WrongPasswordException;
 import org.pablos.backendcountingservice.repository.LinkUnitRepository;
 import org.pablos.shortic.exception.LinkNotFoundException;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -44,6 +44,7 @@ public class LinkUnitService {
 
     @Transactional
     public LinkUnitDTO createLinkUnit(final FastLinkDTO input) throws LinkNotFoundWhileActivationException{
+        CommonUtil.validateDTOFullLink(input);
         String shortLink;
         do {
             shortLink = CommonUtil.generateShortLink();
@@ -58,23 +59,6 @@ public class LinkUnitService {
         return LinkUnitMapper.toDto(saved);
     }
 
-    /**
-     * Меняет полную ссылку у существующего LinkUnit. Проверяет безопасность новой ссылки.
-     * Формирует на основе PageRequestDTO страницу для пагинации.
-     * @param dto
-     * @return
-     * @throws LinkNotSecureException
-     */
-    @Transactional
-    public PageDTO updateLinkUnitAndGetPage(final PageRequestDTO dto) throws LinkNotSecureException, LinkNotFoundException {
-        LinkUnit linkUnit = getLinkUnitByShortLink(dto.getLinkUnit().getShortLink());
-        linkUnit.setFullLink(dto.getLinkUnit().getFullLink());
-        boolean secure = checkExistingLinkSecurity(linkUnit);
-        if (!secure) {
-            throw new LinkNotSecureException();
-        }
-        return createPage(dto.getPage(), dto.getSize(), linkUnitRepository.save(linkUnit));
-    }
 
     /**
      * Получает из репозитория LinkUnit и формирует на основе PageRequestDTO страницу для пагинации.
@@ -166,4 +150,32 @@ public class LinkUnitService {
         return linkUnitRepository.findAll();
     }
 
+    /**
+     * Меняет полную ссылку у существующего LinkUnit. Проверяет безопасность новой ссылки.
+     * @return
+     * @throws LinkNotSecureException
+     */
+    @Transactional
+    public void updateLinkUnit(final String shortLink, final String fullLink)
+            throws LinkNotSecureException, LinkNotFoundException {
+
+        CommonUtil.validateFullLink(fullLink);
+        LinkUnit linkUnit = getLinkUnitByShortLink(shortLink);
+        linkUnit.setFullLink(fullLink);
+        boolean secure = checkExistingLinkSecurity(linkUnit);
+        if (!secure) {
+            throw new LinkNotSecureException();
+        }
+        linkUnitRepository.save(linkUnit);
+    }
+
+    @Transactional
+    public void setPassword(final String shortLink, final String password)
+            throws PasswordIncorrectException, LinkNotFoundException {
+
+        CommonUtil.validatePassword(password);
+        LinkUnit linkUnit = getLinkUnitByShortLink(shortLink);
+        linkUnit.setPassword(password);
+        linkUnitRepository.save(linkUnit);
+    }
 }

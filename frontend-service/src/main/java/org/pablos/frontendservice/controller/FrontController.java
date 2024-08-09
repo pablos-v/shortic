@@ -23,6 +23,8 @@ import java.util.Objects;
 public class FrontController {
 
     public static final List<Integer> CLICKS_PER_PAGE = Arrays.asList(10, 25, 50);
+    public static final String PAGE_SIZE_BY_DEFAULT = "10";
+    public static final String PAGE_NUMBER_BY_DEFAULT = "1";
     private final GivingService givingService;
     private final CountingService countingService;
 
@@ -38,9 +40,9 @@ public class FrontController {
         return "index";
     }
 
-    @GetMapping("{link}")
-    public RedirectView getLink(final @PathVariable String link, final HttpServletRequest request) {
-        String fullLink = givingService.clickProcessing(link, request);
+    @GetMapping("{shortLink}")
+    public RedirectView getLink(final @PathVariable String shortLink, final HttpServletRequest request) {
+        String fullLink = givingService.clickProcessing(shortLink, request);
 
         return new RedirectView(Objects.requireNonNullElse(fullLink, "/error/404"));
     }
@@ -66,15 +68,31 @@ public class FrontController {
 
     @PutMapping
     public String updateLink(
-            LinkUnitDTO linkUnit,
+            final @RequestParam String shortLink,
+            final @RequestParam String fullLink,
+            final @RequestParam String password,
+            final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
+            final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
             final @ModelAttribute LinkUnitDTO dtoForStats,
-            final Model model,
-            final @RequestParam(defaultValue = "1") int page,
-            final @RequestParam(defaultValue = "10") int size
+            final Model model
     ){
-        PageDTO pageOfClicks = countingService.updateAndGetPageOfClicks(page, size, linkUnit);
+        countingService.updateLink(shortLink, fullLink);
 
-        return preparePageableStats(dtoForStats, model, page, size, pageOfClicks);
+        return showStatistics(shortLink, password, page, size, dtoForStats, model);
+    }
+
+    @PutMapping("/password")
+    public String setPassword(
+            final @RequestParam String shortLink,
+            final @RequestParam String password,
+            final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
+            final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
+            final @ModelAttribute LinkUnitDTO dtoForStats,
+            final Model model
+    ){
+        countingService.setPassword(shortLink, password);
+
+        return showStatistics(shortLink, password, page, size, dtoForStats, model);
     }
 
     /**
@@ -90,13 +108,14 @@ public class FrontController {
     public String showStatistics(
             @RequestParam String shortLink,
             final @RequestParam String password,
-            final @RequestParam(defaultValue = "1") int page,
-            final @RequestParam(defaultValue = "10") int size,
+            final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
+            final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
             final @ModelAttribute LinkUnitDTO dtoForStats,
             final Model model
     ){
+        shortLink = shortLink.trim();
         int length = shortLink.length();
-        shortLink = shortLink.trim().substring(length-6, length);
+        shortLink = shortLink.substring(length-6, length);
 
         CommonUtil.validateShortLink(shortLink);
         PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, shortLink, password);
