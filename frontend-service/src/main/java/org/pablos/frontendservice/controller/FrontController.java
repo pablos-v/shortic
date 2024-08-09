@@ -22,7 +22,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class FrontController {
 
-    public static final List<Integer> CLICKS_PER_PAGE = Arrays.asList(1, 2, 50);
+    public static final List<Integer> CLICKS_PER_PAGE = Arrays.asList(10, 25, 50);
     private final GivingService givingService;
     private final CountingService countingService;
 
@@ -80,7 +80,6 @@ public class FrontController {
     /**
      * Вызывает страницу с результатами статистики кликов по ссылке.
      * Предварительно обрезает переданную короткую ссылку, убирая домен, и валидирует.
-     * @param linkUnit
      * @param dtoForStats
      * @param model
      * @param page
@@ -89,17 +88,18 @@ public class FrontController {
      */
     @GetMapping("/stats")
     public String showStatistics(
-            LinkUnitDTO linkUnit,
-            final @ModelAttribute LinkUnitDTO dtoForStats,
-            final Model model,
+            @RequestParam String shortLink,
+            final @RequestParam String password,
             final @RequestParam(defaultValue = "1") int page,
-            final @RequestParam(defaultValue = "10") int size
+            final @RequestParam(defaultValue = "10") int size,
+            final @ModelAttribute LinkUnitDTO dtoForStats,
+            final Model model
     ){
-        int length = linkUnit.getShortLink().length();
-        linkUnit.setShortLink(linkUnit.getShortLink().trim().substring(length-6, length));
+        int length = shortLink.length();
+        shortLink = shortLink.trim().substring(length-6, length);
 
-        CommonUtil.validateDTOShortLink(linkUnit);
-        PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, linkUnit.getShortLink(), linkUnit.getPassword());
+        CommonUtil.validateShortLink(shortLink);
+        PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, shortLink, password);
 
         return preparePageableStats(dtoForStats, model, page, size, pageOfClicks);
     }

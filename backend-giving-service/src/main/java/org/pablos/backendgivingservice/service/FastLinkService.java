@@ -76,7 +76,7 @@ public class FastLinkService implements IFastLinkService {
     }
 
     private FastLink getFastLink(String shortLink) throws LinkNotFoundException{
-        CommonUtil.validateDTOShortLink(new FastLinkDTO(shortLink,""));
+        CommonUtil.validateShortLink(shortLink);
         return repository.findById(shortLink).orElseThrow(LinkNotFoundException::new);
     }
 

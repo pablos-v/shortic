@@ -32,7 +32,7 @@ public class GivingService {
      * @return
      */
     public String clickProcessing(final String shortLink, final HttpServletRequest request) {
-        CommonUtil.validateDTOShortLink(new FastLinkDTO(shortLink,""));
+        CommonUtil.validateShortLink(shortLink);
 
         // отправка статистики клика
         new Thread(() -> postStatistics(shortLink, request)).start();

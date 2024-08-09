@@ -6,17 +6,15 @@
 <!--        <input type="text" name="password" placeholder="пароль" maxlength="5">-->
 <!--        <input type="submit" value="СТАТИСТИКА">-->
 <!--    </form>    -->
-    <form th:method="get" th:action="@{/stats}" th:object="${dtoForStats}">
+    <form th:method="get" th:action="@{/stats}" >
         <input type="text"
                name="shortLink"
                placeholder="сокращённая ссылка"
-               maxlength="30"
-               th:field="${dtoForStats.shortLink}"/>
+               maxlength="30"/>
         <input type="text"
                name="password"
                placeholder="пароль"
-               maxlength="5"
-               th:field="${dtoForStats.password}"/>
+               maxlength="5"/>
         <input type="submit" value="СТАТИСТИКА"/>
     </form>
 </nav>

@@ -48,16 +48,20 @@ public class CommonUtil {
         if (dto == null) {
             throw new ObjectNotProvidedException();
         }
-        if (dto.getShortLink().isEmpty()) {
+        validateShortLink(dto.getShortLink());
+    }
+
+    public static void validateShortLink(String link) throws LinkProcessingException {
+        if (link == null || link.isEmpty()) {
             throw new LinkProcessingException(NOT_PROVIDED);
         }
-        if (dto.getShortLink().length() != SHORT_LINK_LENGTH) {
+        if (link.length() > SHORT_LINK_LENGTH) {
             throw new LinkProcessingException(BAD_SIZE);
         }
-        if (dto.getShortLink().contains(" ")) {
+        if (link.contains(" ")) {
             throw new LinkProcessingException(CONTAINS_SPACES);
         }
-        if (!dto.getShortLink().matches("^[A-Za-z0-9]+$")) {
+        if (!link.matches("^[a-zA-Z0-9]+$")) {
             throw new LinkProcessingException(INVALID_CHARS);
         }
     }

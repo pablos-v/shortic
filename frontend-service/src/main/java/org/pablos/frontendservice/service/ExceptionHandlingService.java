@@ -26,11 +26,8 @@ public class ExceptionHandlingService {
      * @return ответ с заголовком редиректа на 404
      */
     @ExceptionHandler({LinkProcessingException.class, LinkNotFoundException.class, ObjectNotProvidedException.class})
-    public ResponseEntity<Void> onLinkProcessingException() {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .header(HttpHeaders.LOCATION, "/error/404")
-                .build();
+    public void onLinkProcessingException(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/error/404");
     }
 
     @ExceptionHandler(WrongPasswordException.class)
@@ -39,19 +36,13 @@ public class ExceptionHandlingService {
     }
 
     @ExceptionHandler(LinkNotSecureException.class)
-    public ResponseEntity<Void> onLinkNotSecureException() {
-        return ResponseEntity
-                .status(HttpStatus.GONE)
-                .header(HttpHeaders.LOCATION, "/error/410")
-                .build();
+    public void onLinkNotSecureException(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/error/410");
     }
 
     @ExceptionHandler(WrongInputException.class)
-    public ResponseEntity<Void> onWrongInputException() {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .header(HttpHeaders.LOCATION, "/error/400")
-                .build();
+    public void onWrongInputException(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/error/400");
     }
 
 
@@ -62,11 +53,8 @@ public class ExceptionHandlingService {
      * @return ответ с заголовком редиректа на главную страницу
      */
     @ExceptionHandler({FullLinkNotProvidedException.class, FullLinkSizeException.class})
-    public ResponseEntity<Void> onFullLinkExceptions() {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .header(HttpHeaders.LOCATION, "/")
-                .build();
+    public void onFullLinkExceptions(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/");
     }
 
 }

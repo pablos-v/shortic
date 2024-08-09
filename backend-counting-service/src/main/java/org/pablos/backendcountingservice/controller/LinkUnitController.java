@@ -34,7 +34,7 @@ public class LinkUnitController {
             String shortLink,
             String password
     ) {
-        CommonUtil.validateDTOShortLink(new FastLinkDTO(shortLink, ""));
+        CommonUtil.validateShortLink(shortLink);
 
         PageDTO pageDTO = linkUnitService.getPage(page,size, shortLink, password);
 
@@ -42,7 +42,9 @@ public class LinkUnitController {
     }
 
     @PutMapping
-    public ResponseEntity<PageDTO> updateLinkUnitAndGetPage(final @RequestBody PageRequestDTO dto) {
+    public ResponseEntity<PageDTO> updateLinkUnitAndGetPage(
+            final @RequestBody PageRequestDTO dto
+    ) {
         CommonUtil.validateDTOFullLink(dto.getLinkUnit());
 
         PageDTO pageDTO = linkUnitService.updateLinkUnitAndGetPage(dto);

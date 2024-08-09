@@ -4,3 +4,7 @@ server:
 spring:
   config:
     import: optional:file:.env[.properties]
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true

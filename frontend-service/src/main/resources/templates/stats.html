@@ -67,18 +67,20 @@
     <div th:if="${clicks.size() > 0}">
 
     <div class="my-3">
-        <form th:action="@{/stats(size=${pageSize}, shortLink=${linkUnit.getShortLink()}, password=${linkUnit.getPassword()})}" id="selectPageSizeForm" th:object="${linkUnit}">
+        <form id="selectPageSizeForm">
             <div class="row d-flex">
                 <div class="col-md-3 input-group mt-2">
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="pageSize">Показывать на странице:</label>
                     </div>
-                    <select form="selectPageSizeForm" name="size" th:value="${pageSize}" onchange="changePageSize()" class="size-select"
+                    <select form="selectPageSizeForm" name="size" onchange="changePageSize()" class="size-select"
                             id="pageSize">
                         <option th:each="s : ${clicksPerPage}" th:value="${s}" th:text="${s}" th:selected="${s == pageSize}"> </option>
                     </select>
                 </div>
             </div>
+            <input type="hidden" name="shortLink" th:value="${linkUnit.getShortLink()}"/>
+            <input type="hidden" name="password" th:value="${linkUnit.getPassword()}"/>
         </form>
     </div>
 
