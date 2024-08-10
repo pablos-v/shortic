@@ -173,7 +173,7 @@ public class LinkUnitService {
     public void setPassword(final String shortLink, final String password)
             throws PasswordIncorrectException, LinkNotFoundException {
 
-        CommonUtil.validatePassword(password);
+        CommonUtil.validatePassword(CommonUtil.decodePassword(password));
         LinkUnit linkUnit = getLinkUnitByShortLink(shortLink);
         linkUnit.setPassword(password);
         linkUnitRepository.save(linkUnit);

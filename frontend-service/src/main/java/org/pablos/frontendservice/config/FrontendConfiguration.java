@@ -3,6 +3,8 @@ package org.pablos.frontendservice.config;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +31,10 @@ public class FrontendConfiguration {
         return new RestTemplateBuilder().build();
     }
 
+    @Bean
+    public Logger getLogger() {
+        return LoggerFactory.getLogger(getClass());
+    }
 
     /**
      * Вытаскивает из эврики адрес бэкенда
@@ -39,5 +45,6 @@ public class FrontendConfiguration {
         InstanceInfo info = eurekaClient.getApplication(app).getInstances().get(0);
         return "http://" + info.getIPAddr() + ":" + info.getPort();
     }
+
 
 }

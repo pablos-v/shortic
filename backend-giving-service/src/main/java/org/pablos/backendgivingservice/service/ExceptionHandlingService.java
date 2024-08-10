@@ -1,11 +1,13 @@
 package org.pablos.backendgivingservice.service;
 
+import lombok.RequiredArgsConstructor;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.ViolationDTO;
 import org.pablos.shortic.exception.ObjectNotProvidedException;
 import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkProcessingException;
 import org.pablos.shortic.dto.ObjectViolationDTO;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,7 +18,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Класс обработки выбрасываемых исключений
  */
 @ControllerAdvice
+@RequiredArgsConstructor
 public class ExceptionHandlingService {
+
+    private final Logger logger;
 
     private static final String SHORT_LINK = "shortLink";
 
@@ -30,6 +35,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(LinkProcessingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ViolationDTO onLinkProcessingException(LinkProcessingException e) {
+        logger.error("Link not correct: {}", e.getMessage(), e);
         return new ViolationDTO(SHORT_LINK, e.getMessage());
     }
 
@@ -43,6 +49,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(LinkNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ViolationDTO onLinkNotFoundException(LinkNotFoundException e) {
+        logger.error("Link Not Found: {}", e.getMessage(), e);
         return new ViolationDTO(SHORT_LINK, e.getMessage());
     }
 
@@ -56,6 +63,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(ObjectNotProvidedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ObjectViolationDTO onFastLinkDTONotProvidedException(ObjectNotProvidedException e) {
+        logger.error("No Object was Provided: {}", e.getMessage(), e);
         return new ObjectViolationDTO(FastLinkDTO.class.getSimpleName(), e.getMessage());
     }
 }

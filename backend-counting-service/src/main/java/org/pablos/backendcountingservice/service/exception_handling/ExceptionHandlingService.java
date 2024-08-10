@@ -37,6 +37,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(LinkProcessingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ViolationDTO onLinkProcessingException(LinkProcessingException e) {
+        logger.error("Link not correct: {}", e.getMessage(), e);
         return new ViolationDTO(SHORT_LINK, e.getMessage());
     }
 
@@ -50,6 +51,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(ObjectNotProvidedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ObjectViolationDTO onFastLinkDTONotProvidedException(ObjectNotProvidedException e) {
+        logger.error("No Object was Provided: {}", e.getMessage(), e);
         return new ObjectViolationDTO(FastLinkDTO.class.getSimpleName(), e.getMessage());
     }
 
@@ -57,6 +59,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(LinkNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ViolationDTO onLinkNotFoundException(LinkNotFoundException e) {
+        logger.error("Link Not Found: {}", e.getMessage(), e);
         return new ViolationDTO(SHORT_LINK, e.getMessage());
     }
 
@@ -64,6 +67,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(FullLinkNotProvidedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ViolationDTO onFullLinkNotProvidedException(FullLinkNotProvidedException e) {
+        logger.error("Full link is absent: {}", e.getMessage(), e);
         return new ViolationDTO(FULL_LINK, e.getMessage());
     }
 
@@ -71,6 +75,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(PasswordIncorrectException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ViolationDTO onPasswordIncorrectException(PasswordIncorrectException e) {
+        logger.error("Password Incorrect: {}", e.getMessage(), e);
         return new ViolationDTO(PASSWORD, e.getMessage());
     }
 
@@ -78,6 +83,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(FullLinkSizeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ViolationDTO onFullLinkSizeException(FullLinkSizeException e) {
+        logger.error("Full Link Size Incorrect: {}", e.getMessage(), e);
         return new ViolationDTO(FULL_LINK, e.getMessage());
     }
 
@@ -85,6 +91,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(WrongPasswordException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ViolationDTO onWrongPasswordException(WrongPasswordException e) {
+        logger.error("Wrong Password: {}", e.getMessage(), e);
         return new ViolationDTO(PASSWORD, e.getMessage());
     }
 
@@ -92,6 +99,7 @@ public class ExceptionHandlingService {
     @ExceptionHandler(LinkNotSecureException.class)
     @ResponseStatus(HttpStatus.GONE)
     public ViolationDTO onLinkNotSecureException(LinkNotSecureException e) {
+        logger.error("Link Not Secure: {}", e.getMessage(), e);
         return new ViolationDTO(FULL_LINK, e.getMessage());
     }
 

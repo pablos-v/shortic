@@ -26,7 +26,6 @@ public class LinkUnitController {
 
     @GetMapping
     public ResponseEntity<PageDTO> getPage(
-//            final @RequestBody PageRequestDTO dto
             int page,
             int size,
             String shortLink,

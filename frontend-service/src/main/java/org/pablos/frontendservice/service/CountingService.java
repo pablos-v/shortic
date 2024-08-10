@@ -8,6 +8,7 @@ import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkNotSecureException;
 import org.pablos.shortic.exception.PasswordIncorrectException;
 import org.pablos.shortic.exception.WrongPasswordException;
+import org.pablos.shortic.util.CommonUtil;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -46,18 +47,21 @@ public class CountingService {
         throw new WrongInputException("Unknown error");
     }
 
-    public PageDTO getPageOfClicks(int page, int size, String shortLink, String password) throws WrongInputException, WrongPasswordException, LinkNotFoundException {
+    public PageDTO getPageOfClicks(int page, int size, String shortLink, String password) throws WrongInputException,
+            WrongPasswordException, LinkNotFoundException {
         try {
-//            ResponseEntity<PageDTO> response = restTemplate.exchange(
-//                    countingServiceUrl + "/link",
-//                    HttpMethod.GET,
-//                    new HttpEntity<>(new PageRequestDTO(page, size, dto)),
-//                    PageDTO.class);
-            String url = countingServiceUrl + "/link" + "?page=" + page + "&size=" + size + "&shortLink=" + shortLink + "&password=" + password;
+            String url = countingServiceUrl + "/link" + "?page=" + page + "&size=" + size + "&shortLink="
+                    + shortLink + "&password=" + CommonUtil.encodePassword(password);
             ResponseEntity<PageDTO> response = restTemplate.getForEntity(url, PageDTO.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
-                return response.getBody();
+
+                PageDTO responseBody = response.getBody();
+                if (responseBody != null) {
+                    String passwordDecoded = CommonUtil.decodePassword(responseBody.getLinkUnit().getPassword());
+                    responseBody.getLinkUnit().setPassword(passwordDecoded);
+                }
+                return responseBody;
             }
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
@@ -71,22 +75,6 @@ public class CountingService {
         }
         throw new LinkNotFoundException();
     }
-
-//    public PageDTO updateAndGetPageOfClicks(int page, int size, LinkUnitDTO dto) throws LinkNotSecureException, WrongInputException {
-//        ResponseEntity<?> response = restTemplate.exchange(
-//                countingServiceUrl + "/link",
-//                HttpMethod.PUT,
-//                new HttpEntity<>(new PageRequestDTO(page, size, dto)),
-//                PageDTO.class);
-//
-//        if (response.getStatusCode().is2xxSuccessful()) {
-//            return (PageDTO) response.getBody();
-//        } else if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(410))){
-//            throw new LinkNotSecureException();
-//        } else {
-//            throw new WrongInputException();
-//        }
-//    }
 
     public void postStatistics(ClickDTO clickDTO) {
         restTemplate.postForLocation(countingServiceUrl + "/click", clickDTO);
@@ -115,7 +103,8 @@ public class CountingService {
     public void setPassword(String shortLink, String password) {
         try {
             ResponseEntity<Void> response = restTemplate.exchange(
-                        countingServiceUrl + "/link/password" + "?shortLink=" + shortLink + "&password=" + password,
+                        countingServiceUrl + "/link/password" + "?shortLink=" + shortLink
+                                + "&password=" + CommonUtil.encodePassword(password),
                         HttpMethod.PUT,
                         null,
                         Void.class);

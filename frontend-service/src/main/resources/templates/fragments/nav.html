@@ -1,11 +1,5 @@
-<nav th:fragment="nav(dtoForStats, isMainPage)">
+<nav th:fragment="nav(isMainPage)">
     <a th:if="${!isMainPage}" th:href="@{'/'}" th:class="'button'">На главную</a>
-<!--TODO remaster form for body-->
-<!--    <form action="/stats" th:method="get">-->
-<!--        <input type="text" name="shortLink" placeholder="сокращённая ссылка" maxlength="20">-->
-<!--        <input type="text" name="password" placeholder="пароль" maxlength="5">-->
-<!--        <input type="submit" value="СТАТИСТИКА">-->
-<!--    </form>    -->
     <form th:method="get" th:action="@{/stats}" >
         <input type="text"
                name="shortLink"

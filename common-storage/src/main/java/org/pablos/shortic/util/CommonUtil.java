@@ -6,6 +6,7 @@ import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.exception.*;
 
 import java.security.SecureRandom;
+import java.util.Base64;
 
 public class CommonUtil {
     /**
@@ -80,5 +81,14 @@ public class CommonUtil {
         if (password == null || !password.matches("\\d{5}")) {
             throw new PasswordIncorrectException();
         }
+    }
+
+    public static String encodePassword(String input) {
+        return Base64.getEncoder().encodeToString(input.getBytes());
+    }
+
+    public static String decodePassword(String input) {
+        byte[] decodedBytes = Base64.getDecoder().decode(input);
+        return new String(decodedBytes);
     }
 }

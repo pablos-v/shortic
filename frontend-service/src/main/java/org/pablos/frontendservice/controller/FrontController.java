@@ -29,12 +29,8 @@ public class FrontController {
     private final CountingService countingService;
 
     @GetMapping
-    public String mainPage(
-            final Model model,
-            final @ModelAttribute FastLinkDTO input,
-            final @ModelAttribute LinkUnitDTO dtoForStats){
+    public String mainPage(final Model model, final @ModelAttribute FastLinkDTO input){
         model.addAttribute("input", input);
-        model.addAttribute("dtoForStats", dtoForStats);
         model.addAttribute("isMainPage", true);
 
         return "index";
@@ -50,7 +46,6 @@ public class FrontController {
     @PostMapping
     public String createLink(
             final FastLinkDTO input,
-            final @ModelAttribute LinkUnitDTO dtoForStats,
             final Model model,
             HttpServletRequest request
     ){
@@ -60,7 +55,6 @@ public class FrontController {
 
         model.addAttribute("linkUnit", linkUnit);
         model.addAttribute("shortLink", serverUrl + linkUnit.getShortLink());
-        model.addAttribute("dtoForStats", dtoForStats);
         model.addAttribute("isMainPage", false);
 
         return "created";
@@ -73,12 +67,11 @@ public class FrontController {
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final @ModelAttribute LinkUnitDTO dtoForStats,
             final Model model
     ){
         countingService.updateLink(shortLink, fullLink);
 
-        return showStatistics(shortLink, password, page, size, dtoForStats, model);
+        return showStatistics(shortLink, password, page, size, model);
     }
 
     @PutMapping("/password")
@@ -87,18 +80,16 @@ public class FrontController {
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final @ModelAttribute LinkUnitDTO dtoForStats,
             final Model model
     ){
         countingService.setPassword(shortLink, password);
 
-        return showStatistics(shortLink, password, page, size, dtoForStats, model);
+        return showStatistics(shortLink, password, page, size, model);
     }
 
     /**
      * Вызывает страницу с результатами статистики кликов по ссылке.
      * Предварительно обрезает переданную короткую ссылку, убирая домен, и валидирует.
-     * @param dtoForStats
      * @param model
      * @param page
      * @param size
@@ -110,7 +101,6 @@ public class FrontController {
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final @ModelAttribute LinkUnitDTO dtoForStats,
             final Model model
     ){
         shortLink = shortLink.trim();
@@ -120,53 +110,42 @@ public class FrontController {
         CommonUtil.validateShortLink(shortLink);
         PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, shortLink, password);
 
-        return preparePageableStats(dtoForStats, model, page, size, pageOfClicks);
-    }
-
-    private String preparePageableStats(LinkUnitDTO dtoForStats, Model model,
-            int page, int size, PageDTO pageOfClicks) {
         model.addAttribute("clicks", pageOfClicks.getClicks());
         model.addAttribute("clicksPerPage", CLICKS_PER_PAGE);
         model.addAttribute("totalPages", pageOfClicks.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
-
-        model.addAttribute("dtoForStats", dtoForStats);
+        
         model.addAttribute("linkUnit", pageOfClicks.getLinkUnit());
         model.addAttribute("isMainPage", false);
 
         return "stats";
     }
+
     @GetMapping("/error/404")
-    public String notFound(final @ModelAttribute LinkUnitDTO dtoForStats, final Model model){
-        model.addAttribute("dtoForStats", dtoForStats);
+    public String notFound(final Model model){
         model.addAttribute("isMainPage", false);
         return "error/404";
     }
     @GetMapping("/error/400")
-    public String wrongInput(final @ModelAttribute LinkUnitDTO dtoForStats, final Model model){
-        model.addAttribute("dtoForStats", dtoForStats);
+    public String wrongInput(final Model model){
         model.addAttribute("isMainPage", false);
         return "error/400";
     }
     @GetMapping("/error/410")
-    public String badLink(final @ModelAttribute LinkUnitDTO dtoForStats, final Model model){
-        model.addAttribute("dtoForStats", dtoForStats);
+    public String badLink(final Model model){
         model.addAttribute("isMainPage", false);
         return "error/410";
     }
     @GetMapping("/error/password")
-    public String wrongPassword(final @ModelAttribute LinkUnitDTO dtoForStats, final Model model){
-        model.addAttribute("dtoForStats", dtoForStats);
+    public String wrongPassword(final Model model){
         model.addAttribute("isMainPage", false);
         return "error/password";
     }
     @GetMapping("/oferta")
-    public String showOffer(final @ModelAttribute LinkUnitDTO dtoForStats, final Model model){
-        model.addAttribute("dtoForStats", dtoForStats);
+    public String showOffer(final Model model){
         model.addAttribute("isMainPage", false);
         return "oferta";
     }
-
 
 }
