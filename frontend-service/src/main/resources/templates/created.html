@@ -15,7 +15,7 @@
 <div>
     <label class="input-group-text">Ваша короткая ссылка:</label>
     <span id="shortLink" th:text="${shortLink}"> </span>
-    <button onclick="copyToClipboard()" class="btn btn-primary">КОПИРОВАТЬ</button>
+    <button id="copyButton" onclick="copyToClipboard()" class="btn btn-primary">КОПИРОВАТЬ</button>
 </div>
 <div>
     <p>
@@ -48,8 +48,21 @@
 <script>
     function copyToClipboard() {
         const shortLink = document.getElementById('shortLink').textContent;
-        navigator.clipboard.writeText(shortLink);
-        alert("Ссылка скопирована в буфер обмена.");
+        const copyButton = document.getElementById('copyButton');
+
+        if (shortLink) {
+            navigator.clipboard.writeText(shortLink)
+                .then(() => {
+                    copyButton.textContent = "СКОПИРОВАНО";
+                    copyButton.disabled = true;
+                })
+                .catch(err => {
+                    console.error("Ошибка при копировании: ", err);
+                    copyButton.textContent = "ОШИБКА!";
+                });
+        } else {
+            alert("Ссылка пуста.");
+        }
     }
 </script>
 </body>
