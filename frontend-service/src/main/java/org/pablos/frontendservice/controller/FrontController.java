@@ -11,6 +11,7 @@ import org.pablos.shortic.util.CommonUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Arrays;
@@ -64,11 +65,11 @@ public class FrontController {
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final Model model
+            final RedirectAttributes redirectAttributes
     ){
         countingService.updateLink(shortLink, fullLink);
 
-        return showStatistics(shortLink, password, page, size, model);
+        return getStatistics(shortLink, password, page, size, redirectAttributes);
     }
 
     @PutMapping("/password")
@@ -77,34 +78,61 @@ public class FrontController {
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final Model model
+            final RedirectAttributes redirectAttributes
     ){
         countingService.setPassword(shortLink, password);
 
-        return showStatistics(shortLink, password, page, size, model);
+        return getStatistics(shortLink, password, page, size, redirectAttributes);
     }
 
     /**
-     * Вызывает страницу с результатами статистики кликов по ссылке.
+     * Переадресует на страницу с результатами статистики.
+     * Метод нужен для сокрытия параметров запроса в адресной строке.
      * Предварительно обрезает переданную короткую ссылку, убирая домен, и валидирует.
-     * @param model
+     * @param shortLink
+     * @param password
      * @param page
      * @param size
-     * @return
+     * @param redirectAttributes - RedirectAttributes для скрытой передачи параметров запроса при редиректе
+     * @return редирект на страницу с результатами статистики
      */
     @GetMapping("/stats")
-    public String showStatistics(
+    public String getStatistics(
             @RequestParam String shortLink,
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final Model model
+            final RedirectAttributes redirectAttributes
     ){
         shortLink = shortLink.trim();
         int length = shortLink.length();
         shortLink = shortLink.substring(length-6, length);
 
         CommonUtil.validateShortLink(shortLink);
+
+        // Сохраняем параметры в RedirectAttributes
+        redirectAttributes.addFlashAttribute("shortLink", shortLink);
+        redirectAttributes.addFlashAttribute("password", password);
+        redirectAttributes.addFlashAttribute("page", page);
+        redirectAttributes.addFlashAttribute("size", size);
+
+        return "redirect:/statistics";
+    }
+
+    /**
+     * Вызывает страницу с результатами статистики кликов по ссылке.
+     * Метод нужен для сокрытия параметров запроса в адресной строке.
+     * @param model модель с параметрами запроса
+     * @return шаблон страницы с результатами статистики
+     */
+    @GetMapping("/statistics")
+    public String showStatistics(final Model model){
+
+        String shortLink = (String) model.asMap().get("shortLink");
+        String password = (String) model.asMap().get("password");
+        int page = (int) model.asMap().get("page");
+        int size = (int) model.asMap().get("size");
+
         PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, shortLink, password);
 
         model.addAttribute("clicks", pageOfClicks.getClicks());
@@ -112,12 +140,10 @@ public class FrontController {
         model.addAttribute("totalPages", pageOfClicks.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
-        
         model.addAttribute("linkUnit", pageOfClicks.getLinkUnit());
         model.addAttribute("isMainPage", false);
 
-        return "stats";
-//        return "redirect:/stats";
+        return "statistics";
     }
 
 
