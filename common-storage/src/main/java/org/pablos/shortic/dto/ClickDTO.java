@@ -6,7 +6,6 @@ import org.pablos.shortic.IShortLink;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 @Data
 @RequiredArgsConstructor
 public final class ClickDTO implements IShortLink {

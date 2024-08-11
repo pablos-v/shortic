@@ -4,15 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.pablos.frontendservice.exception.WrongInputException;
 import org.pablos.shortic.dto.*;
-import org.pablos.shortic.exception.LinkNotFoundException;
-import org.pablos.shortic.exception.LinkNotSecureException;
-import org.pablos.shortic.exception.PasswordIncorrectException;
-import org.pablos.shortic.exception.WrongPasswordException;
+import org.pablos.shortic.exception.*;
 import org.pablos.shortic.util.CommonUtil;
-import org.springframework.http.*;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
@@ -30,7 +29,9 @@ public class CountingService {
      * @param input
      * @return
      */
-    public LinkUnitDTO createLink(final FastLinkDTO input) throws WrongInputException {
+    public LinkUnitDTO createLink(final FastLinkDTO input) throws WrongInputException, FullLinkNotProvidedException,
+            FullLinkSizeException, FullLinkFormatException {
+        CommonUtil.validateDTOFullLink(input);
         try {
             ResponseEntity<LinkUnitDTO> response = restTemplate.postForEntity(
                     countingServiceUrl + "/link",
@@ -80,7 +81,9 @@ public class CountingService {
         restTemplate.postForLocation(countingServiceUrl + "/click", clickDTO);
     }
 
-    public void updateLink(String shortLink, String fullLink) throws LinkNotSecureException, WrongInputException {
+    public void updateLink(String shortLink, String fullLink) throws LinkNotSecureException, WrongInputException,
+            FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
+        CommonUtil.validateFullLink(fullLink);
         try {
             ResponseEntity<Void> response = restTemplate.exchange(
                     countingServiceUrl + "/link" + "?shortLink=" + shortLink + "&fullLink=" + fullLink,

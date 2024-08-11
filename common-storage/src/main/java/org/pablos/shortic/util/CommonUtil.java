@@ -2,17 +2,22 @@ package org.pablos.shortic.util;
 
 import org.pablos.shortic.IFullLink;
 import org.pablos.shortic.IShortLink;
-import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.exception.*;
 
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommonUtil {
     /**
      * Здесь задаётся длина сокращённой ссылки.
      */
     public static final String EXISTS = "This short link already exists";
+    public static final String SHORT_LINK = "shortLink";
+    public static final String FULL_LINK = "fullLink";
+    public static final String PASSWORD = "password";
+    public static final String OBJECT = "object";
     public static final int SHORT_LINK_LENGTH = 6;
     private static final int FULL_LINK_MAX_LENGTH = 4096;
     private static final String NOT_PROVIDED = "Link was not provided";
@@ -64,16 +69,24 @@ public class CommonUtil {
         }
     }
 
-    public static void validateDTOFullLink(IFullLink dto) throws FullLinkNotProvidedException, FullLinkSizeException{
+    public static void validateDTOFullLink(IFullLink dto) throws FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
         if (dto == null || dto.getFullLink() == null || dto.getFullLink().isEmpty()) {
             throw new FullLinkNotProvidedException();
         }
         validateFullLink(dto.getFullLink());
     }
 
-    public static void validateFullLink(String link) throws FullLinkSizeException{
+    public static void validateFullLink(String link) throws FullLinkSizeException, FullLinkFormatException {
         if (link.length() > FULL_LINK_MAX_LENGTH) {
             throw new FullLinkSizeException();
+        }
+
+        String regex = "^(http://|https://)[^\\s_]+(\\.[^\\s_]+)+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(link);
+
+        if (!matcher.matches()) {
+            throw new FullLinkFormatException();
         }
     }
 

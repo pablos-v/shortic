@@ -2,12 +2,11 @@ package org.pablos.backendcountingservice.configuration;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
-import org.pablos.backendcountingservice.service.ILinkCheckingService;
-import org.pablos.backendcountingservice.service.YandexAPILinkCheckingService;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.RequiredArgsConstructor;
+import org.pablos.backendcountingservice.service.ILinkCheckingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

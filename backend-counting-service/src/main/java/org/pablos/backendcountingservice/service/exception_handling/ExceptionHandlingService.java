@@ -3,13 +3,10 @@ package org.pablos.backendcountingservice.service.exception_handling;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkException;
 import org.pablos.backendcountingservice.domain.exception.LinkNotFoundWhileActivationException;
-import org.pablos.shortic.exception.LinkNotSecureException;
 import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
-import org.pablos.shortic.exception.WrongPasswordException;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.dto.ObjectViolationDTO;
 import org.pablos.shortic.dto.ViolationDTO;
 import org.pablos.shortic.exception.*;
+import org.pablos.shortic.util.CommonUtil;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,12 +17,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionHandlingService {
-    private static final String SHORT_LINK = "shortLink";
-    private static final String FULL_LINK = "fullLink";
-    public static final String PASSWORD = "password";
 
     private final Logger logger;
-
 
     /**
      * Метод обрабатывает исключения {@link LinkProcessingException}, возникающие в процессе валидации ссылки.
@@ -38,21 +31,21 @@ public class ExceptionHandlingService {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ViolationDTO onLinkProcessingException(LinkProcessingException e) {
         logger.error("Link not correct: {}", e.getMessage(), e);
-        return new ViolationDTO(SHORT_LINK, e.getMessage());
+        return new ViolationDTO(CommonUtil.SHORT_LINK, e.getMessage());
     }
 
     /**
      * Метод обрабатывает исключения {@link ObjectNotProvidedException}, возникающие когда объект не передан.
-     * Передаёт статус ответа 400 и объект {@link ObjectViolationDTO}, содержащий имя объекта и сообщение.
+     * Передаёт статус ответа 400 и объект {@link ViolationDTO}, содержащий имя объекта и сообщение.
      * @param e выбрасываемое исключение
-     * @return {@link ObjectViolationDTO}
+     * @return {@link ViolationDTO}
      */
     @ResponseBody
     @ExceptionHandler(ObjectNotProvidedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ObjectViolationDTO onFastLinkDTONotProvidedException(ObjectNotProvidedException e) {
+    public ViolationDTO onFastLinkDTONotProvidedException(ObjectNotProvidedException e) {
         logger.error("No Object was Provided: {}", e.getMessage(), e);
-        return new ObjectViolationDTO(FastLinkDTO.class.getSimpleName(), e.getMessage());
+        return new ViolationDTO(CommonUtil.OBJECT, e.getMessage());
     }
 
     @ResponseBody
@@ -60,7 +53,7 @@ public class ExceptionHandlingService {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ViolationDTO onLinkNotFoundException(LinkNotFoundException e) {
         logger.error("Link Not Found: {}", e.getMessage(), e);
-        return new ViolationDTO(SHORT_LINK, e.getMessage());
+        return new ViolationDTO(CommonUtil.SHORT_LINK, e.getMessage());
     }
 
     @ResponseBody
@@ -68,7 +61,7 @@ public class ExceptionHandlingService {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ViolationDTO onFullLinkNotProvidedException(FullLinkNotProvidedException e) {
         logger.error("Full link is absent: {}", e.getMessage(), e);
-        return new ViolationDTO(FULL_LINK, e.getMessage());
+        return new ViolationDTO(CommonUtil.FULL_LINK, e.getMessage());
     }
 
     @ResponseBody
@@ -76,15 +69,15 @@ public class ExceptionHandlingService {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ViolationDTO onPasswordIncorrectException(PasswordIncorrectException e) {
         logger.error("Password Incorrect: {}", e.getMessage(), e);
-        return new ViolationDTO(PASSWORD, e.getMessage());
+        return new ViolationDTO(CommonUtil.PASSWORD, e.getMessage());
     }
 
     @ResponseBody
-    @ExceptionHandler(FullLinkSizeException.class)
+    @ExceptionHandler({FullLinkSizeException.class, FullLinkFormatException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ViolationDTO onFullLinkSizeException(FullLinkSizeException e) {
-        logger.error("Full Link Size Incorrect: {}", e.getMessage(), e);
-        return new ViolationDTO(FULL_LINK, e.getMessage());
+    public ViolationDTO onFullLinkSizeException(Exception e) {
+        logger.error("Full Link Is Incorrect: {}", e.getMessage(), e);
+        return new ViolationDTO(CommonUtil.FULL_LINK, e.getMessage());
     }
 
     @ResponseBody
@@ -92,7 +85,7 @@ public class ExceptionHandlingService {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ViolationDTO onWrongPasswordException(WrongPasswordException e) {
         logger.error("Wrong Password: {}", e.getMessage(), e);
-        return new ViolationDTO(PASSWORD, e.getMessage());
+        return new ViolationDTO(CommonUtil.PASSWORD, e.getMessage());
     }
 
     @ResponseBody
@@ -100,7 +93,7 @@ public class ExceptionHandlingService {
     @ResponseStatus(HttpStatus.GONE)
     public ViolationDTO onLinkNotSecureException(LinkNotSecureException e) {
         logger.error("Link Not Secure: {}", e.getMessage(), e);
-        return new ViolationDTO(FULL_LINK, e.getMessage());
+        return new ViolationDTO(CommonUtil.FULL_LINK, e.getMessage());
     }
 
     @ExceptionHandler(LinkNotFoundWhileActivationException.class)

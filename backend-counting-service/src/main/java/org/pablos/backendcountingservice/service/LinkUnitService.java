@@ -5,13 +5,13 @@ import org.pablos.backendcountingservice.domain.entity.Click;
 import org.pablos.backendcountingservice.domain.entity.LinkUnit;
 import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkException;
 import org.pablos.backendcountingservice.domain.exception.LinkNotFoundWhileActivationException;
-import org.pablos.shortic.dto.*;
-import org.pablos.shortic.exception.LinkNotSecureException;
 import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
-import org.pablos.shortic.exception.PasswordIncorrectException;
-import org.pablos.shortic.exception.WrongPasswordException;
 import org.pablos.backendcountingservice.repository.LinkUnitRepository;
-import org.pablos.shortic.exception.LinkNotFoundException;
+import org.pablos.shortic.dto.ClickDTO;
+import org.pablos.shortic.dto.FastLinkDTO;
+import org.pablos.shortic.dto.LinkUnitDTO;
+import org.pablos.shortic.dto.PageDTO;
+import org.pablos.shortic.exception.*;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -43,7 +43,8 @@ public class LinkUnitService {
     }
 
     @Transactional
-    public LinkUnitDTO createLinkUnit(final FastLinkDTO input) throws LinkNotFoundWhileActivationException{
+    public LinkUnitDTO createLinkUnit(final FastLinkDTO input) throws LinkNotFoundWhileActivationException,
+            FullLinkSizeException, FullLinkFormatException, FullLinkNotProvidedException {
         CommonUtil.validateDTOFullLink(input);
         String shortLink;
         do {
@@ -62,7 +63,6 @@ public class LinkUnitService {
 
     /**
      * Получает из репозитория LinkUnit и формирует на основе PageRequestDTO страницу для пагинации.
-     * @param dto
      * @return
      * @throws LinkNotFoundException
      * @throws WrongPasswordException
@@ -156,8 +156,8 @@ public class LinkUnitService {
      * @throws LinkNotSecureException
      */
     @Transactional
-    public void updateLinkUnit(final String shortLink, final String fullLink)
-            throws LinkNotSecureException, LinkNotFoundException {
+    public void updateLinkUnit(final String shortLink, final String fullLink) throws LinkNotSecureException,
+            LinkNotFoundException, FullLinkNotProvidedException, FullLinkFormatException, FullLinkSizeException {
 
         CommonUtil.validateFullLink(fullLink);
         LinkUnit linkUnit = getLinkUnitByShortLink(shortLink);

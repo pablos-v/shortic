@@ -54,10 +54,11 @@
             <form class="col card p-3 mb-5" th:method="put" th:action="@{/(page=${currentPage}, size=${pageSize},
             shortLink=${linkUnit.getShortLink()}, password=${linkUnit.getPassword()})}">
                 <input class="form-control"
-                       placeholder="Введите новую ссылку здесь. Проверка займёт немного времени."
+                       placeholder="Введите новую ссылку формата http://***.** Проверка займёт немного времени"
                        required="true"
                        id="fullLink"
                        maxlength="4096"
+                       pattern="^(http://|https://)[^\s_]+(\.[^\s_]+)+$"
                        name="fullLink"
                        type="text"/>
                 <input class="btn btn-primary" type="submit" value="ИЗМЕНИТЬ ССЫЛКУ"/>

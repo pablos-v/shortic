@@ -1,6 +1,5 @@
 package org.pablos.backendcountingservice.service;
 
-import org.pablos.backendcountingservice.domain.entity.Click;
 import org.pablos.backendcountingservice.domain.entity.LinkUnit;
 import org.pablos.shortic.dto.LinkUnitDTO;
 

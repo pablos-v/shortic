@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.pablos.frontendservice.service.CountingService;
 import org.pablos.frontendservice.service.GivingService;
 import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.dto.PageDTO;
 import org.pablos.shortic.dto.LinkUnitDTO;
+import org.pablos.shortic.dto.PageDTO;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +15,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 @RequestMapping("/")
@@ -39,8 +38,7 @@ public class FrontController {
     @GetMapping("{shortLink}")
     public RedirectView getLink(final @PathVariable String shortLink, final HttpServletRequest request) {
         String fullLink = givingService.clickProcessing(shortLink, request);
-
-        return new RedirectView(Objects.requireNonNullElse(fullLink, "/error/404"));
+        return new RedirectView(fullLink);
     }
 
     @PostMapping
@@ -49,7 +47,6 @@ public class FrontController {
             final Model model,
             HttpServletRequest request
     ){
-        CommonUtil.validateDTOFullLink(input);
         LinkUnitDTO linkUnit = countingService.createLink(input);
         String serverUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 
@@ -120,7 +117,9 @@ public class FrontController {
         model.addAttribute("isMainPage", false);
 
         return "stats";
+//        return "redirect:/stats";
     }
+
 
     @GetMapping("/error/404")
     public String notFound(final Model model){

@@ -3,14 +3,11 @@ package org.pablos.backendgivingservice.service;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendgivingservice.domain.entity.FastLink;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.exception.LinkNotFoundException;
-import org.pablos.shortic.exception.LinkProcessingException;
 import org.pablos.backendgivingservice.repository.FastLinkRepository;
+import org.pablos.shortic.dto.FastLinkDTO;
+import org.pablos.shortic.exception.*;
 import org.pablos.shortic.util.CommonUtil;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,25 +22,21 @@ public class FastLinkService implements IFastLinkService {
 
     private final FastLinkRepository repository;
 
-    /**
-     * TODO
-     * @param shortLink сокращённая ссылка
-     * @return
-     * @throws LinkNotFoundException
-     */
     @Override
     @Cacheable(
             cacheNames = "fullLink",
             key = "#shortLink"
     )
-    public String getFullLink(final String shortLink) throws LinkNotFoundException{
+    public String getFullLink(final String shortLink) {
         return getFastLink(shortLink).getFullLink();
     }
 
     @Override
     @Transactional
-    public FastLinkDTO create(final FastLinkDTO fastLink) throws LinkProcessingException{
+    public FastLinkDTO create(final FastLinkDTO fastLink) throws ObjectNotProvidedException, LinkProcessingException,
+            FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
         CommonUtil.validateDTOShortLink(fastLink);
+        CommonUtil.validateDTOFullLink(fastLink);
         if (repository.existsById(fastLink.getShortLink())) throw new LinkProcessingException(CommonUtil.EXISTS);
 
         FastLink response = repository.save(FastLinkMapper.toEntity(fastLink));
@@ -54,13 +47,15 @@ public class FastLinkService implements IFastLinkService {
     @Transactional
     @CacheEvict(
             cacheNames = "fullLink",
-            key = "#fastLink.getShortLink()"
+            key = "#dto.getShortLink()"
     )
-    public FastLinkDTO update(final FastLinkDTO fastLink) throws LinkNotFoundException{
-        CommonUtil.validateDTOShortLink(fastLink);
-        repository.findById(fastLink.getShortLink()).orElseThrow(LinkNotFoundException::new);
-        FastLink response = repository.save(FastLinkMapper.toEntity(fastLink));
-        return FastLinkMapper.toDTO(response);
+    public FastLinkDTO update(final FastLinkDTO dto) throws LinkNotFoundException, ObjectNotProvidedException,
+            LinkProcessingException, FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
+        CommonUtil.validateDTOShortLink(dto);
+        CommonUtil.validateDTOFullLink(dto);
+        FastLink fastLink = getFastLink(dto.getShortLink());
+        fastLink.setFullLink(dto.getFullLink());
+        return FastLinkMapper.toDTO(repository.save(fastLink));
     }
 
     @Override
@@ -69,13 +64,13 @@ public class FastLinkService implements IFastLinkService {
             cacheNames = "fullLink",
             key = "#shortLink"
     )
-    public FastLinkDTO deleteByShortLink(final String shortLink) throws LinkNotFoundException{
+    public FastLinkDTO deleteByShortLink(final String shortLink) throws LinkNotFoundException, LinkProcessingException {
         FastLink fastLink = getFastLink(shortLink);
         repository.deleteById(shortLink);
         return FastLinkMapper.toDTO(fastLink);
     }
 
-    private FastLink getFastLink(String shortLink) throws LinkNotFoundException{
+    private FastLink getFastLink(String shortLink) throws LinkNotFoundException, LinkProcessingException {
         CommonUtil.validateShortLink(shortLink);
         return repository.findById(shortLink).orElseThrow(LinkNotFoundException::new);
     }

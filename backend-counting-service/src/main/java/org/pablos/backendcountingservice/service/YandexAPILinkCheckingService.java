@@ -4,13 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.configuration.ServiceConfiguration;
 import org.pablos.backendcountingservice.domain.dto.ApiRequestBody;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor

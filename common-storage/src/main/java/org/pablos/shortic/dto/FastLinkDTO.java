@@ -1,6 +1,8 @@
 package org.pablos.shortic.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.pablos.shortic.IFullLink;
 import org.pablos.shortic.IShortLink;
 

@@ -3,18 +3,18 @@ package org.pablos.frontendservice.service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.pablos.frontendservice.exception.WrongInputException;
 import org.pablos.shortic.dto.ClickDTO;
-import org.pablos.shortic.dto.FastLinkDTO;
+import org.pablos.shortic.dto.ViolationDTO;
+import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.util.CommonUtil;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Data
 @Service
@@ -37,15 +37,17 @@ public class GivingService {
         // отправка статистики клика
         new Thread(() -> postStatistics(shortLink, request)).start();
 
-        String fullLink = null;
         try {
-            fullLink = restTemplate.getForObject(givingServiceUrl + "/click/" + shortLink, String.class);
-        } catch (Exception e) {
-                // TODO обработка ошибки 404, может другие тоже будут
-                //  ввобще надо ли так, может ExceptionHandler?
+            return restTemplate.getForObject(givingServiceUrl + "/click/" + shortLink, String.class);
+        } catch (HttpClientErrorException e) {
+            ViolationDTO responseBody = e.getResponseBodyAs(ViolationDTO.class);
+            if (e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(400))){
+                throw new WrongInputException(Objects.requireNonNullElse(responseBody, "Неизвестная ошибка").toString());
+            } else if (e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(404))){
+                throw new LinkNotFoundException(Objects.requireNonNullElse(responseBody, "Неизвестная ошибка").toString());
+            }
+                throw new WrongInputException("Неизвестная ошибка");
         }
-//            если такой ссылки нет, вернуть null, т.к. выше во FrontController на этом логика есть
-        return fullLink;
     }
 
     private void postStatistics(final String shortLink, final HttpServletRequest request){

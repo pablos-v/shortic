@@ -4,11 +4,16 @@
         <input type="text"
                name="shortLink"
                placeholder="сокращённая ссылка"
-               maxlength="30"/>
-        <input type="text"
+               required="true"
+               maxlength="30"
+        />
+        <input type="password"
                name="password"
-               placeholder="пароль"
-               maxlength="5"/>
+               placeholder="пароль 5 цифр"
+               required="true"
+               maxlength="5"
+               pattern="\d{5}"
+        />
         <input type="submit" value="СТАТИСТИКА"/>
     </form>
 </nav>

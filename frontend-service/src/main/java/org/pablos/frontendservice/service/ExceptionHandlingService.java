@@ -5,15 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.pablos.frontendservice.exception.WrongInputException;
 import org.pablos.shortic.exception.*;
 import org.slf4j.Logger;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.net.URI;
 
 /**
  * Класс обработки выбрасываемых исключений
@@ -60,7 +55,7 @@ public class ExceptionHandlingService {
      * Передаёт статус ответа 400 и редиректит на главную страницу.
      * @return ответ с заголовком редиректа на главную страницу
      */
-    @ExceptionHandler({FullLinkNotProvidedException.class, FullLinkSizeException.class})
+    @ExceptionHandler({FullLinkNotProvidedException.class, FullLinkSizeException.class, FullLinkFormatException.class})
     public void onFullLinkExceptions(HttpServletResponse response, Exception e) throws IOException {
         logger.error("Full link not correct: {}", e.getMessage(), e);
         response.sendRedirect("/");

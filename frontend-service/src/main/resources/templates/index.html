@@ -14,11 +14,13 @@
     <label type="hidden" for="link">Сократитель</label>
     <input class="form-control"
            id="link"
-           placeholder="Введите ссылку"
+           type="text"
+           placeholder="Введите ссылку формата http://***.**"
            required="true"
            maxlength="4096"
+           pattern="^(http://|https://)[^\s_]+(\.[^\s_]+)+$"
            th:field="${input.fullLink}"
-           type="text"/>
+    />
     <input class="btn btn-primary" type="submit" value="СОКРАТИТЬ"/>
 </div>
 </form>

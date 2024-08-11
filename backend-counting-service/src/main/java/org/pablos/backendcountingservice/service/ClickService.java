@@ -2,14 +2,12 @@ package org.pablos.backendcountingservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.domain.entity.Click;
-import org.pablos.shortic.dto.ClickDTO;
 import org.pablos.backendcountingservice.repository.ClickRepository;
+import org.pablos.shortic.dto.ClickDTO;
 import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkProcessingException;
 import org.pablos.shortic.exception.ObjectNotProvidedException;
 import org.pablos.shortic.util.CommonUtil;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

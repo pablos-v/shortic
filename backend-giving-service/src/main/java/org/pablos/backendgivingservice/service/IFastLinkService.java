@@ -31,7 +31,7 @@ public interface IFastLinkService {
     FastLinkDTO create(final FastLinkDTO fastLink) throws LinkNotFoundException, LinkProcessingException;
 
     /**
-     * Метод обновления и записи в БД объекта {@link FastLink}. В процессе валидирует ссылку.
+     * Метод обновления полной ссылки и записи в БД объекта {@link FastLink}. В процессе валидирует ссылку.
      * Обновляет кэш.
      *
      * @param fastLink DTO, содержащий ссылки

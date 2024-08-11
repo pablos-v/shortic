@@ -3,9 +3,6 @@ package org.pablos.backendcountingservice.service;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.configuration.ServiceConfiguration;
 import org.pablos.backendcountingservice.domain.entity.LinkUnit;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.dto.LinkUnitDTO;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
