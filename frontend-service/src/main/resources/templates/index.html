@@ -5,24 +5,22 @@
 </div>
 <body>
 <div th:replace="~{fragments/nav :: nav(${isMainPage})}">
-
     <!-- Включение меню -->
 </div>
 
-<form class="col card p-3 mb-5" th:method="post" th:action="@{/}" th:object="${input}">
-<div class="form-group">
-    <label type="hidden" for="link">Сократитель</label>
-    <input class="form-control"
+<form class="main col p-3 mb-5" th:method="post" th:action="@{/}" th:object="${input}">
+    <div class="form-group">
+        <input class="form-control form-control-lg"
            id="link"
            type="text"
-           placeholder="Введите ссылку формата http://***.**"
+           placeholder="формат ссылки: https://*.*"
            required="true"
            maxlength="4096"
            pattern="^(http://|https://)[^\s_]+(\.[^\s_]+)+$"
            th:field="${input.fullLink}"
     />
-    <input class="btn btn-primary" type="submit" value="СОКРАТИТЬ"/>
-</div>
+        <input class="btn btn-primary shadow-custom btn-main" type="submit" value="СОКРАТИТЬ"/>
+    </div>
 </form>
 
 <div th:replace="~{fragments/footer :: footer}" th:fragment="footer">

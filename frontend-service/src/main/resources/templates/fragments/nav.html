@@ -1,19 +1,22 @@
-<nav th:fragment="nav(isMainPage)">
-    <a th:if="${!isMainPage}" th:href="@{'/'}" th:class="'button'">На главную</a>
-    <form th:method="get" th:action="@{/stats}" >
-        <input type="text"
+<nav class="menu" th:fragment="nav(isMainPage)">
+    <a th:if="${!isMainPage}" th:href="@{'/'}" class="btn btn-primary">На главную</a>
+    <div th:if="${isMainPage}" class="logo"> </div>
+    <form class="menu-form" th:method="get" th:action="@{/stats}" >
+        <input class="form-control"
+               type="text"
                name="shortLink"
                placeholder="сокращённая ссылка"
                required="true"
                maxlength="30"
         />
-        <input type="password"
+        <input class="form-control"
+               type="password"
                name="password"
                placeholder="пароль 5 цифр"
                required="true"
                maxlength="5"
                pattern="\d{5}"
         />
-        <input type="submit" value="СТАТИСТИКА"/>
+        <input class="btn btn-secondary" type="submit" value="СТАТИСТИКА"/>
     </form>
 </nav>
