@@ -5,41 +5,42 @@
 </div>
 <body>
 <div th:replace="~{fragments/nav :: nav(${isMainPage})}">
-
     <!-- Включение меню -->
 </div>
-<div>
-    <label class="input-group-text">Полная ссылка:</label>
-    <span th:text="${linkUnit.getFullLink()}"> </span>
-</div>
-<div>
-    <label class="input-group-text">Ваша короткая ссылка:</label>
-    <span id="shortLink" th:text="${shortLink}"> </span>
-    <button id="copyButton" onclick="copyToClipboard()" class="btn btn-primary">КОПИРОВАТЬ</button>
-</div>
-<div>
-    <p>
-        Обратите внимание, что короткая ССЫЛКА ПОКА НЕ АКТИВНА.
-        Сначала полная ссылка будет проверена на опасность. Мы уже начали проверку.
-        Обычно активация занимает меньше 30 секунд.
-    </p>
-</div>
-
-<form class="col card p-3 mb-5" th:method="put" th:action="@{/password(shortLink=${linkUnit.getShortLink()})}">
-    <div class="form-group">
-        <label type="text" for="link">Можем вести статистику кликов, хотите?</label>
-        <input class="form-control"
-               id="link"
-               placeholder="Придумайте код из 5 цифр"
-               required="true"
-               maxlength="5"
-               pattern="\d{5}"
-               type="text"
-               name="password"
-        />
-        <input class="btn btn-primary" type="submit" value="ЗАПОМИНАТЬ СТАТИСТИКУ"/>
+<div class="column">
+    <div>
+        <label class="input-group-text">Полная ссылка:</label>
+        <p class="input-group-text" th:text="${linkUnit.getFullLink()}"></p>
     </div>
-</form>
+    <div>
+        <label class="text">Ваша короткая ссылка:</label>
+        <span id="shortLink" th:text="${shortLink}"> </span>
+        <button id="copyButton" onclick="copyToClipboard()" class="btn btn-primary">КОПИРОВАТЬ</button>
+    </div>
+    <div>
+        <p>
+            Обратите внимание, что короткая ССЫЛКА ПОКА НЕ АКТИВНА.
+            Сначала полная ссылка будет проверена на опасность. Мы уже начали проверку.
+            Обычно активация занимает меньше 30 секунд.
+        </p>
+    </div>
+
+    <form class="col card p-3 mb-5" th:method="put" th:action="@{/password(shortLink=${linkUnit.getShortLink()})}">
+        <div class="form-group">
+            <label type="text" for="link">Можем вести статистику кликов, хотите?</label>
+            <input class="form-control"
+                   id="link"
+                   placeholder="Придумайте код из 5 цифр"
+                   required="true"
+                   maxlength="5"
+                   pattern="\d{5}"
+                   type="text"
+                   name="password"
+            />
+            <input class="btn btn-primary" type="submit" value="ЗАПОМИНАТЬ СТАТИСТИКУ"/>
+        </div>
+    </form>
+</div>
 
 <div th:replace="~{fragments/footer :: footer}" th:fragment="footer">
     <!-- Включение footer -->
