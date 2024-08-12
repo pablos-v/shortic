@@ -104,4 +104,11 @@ public class CommonUtil {
         byte[] decodedBytes = Base64.getDecoder().decode(input);
         return new String(decodedBytes);
     }
+
+    public static String clearShortLink(String shortLink) {
+        shortLink = shortLink.trim();
+        int length = shortLink.length();
+        return shortLink.substring(length - SHORT_LINK_LENGTH, length);
+    }
 }
+

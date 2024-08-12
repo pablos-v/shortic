@@ -1,17 +1,25 @@
 @font-face {
     font-family: 'Roboto-Regular';
-    src: url('/fonts/Roboto-Regular.ttf') format('truetype');
+    src: url('/static/fonts/Roboto-Regular.ttf') format('truetype');
 }
 
 .navbar {
     padding: 0 10px;
 }
 
+.stats-form-chlink {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
 .menu {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 5px;
+    margin: 5px 5px 20px 5px;
 }
 
 .form-control {
@@ -80,6 +88,10 @@ body {
     border-radius: 8px;
 }
 
+.input-group-text {
+    border-radius: .75rem !important;
+}
+
 .menu-form {
     display: flex;
     align-items: center;
@@ -101,6 +113,34 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 10px;
+}
+
+.container-fluid {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+label {
+    margin: .5rem !important;
+}
+
+.font-size-big {
+    font-size: 1.2rem !important;
+}
+
+.created-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 8px;
+}
+
+.inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 .btn-menu {
@@ -163,18 +203,6 @@ body {
     padding: 6px 12px;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
-}
-
-.active-link {
-    color: #045e04;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.blocked-link {
-    color: #930606;
-    text-decoration: none;
-    font-weight: bold;
 }
 
 .logo{

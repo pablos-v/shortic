@@ -5,88 +5,99 @@
 </div>
 <body>
 <div th:replace="~{fragments/nav :: nav(${isMainPage})}">
-<!--<nav th:replace="~{menu :: menu(dto=${dto})}" th:fragment="menu">-->
     <!-- Включение меню -->
 </div>
 
-<div class="container-fluid" style="max-width: 900px; margin: 0 auto;">
-    <h2 class="text-center">Статистика кликов</h2>
-<!--TODO можно попробовать передавать в message текст ошибки-->
-<!--    <div th:if="${message != null}" class="alert alert-success alert-dismissible fade show text-center message"-->
-<!--         role="alert">-->
-<!--        [[${message}]]-->
-<!--        <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">-->
-<!--            <span aria-hidden="true">&times;</span>-->
-<!--        </button>-->
-<!--    </div>-->
+<div class="container-fluid">
+    <div class="column">
+        <h2 class="text-center">Статистика кликов</h2>
+        <div class="inner">
+            <span th:class="${linkUnit.isActive()} ? 'text-success font-weight-bold' : 'text-danger font-weight-bold'"
+                  th:text="${linkUnit.isActive()} ? 'ссылка активна' : 'ссылка заблокирована как небезопасная'">
+            </span>
+            <span th:if="${linkUnit.isActive()}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-check-circle-fill text-success" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+            </span>
+            <span th:if="${!linkUnit.isActive()}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-exclamation-circle-fill text-danger"
+                     viewBox="0 0 16 16">
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                </svg>
+            </span>
+        </div>
+    </div>
+    <!--TODO можно попробовать передавать в message текст ошибки-->
+    <!--    <div th:if="${message != null}" class="alert alert-success alert-dismissible fade show text-center message"-->
+    <!--         role="alert">-->
+    <!--        [[${message}]]-->
+    <!--        <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">-->
+    <!--            <span aria-hidden="true">&times;</span>-->
+    <!--        </button>-->
+    <!--    </div>-->
 
-    <div>
-        <span th:class="${linkUnit.isActive()} ? 'active-link' : 'blocked-link'"
-              th:text="${linkUnit.isActive()} ? 'ссылка активна' : 'ссылка не активна или заблокирована'"> </span>
-        <div>
-            <label class="input-group-text">Сокращённая ссылка:</label>
-            <span th:text="${linkUnit.getShortLink()}"> </span>
+    <div class="column">
+        <div class="inner">
+            <label class="text-secondary">Сокращённая ссылка:</label>
+            <span class="font-weight-bold input-group-text" th:text="${linkUnit.getShortLink()}"> </span>
+            <label class="text-secondary">Пароль статистики:</label>
+            <span class="font-weight-bold input-group-text" th:text="${linkUnit.getPassword()}"> </span>
         </div>
 
-        <div>
-            <label class="input-group-text">Пароль статистики:</label>
-            <span th:text="${linkUnit.getPassword()}"> </span>
+        <div class="inner">
+            <label class="text-secondary">Дата создания:</label>
+            <span class="font-weight-bold input-group-text" th:text="${linkUnit.getFormattedTime()}"> </span>
+            <label class="text-secondary">Всего кликов:</label>
+            <span class="font-weight-bold input-group-text" th:text="${clicks.size()}"> </span>
         </div>
 
-        <div>
-            <label class="input-group-text">Дата создания:</label>
-            <span th:text="${linkUnit.getFormattedTime()}"> </span>
-        </div>
+        <div class="column w-100">
+            <label class="text-secondary">Полная ссылка:</label>
+            <span class="font-weight-bold input-group-text" th:text="${linkUnit.getFullLink()}"> </span>
 
-        <div>
-            <label class="input-group-text">Всего кликов:</label>
-            <span th:text="${clicks.size()}"> </span>
-        </div>
-
-        <div>
-            <label class="input-group-text">Полная ссылка:</label>
-            <span th:text="${linkUnit.getFullLink()}"> </span>
-            <span th:text="${linkUnit.isActive()} ? 'Вы можете изменить ссылку' : 'Вы не можете изменить заблокированную ссылку'"> </span>
-        </div>
-
-        <div th:if="${linkUnit.isActive()}">
-            <label for="fullLink" class="input-group-text">Замена полной ссылки</label>
-            <form class="col card p-3 mb-5" th:method="put" th:action="@{/(page=${currentPage}, size=${pageSize},
+            <div th:if="${linkUnit.isActive()}" class="column w-100">
+                <label for="fullLink" class="text-secondary">Вы можете изменить ссылку</label>
+                <form class="stats-form-chlink" th:method="put" th:action="@{/(page=${currentPage}, size=${pageSize},
             shortLink=${linkUnit.getShortLink()}, password=${linkUnit.getPassword()})}">
-                <input class="form-control"
-                       placeholder="Введите новую ссылку формата http://***.** Проверка займёт немного времени"
-                       required="true"
-                       id="fullLink"
-                       maxlength="4096"
-                       pattern="^(http://|https://)[^\s_]+(\.[^\s_]+)+$"
-                       name="fullLink"
-                       type="text"/>
-                <input class="btn btn-primary" type="submit" value="ИЗМЕНИТЬ ССЫЛКУ"/>
+                    <input class="form-control"
+                           placeholder="Формат ссылки https://*.* Проверка займёт немного времени"
+                           required="true"
+                           id="fullLink"
+                           maxlength="4096"
+                           pattern="^(http://|https://)[^\s_]+(\.[^\s_]+)+$"
+                           name="fullLink"
+                           type="text"/>
+                    <input class="btn btn-primary" type="submit" value="ИЗМЕНИТЬ ССЫЛКУ"/>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${clicks.size() > 0}" class="column">
+
+        <div class="my-3">
+            <form method="get" th:action="@{/stats}" id="selectPageSizeForm">
+                <div class="row d-flex">
+                    <div class="col-md-3 input-group mt-2">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="pageSize">Показывать на странице:</label>
+                        </div>
+                        <select form="selectPageSizeForm" name="size" onchange="changePageSize()" class="size-select"
+                                id="pageSize">
+                            <option th:each="s : ${clicksPerPage}" th:value="${s}" th:text="${s}"
+                                    th:selected="${s == pageSize}"></option>
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" name="shortLink" th:value="${linkUnit.getShortLink()}"/>
+                <input type="hidden" name="password" th:value="${linkUnit.getPassword()}"/>
             </form>
         </div>
-    </div>
 
-    <div th:if="${clicks.size() > 0}">
-
-    <div class="my-3">
-        <form method="get" th:action="@{/stats}" id="selectPageSizeForm">
-            <div class="row d-flex">
-                <div class="col-md-3 input-group mt-2">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="pageSize">Показывать на странице:</label>
-                    </div>
-                    <select form="selectPageSizeForm" name="size" onchange="changePageSize()" class="size-select"
-                            id="pageSize">
-                        <option th:each="s : ${clicksPerPage}" th:value="${s}" th:text="${s}" th:selected="${s == pageSize}"> </option>
-                    </select>
-                </div>
-            </div>
-            <input type="hidden" name="shortLink" th:value="${linkUnit.getShortLink()}"/>
-            <input type="hidden" name="password" th:value="${linkUnit.getPassword()}"/>
-        </form>
-    </div>
-
-<!--        <table class="table table-hover table-responsive-xl">-->
+        <!--        <table class="table table-hover table-responsive-xl">-->
         <table class="table table-striped table-hover">
             <thead class="thead-light">
             <tr>
@@ -100,18 +111,18 @@
             </thead>
             <tbody>
             <tr th:each="click : ${clicks}">
-                <td> [[${click.getId()}]] </td>
-                <td> [[${click.getFormattedTime()}]] </td>
-                <td> [[${click.getIpAddress()}]] </td>
-                <td> [[${click.getLanguage()}]] </td>
-                <td> [[${click.getReferer()}]] </td>
-                <td> [[${click.getUserAgent()}]] </td>
+                <td> [[${click.getId()}]]</td>
+                <td> [[${click.getFormattedTime()}]]</td>
+                <td> [[${click.getIpAddress()}]]</td>
+                <td> [[${click.getLanguage()}]]</td>
+                <td> [[${click.getReferer()}]]</td>
+                <td> [[${click.getUserAgent()}]]</td>
             </tr>
             </tbody>
         </table>
     </div>
 
-    <div th:unless="${clicks.size() > 0}">
+    <div th:unless="${clicks.size() > 0}" class="column">
         <span>Не было кликов по этой ссылке.</span>
     </div>
 

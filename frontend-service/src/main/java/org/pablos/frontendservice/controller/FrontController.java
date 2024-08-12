@@ -104,9 +104,7 @@ public class FrontController {
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
             final RedirectAttributes redirectAttributes
     ){
-        shortLink = shortLink.trim();
-        int length = shortLink.length();
-        shortLink = shortLink.substring(length-6, length);
+        shortLink = CommonUtil.clearShortLink(shortLink);
 
         CommonUtil.validateShortLink(shortLink);
 
@@ -126,7 +124,7 @@ public class FrontController {
      * @return шаблон страницы с результатами статистики
      */
     @GetMapping("/statistics")
-    public String showStatistics(final Model model){
+    public String showStatistics(final Model model, final HttpServletRequest request){
 
         String shortLink = (String) model.asMap().get("shortLink");
         String password = (String) model.asMap().get("password");
@@ -134,6 +132,9 @@ public class FrontController {
         int size = (int) model.asMap().get("size");
 
         PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, shortLink, password);
+
+        String serverUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+        pageOfClicks.getLinkUnit().setShortLink(serverUrl + shortLink);
 
         model.addAttribute("clicks", pageOfClicks.getClicks());
         model.addAttribute("clicksPerPage", CLICKS_PER_PAGE);
