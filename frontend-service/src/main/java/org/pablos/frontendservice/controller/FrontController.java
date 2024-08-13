@@ -3,6 +3,7 @@ package org.pablos.frontendservice.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.pablos.frontendservice.config.FrontendConfiguration;
 import org.pablos.frontendservice.service.CountingService;
 import org.pablos.frontendservice.service.GivingService;
 import org.pablos.shortic.dto.FastLinkDTO;
@@ -22,10 +23,10 @@ import java.util.List;
 @RequestMapping("/")
 @RequiredArgsConstructor
 public class FrontController {
-
     public static final List<Integer> CLICKS_PER_PAGE = Arrays.asList(10, 25, 50);
     public static final String PAGE_SIZE_BY_DEFAULT = "10";
     public static final String PAGE_NUMBER_BY_DEFAULT = "1";
+    private final FrontendConfiguration configuration;
     private final GivingService givingService;
     private final CountingService countingService;
 
@@ -33,7 +34,6 @@ public class FrontController {
     public String mainPage(final Model model, final @ModelAttribute FastLinkDTO input){
         model.addAttribute("input", input);
         model.addAttribute("isMainPage", true);
-
         return "index";
     }
 
@@ -50,12 +50,11 @@ public class FrontController {
             HttpServletRequest request
     ){
         LinkUnitDTO linkUnit = countingService.createLink(input);
-        String serverUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+        String serverUrl = getServerUrl(request);
 
         model.addAttribute("linkUnit", linkUnit);
         model.addAttribute("shortLink", serverUrl + linkUnit.getShortLink());
         model.addAttribute("isMainPage", false);
-
         return "created";
     }
 
@@ -70,7 +69,6 @@ public class FrontController {
             final HttpSession session
     ){
         countingService.updateLink(shortLink, fullLink);
-
         return getStatistics(shortLink, password, page, size, request, session);
     }
 
@@ -84,7 +82,6 @@ public class FrontController {
             final HttpSession session
     ){
         countingService.setPassword(shortLink, password);
-
         return getStatistics(shortLink, password, page, size, request, session);
     }
 
@@ -108,18 +105,14 @@ public class FrontController {
             final HttpSession session
     ){
         shortLink = CommonUtil.clearShortLink(shortLink);
-
         CommonUtil.validateShortLink(shortLink);
+        String serverUrl = getServerUrl(request);
 
-        String serverUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
-
-        // Сохраняем параметры в сессии
         session.setAttribute("serverUrl", serverUrl);
         session.setAttribute("shortLink", shortLink);
         session.setAttribute("password", password);
         session.setAttribute("page", page);
         session.setAttribute("size", size);
-
         return "redirect:/statistics";
     }
 
@@ -131,17 +124,16 @@ public class FrontController {
      */
     @GetMapping("/statistics")
     public String showStatistics(final Model model, final HttpSession session) {
+
         String serverUrl = (String) session.getAttribute("serverUrl");
         String shortLink = (String) session.getAttribute("shortLink");
         String password = (String) session.getAttribute("password");
         Integer page = (Integer) session.getAttribute("page");
         Integer size = (Integer) session.getAttribute("size");
-
         if (shortLink == null || password == null || page == null || size == null || serverUrl == null) {
             return "redirect:/";
         }
         PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, shortLink, password);
-
         pageOfClicks.getLinkUnit().setShortLink(serverUrl + shortLink);
 
         model.addAttribute("clicks", pageOfClicks.getClicks());
@@ -151,35 +143,42 @@ public class FrontController {
         model.addAttribute("pageSize", size);
         model.addAttribute("linkUnit", pageOfClicks.getLinkUnit());
         model.addAttribute("isMainPage", false);
-
         return "statistics";
     }
-
 
     @GetMapping("/error/404")
     public String notFound(final Model model){
         model.addAttribute("isMainPage", false);
         return "error/404";
     }
+
     @GetMapping("/error/400")
     public String wrongInput(final Model model){
         model.addAttribute("isMainPage", false);
         return "error/400";
     }
+
     @GetMapping("/error/410")
     public String badLink(final Model model){
         model.addAttribute("isMainPage", false);
         return "error/410";
     }
+
     @GetMapping("/error/password")
     public String wrongPassword(final Model model){
         model.addAttribute("isMainPage", false);
         return "error/password";
     }
+
     @GetMapping("/oferta")
-    public String showOffer(final Model model){
+    public String showOffer(final Model model, final HttpServletRequest request){
         model.addAttribute("isMainPage", false);
+        model.addAttribute("fromWho", configuration.getFromWho());
+        model.addAttribute("thisPageUrl", getServerUrl(request)+ "oferta");
         return "oferta";
     }
 
+    private String getServerUrl(HttpServletRequest request) {
+        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+    }
 }

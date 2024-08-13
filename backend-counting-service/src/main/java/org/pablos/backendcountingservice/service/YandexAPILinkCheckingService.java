@@ -17,7 +17,7 @@ public class YandexAPILinkCheckingService implements ILinkCheckingService {
 
     @Override
     public boolean checkLink(final String link) {
-        URI url = URI.create(serviceConfiguration.checkingServiceUrl + serviceConfiguration.getAPIKey(this));
+        URI url = URI.create(serviceConfiguration.getCheckingServiceUrl() + serviceConfiguration.getAPIKey(this));
         ApiRequestBody apiRequestBody = new ApiRequestBody(link);
 
         WebClient webClient = WebClient.create();

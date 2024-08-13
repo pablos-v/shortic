@@ -2,6 +2,7 @@ package org.pablos.backendcountingservice.configuration;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.service.ILinkCheckingService;
 import org.slf4j.Logger;
@@ -19,14 +20,17 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class ServiceConfiguration {
 
+    @Getter
     @Value("${properties.threads_number}")
-    public int numberOfThreads;
+    private int numberOfThreads;
 
+    @Getter
     @Value("${properties.checking_length}")
-    public int timeLimitForCheckInMinutes;
+    private int timeLimitForCheckInMinutes;
 
+    @Getter
     @Value("${properties.checking_service_url}")
-    public String checkingServiceUrl;
+    private String checkingServiceUrl;
 
     @Value("${properties.checking_api_key}")
     private String APIKey;

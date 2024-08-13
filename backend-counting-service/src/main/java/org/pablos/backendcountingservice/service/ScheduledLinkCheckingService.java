@@ -24,14 +24,14 @@ public class ScheduledLinkCheckingService {
 
     @Scheduled(cron = "0 0 3 * * ?") // Каждый день в 3 утра
     private void checkAllLinksByPeriod() {
-        ExecutorService service = Executors.newFixedThreadPool(serviceConfiguration.numberOfThreads);
+        ExecutorService service = Executors.newFixedThreadPool(serviceConfiguration.getNumberOfThreads());
         List<LinkUnit> linkUnits = linkUnitService.getAllLinks();
         try {
             // Отправляем задачи на выполнение
             for (LinkUnit linkUnit : linkUnits) {
                 service.submit(() -> linkUnitService.checkExistingLinkSecurity(linkUnit));
             }
-            service.awaitTermination(serviceConfiguration.timeLimitForCheckInMinutes, TimeUnit.MINUTES);
+            service.awaitTermination(serviceConfiguration.getTimeLimitForCheckInMinutes(), TimeUnit.MINUTES);
         } catch (InterruptedException e) {
             service.shutdownNow(); // Принудительное завершение при прерывании
             Thread.currentThread().interrupt(); // Восстановление статуса прерывания
