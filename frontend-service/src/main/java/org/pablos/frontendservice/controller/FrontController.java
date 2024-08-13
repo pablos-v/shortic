@@ -13,7 +13,6 @@ import org.pablos.shortic.util.CommonUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Arrays;
@@ -175,7 +174,16 @@ public class FrontController {
         model.addAttribute("isMainPage", false);
         model.addAttribute("fromWho", configuration.getFromWho());
         model.addAttribute("thisPageUrl", getServerUrl(request)+ "oferta");
-        return "oferta";
+        return "legal/oferta";
+    }
+
+    @GetMapping("/privacy")
+    public String showPrivacyPolicy(final Model model, final HttpServletRequest request){
+        model.addAttribute("isMainPage", false);
+        model.addAttribute("fromWho", configuration.getFromWho());
+        model.addAttribute("thisSiteUrl", getServerUrl(request));
+        model.addAttribute("thisPageUrl", getServerUrl(request)+ "privacy");
+        return "legal/privacy";
     }
 
     private String getServerUrl(HttpServletRequest request) {

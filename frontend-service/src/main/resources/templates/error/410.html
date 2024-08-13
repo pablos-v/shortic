@@ -4,7 +4,7 @@
     <!-- Включение head -->
 </div>
 <body>
-<div class="top-block" th:replace="~{fragments/nav :: nav(${isMainPage})}">
+<div th:replace="~{fragments/nav :: nav(${isMainPage})}">
     <!-- Включение меню -->
 </div>
 
@@ -12,7 +12,7 @@
     <h2 class="text-danger">Ссылка была удалена, как небезопасная</h2>
 </content>
 
-<div class="bottom-block" th:replace="~{fragments/footer :: footer}" th:fragment="footer">
+<div th:replace="~{fragments/footer :: footer}" th:fragment="footer">
     <!-- Включение footer -->
 </div>
 </body>
