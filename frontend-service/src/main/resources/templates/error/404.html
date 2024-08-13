@@ -4,15 +4,17 @@
 <div th:replace="~{fragments/head :: head('Ссылка не найдена')}">
     <!-- Включение head -->
 </div>
-<body>
-<div th:replace="~{fragments/nav :: nav(${isMainPage})}">
-
+<div class="top-block" th:replace="~{fragments/nav :: nav(${isMainPage})}">
     <!-- Включение меню -->
 </div>
 
-Link not found
+<content class="column middle-block">
+    <h2 class="text-danger">Такой ссылки нет</h2>
+    <p class="text-secondary">Возможно она была удалена как небезопасная, или её никогда и не было.</p>
+    <p>Сделайте себе чаю, можно даже с конфеткой. Всё будет хорошо!</p>
+</content>
 
-<div th:replace="~{fragments/footer :: footer}" th:fragment="footer">
+<div class="bottom-block" th:replace="~{fragments/footer :: footer}" th:fragment="footer">
     <!-- Включение footer -->
 </div>
 </body>

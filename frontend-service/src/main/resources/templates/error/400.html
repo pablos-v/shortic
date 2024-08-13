@@ -1,18 +1,19 @@
 <!--TODO make-->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{fragments/head :: head('Статистика кликов')}">
+<div th:replace="~{fragments/head :: head('Неправльные данные')}">
     <!-- Включение head -->
 </div>
 <body>
-<div th:replace="~{fragments/nav :: nav(${isMainPage})}">
-
+<div class="top-block" th:replace="~{fragments/nav :: nav(${isMainPage})}">
     <!-- Включение меню -->
 </div>
 
-Wrong input
+<content class="column middle-block">
+    <h2 class="text-danger">Указаны ошибочные данные</h2>
+</content>
 
-<div th:replace="~{fragments/footer :: footer}" th:fragment="footer">
+<div class="bottom-block" th:replace="~{fragments/footer :: footer}" th:fragment="footer">
     <!-- Включение footer -->
 </div>
 </body>

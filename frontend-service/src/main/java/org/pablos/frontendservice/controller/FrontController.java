@@ -1,6 +1,7 @@
 package org.pablos.frontendservice.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.pablos.frontendservice.service.CountingService;
 import org.pablos.frontendservice.service.GivingService;
@@ -65,11 +66,12 @@ public class FrontController {
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final RedirectAttributes redirectAttributes
+            final HttpServletRequest request,
+            final HttpSession session
     ){
         countingService.updateLink(shortLink, fullLink);
 
-        return getStatistics(shortLink, password, page, size, redirectAttributes);
+        return getStatistics(shortLink, password, page, size, request, session);
     }
 
     @PutMapping("/password")
@@ -78,11 +80,12 @@ public class FrontController {
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final RedirectAttributes redirectAttributes
+            final HttpServletRequest request,
+            final HttpSession session
     ){
         countingService.setPassword(shortLink, password);
 
-        return getStatistics(shortLink, password, page, size, redirectAttributes);
+        return getStatistics(shortLink, password, page, size, request, session);
     }
 
     /**
@@ -93,7 +96,6 @@ public class FrontController {
      * @param password
      * @param page
      * @param size
-     * @param redirectAttributes - RedirectAttributes для скрытой передачи параметров запроса при редиректе
      * @return редирект на страницу с результатами статистики
      */
     @GetMapping("/stats")
@@ -102,17 +104,21 @@ public class FrontController {
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final RedirectAttributes redirectAttributes
+            final HttpServletRequest request,
+            final HttpSession session
     ){
         shortLink = CommonUtil.clearShortLink(shortLink);
 
         CommonUtil.validateShortLink(shortLink);
 
-        // Сохраняем параметры в RedirectAttributes
-        redirectAttributes.addFlashAttribute("shortLink", shortLink);
-        redirectAttributes.addFlashAttribute("password", password);
-        redirectAttributes.addFlashAttribute("page", page);
-        redirectAttributes.addFlashAttribute("size", size);
+        String serverUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+
+        // Сохраняем параметры в сессии
+        session.setAttribute("serverUrl", serverUrl);
+        session.setAttribute("shortLink", shortLink);
+        session.setAttribute("password", password);
+        session.setAttribute("page", page);
+        session.setAttribute("size", size);
 
         return "redirect:/statistics";
     }
@@ -124,16 +130,18 @@ public class FrontController {
      * @return шаблон страницы с результатами статистики
      */
     @GetMapping("/statistics")
-    public String showStatistics(final Model model, final HttpServletRequest request){
+    public String showStatistics(final Model model, final HttpSession session) {
+        String serverUrl = (String) session.getAttribute("serverUrl");
+        String shortLink = (String) session.getAttribute("shortLink");
+        String password = (String) session.getAttribute("password");
+        Integer page = (Integer) session.getAttribute("page");
+        Integer size = (Integer) session.getAttribute("size");
 
-        String shortLink = (String) model.asMap().get("shortLink");
-        String password = (String) model.asMap().get("password");
-        int page = (int) model.asMap().get("page");
-        int size = (int) model.asMap().get("size");
-
+        if (shortLink == null || password == null || page == null || size == null || serverUrl == null) {
+            return "redirect:/";
+        }
         PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, shortLink, password);
 
-        String serverUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
         pageOfClicks.getLinkUnit().setShortLink(serverUrl + shortLink);
 
         model.addAttribute("clicks", pageOfClicks.getClicks());
