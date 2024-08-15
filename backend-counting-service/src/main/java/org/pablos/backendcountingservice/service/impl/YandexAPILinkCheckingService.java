@@ -1,8 +1,9 @@
-package org.pablos.backendcountingservice.service;
+package org.pablos.backendcountingservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.configuration.ServiceConfiguration;
 import org.pablos.backendcountingservice.domain.dto.ApiRequestBody;
+import org.pablos.backendcountingservice.service.ILinkCheckingService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -29,6 +30,9 @@ public class YandexAPILinkCheckingService implements ILinkCheckingService {
                 .exchange()
                 .block();
 
+        if (response == null) {
+            return false;
+        }
         int statusCode = response.statusCode().value();
         String responseBody = response.bodyToMono(String.class).block();
 

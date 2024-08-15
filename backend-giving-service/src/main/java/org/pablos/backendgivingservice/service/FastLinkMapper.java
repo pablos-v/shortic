@@ -1,6 +1,6 @@
 package org.pablos.backendgivingservice.service;
 
-import org.pablos.backendgivingservice.domain.entity.FastLink;
+import org.pablos.backendgivingservice.entity.FastLink;
 
 public class FastLinkMapper {
     public static org.pablos.shortic.dto.FastLinkDTO toDTO (FastLink fl) {

@@ -1,12 +1,15 @@
-package org.pablos.frontendservice.service;
+package org.pablos.frontendservice.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.pablos.frontendservice.exception.WrongInputException;
+import org.pablos.frontendservice.service.ICountingService;
+import org.pablos.frontendservice.service.IGivingService;
 import org.pablos.shortic.dto.ClickDTO;
 import org.pablos.shortic.dto.ViolationDTO;
 import org.pablos.shortic.exception.LinkNotFoundException;
+import org.pablos.shortic.exception.LinkProcessingException;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -19,19 +22,16 @@ import java.util.Objects;
 @Data
 @Service
 @AllArgsConstructor
-public class GivingService {
+public class GivingService implements IGivingService {
 
     private final RestTemplate restTemplate;
-    private final CountingService countingService;
-    private String givingServiceUrl;
+    private final org.pablos.frontendservice.service.ICountingService ICountingService;
+    private final String givingServiceUrl;
 
-    /**
-     * Обрабатывает клик по ссылке: отправляет данные клика для записи статистики клика
-     * @param shortLink
-     * @param request
-     * @return
-     */
-    public String clickProcessing(final String shortLink, final HttpServletRequest request) {
+    @Override
+    public String clickProcessing(final String shortLink, final HttpServletRequest request) throws LinkNotFoundException,
+            WrongInputException, LinkProcessingException {
+
         CommonUtil.validateShortLink(shortLink);
 
         // отправка статистики клика
@@ -52,7 +52,7 @@ public class GivingService {
 
     private void postStatistics(final String shortLink, final HttpServletRequest request){
         ClickDTO clickDTO = prepareClickDTO(shortLink, request);
-        countingService.postStatistics(clickDTO);
+        ICountingService.postStatistics(clickDTO);
     }
 
     private ClickDTO prepareClickDTO(final String shortLink, final HttpServletRequest request) {

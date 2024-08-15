@@ -1,7 +1,7 @@
 package org.pablos.backendcountingservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.pablos.backendcountingservice.service.LinkUnitService;
+import org.pablos.backendcountingservice.service.ILinkUnitService;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.LinkUnitDTO;
 import org.pablos.shortic.dto.PageDTO;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class LinkUnitController {
 
-    private final LinkUnitService linkUnitService;
+    private final ILinkUnitService linkUnitService;
 
     @PostMapping
     public ResponseEntity<LinkUnitDTO> createLinkUnit(final @RequestBody FastLinkDTO input) {

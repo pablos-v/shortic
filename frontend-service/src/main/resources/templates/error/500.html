@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{fragments/head :: head('Статистика кликов')}">
+<div th:replace="~{fragments/head :: head('Ошибка на сервере')}">
     <!-- Включение head -->
 </div>
 <body>
-<div class="top-block" th:replace="~{fragments/nav :: nav(${isMainPage})}">
-    <!-- Включение меню -->
-</div>
+<a href="/" class="btn btn-primary btn-menu flex-center">НА ГЛАВНУЮ</a>
 
 <content class="column middle-block">
-    <h2 class="text-danger">Пароль неправильный</h2>
+    <h2 class="text-danger">Что-то пошло не так, простите</h2>
+    <p class="text-secondary">Ремонтная бригада уже выехала.</p>
     <p>Попробуйте ещё раз.</p>
 </content>
 

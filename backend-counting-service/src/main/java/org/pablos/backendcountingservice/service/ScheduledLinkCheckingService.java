@@ -3,6 +3,7 @@ package org.pablos.backendcountingservice.service;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.configuration.ServiceConfiguration;
 import org.pablos.backendcountingservice.domain.entity.LinkUnit;
+import org.pablos.backendcountingservice.service.mapper.LinkUnitMapper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class ScheduledLinkCheckingService {
 
     private final ServiceConfiguration serviceConfiguration;
 
-    private final LinkUnitService linkUnitService;
+    private final ILinkUnitService linkUnitService;
 
     @Scheduled(cron = "0 0 3 * * ?") // Каждый день в 3 утра
     private void checkAllLinksByPeriod() {
@@ -29,7 +30,7 @@ public class ScheduledLinkCheckingService {
         try {
             // Отправляем задачи на выполнение
             for (LinkUnit linkUnit : linkUnits) {
-                service.submit(() -> linkUnitService.checkExistingLinkSecurity(linkUnit));
+                service.submit(() -> linkUnitService.checkExistingLinkSecurity(LinkUnitMapper.toDto(linkUnit)));
             }
             service.awaitTermination(serviceConfiguration.getTimeLimitForCheckInMinutes(), TimeUnit.MINUTES);
         } catch (InterruptedException e) {

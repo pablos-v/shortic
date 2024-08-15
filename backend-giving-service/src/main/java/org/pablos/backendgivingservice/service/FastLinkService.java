@@ -2,7 +2,7 @@ package org.pablos.backendgivingservice.service;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.pablos.backendgivingservice.domain.entity.FastLink;
+import org.pablos.backendgivingservice.entity.FastLink;
 import org.pablos.backendgivingservice.repository.FastLinkRepository;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.exception.*;
@@ -23,6 +23,7 @@ public class FastLinkService implements IFastLinkService {
     private final FastLinkRepository repository;
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(
             cacheNames = "fullLink",
             key = "#shortLink"
@@ -39,8 +40,7 @@ public class FastLinkService implements IFastLinkService {
         CommonUtil.validateDTOFullLink(fastLink);
         if (repository.existsById(fastLink.getShortLink())) throw new LinkProcessingException(CommonUtil.EXISTS);
 
-        FastLink response = repository.save(FastLinkMapper.toEntity(fastLink));
-        return FastLinkMapper.toDTO(response);
+        return FastLinkMapper.toDTO(repository.save(FastLinkMapper.toEntity(fastLink)));
     }
 
     @Override

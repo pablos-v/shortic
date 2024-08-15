@@ -1,4 +1,4 @@
-package org.pablos.backendcountingservice.service;
+package org.pablos.backendcountingservice.service.mapper;
 
 import org.pablos.backendcountingservice.domain.entity.LinkUnit;
 import org.pablos.shortic.dto.LinkUnitDTO;
@@ -17,7 +17,6 @@ public class LinkUnitMapper {
                 linkUnit.isActive()
         );
     }
-// TODO delete if not needed
     public static LinkUnit toEntity(LinkUnitDTO linkUnitDTO) {
         return new LinkUnit(
                 linkUnitDTO.getId(),
@@ -28,13 +27,5 @@ public class LinkUnitMapper {
                 linkUnitDTO.isActive(),
                 new ArrayList<>()
         );
-    }
-
-    public static List<LinkUnit> toEntityList(List<LinkUnitDTO> linkUnitDTOList) {
-        return linkUnitDTOList.stream().map(LinkUnitMapper::toEntity).toList();
-    }
-
-    public static List<LinkUnitDTO> toDTOList(List<LinkUnit> linkUnitList) {
-        return linkUnitList.stream().map(LinkUnitMapper::toDto).toList();
     }
 }

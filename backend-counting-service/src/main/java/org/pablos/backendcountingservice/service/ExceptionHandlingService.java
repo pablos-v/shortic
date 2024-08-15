@@ -1,9 +1,10 @@
-package org.pablos.backendcountingservice.service.exception_handling;
+package org.pablos.backendcountingservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkException;
 import org.pablos.backendcountingservice.domain.exception.LinkNotFoundWhileActivationException;
 import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
+import org.pablos.backendcountingservice.domain.exception.UpdatingFastLinkException;
 import org.pablos.shortic.dto.ViolationDTO;
 import org.pablos.shortic.exception.*;
 import org.pablos.shortic.util.CommonUtil;
@@ -88,26 +89,18 @@ public class ExceptionHandlingService {
         return new ViolationDTO(CommonUtil.PASSWORD, e.getMessage());
     }
 
-    @ResponseBody
-    @ExceptionHandler(LinkNotSecureException.class)
-    @ResponseStatus(HttpStatus.GONE)
-    public ViolationDTO onLinkNotSecureException(LinkNotSecureException e) {
-        logger.error("Link Not Secure: {}", e.getMessage(), e);
-        return new ViolationDTO(CommonUtil.FULL_LINK, e.getMessage());
-    }
-
     @ExceptionHandler(LinkNotFoundWhileActivationException.class)
     public void onLinkNotFoundWhileActivationException(LinkNotFoundWhileActivationException e) {
         logger.error("Link was not found during LinkUnit activation: {}", e.getMessage(), e);
     }
-    @ExceptionHandler(SavingFastLinkException.class)
-    public void onSavingFastLinkException(SavingFastLinkException e) {
-        logger.error("Link saving failed: {}", e.getMessage(), e);
+    @ExceptionHandler({SavingFastLinkException.class, UpdatingFastLinkException.class, DeletingFastLinkException.class})
+    public void onAnyChangingFastLinkException(Exception e) {
+        String message = switch (e.getClass().getName()) {
+            case "UpdatingFastLinkException" -> "Link updating failed: {}";
+            case "DeletingFastLinkException" -> "Link deleting failed: {}";
+            default -> "Link saving failed: {}";
+        };
+        logger.error(message, e.getMessage(), e);
     }
-    @ExceptionHandler(DeletingFastLinkException.class)
-    public void onDeletingFastLinkException(DeletingFastLinkException e) {
-        logger.error("Link deleting failed: {}", e.getMessage(), e);
-    }
-
 
 }

@@ -13,4 +13,6 @@ public interface IGivingServiceClient {
     FastLinkDTO saveFastLink(final FastLinkDTO dto) throws SavingFastLinkException;
 
     FastLinkDTO deleteFastLink(final FastLinkDTO dto) throws DeletingFastLinkException;
+
+    void updateFastLink(final FastLinkDTO fastLinkDTO);
 }

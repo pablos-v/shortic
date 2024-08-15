@@ -1,4 +1,4 @@
-package org.pablos.backendcountingservice.service;
+package org.pablos.backendcountingservice.service.mapper;
 
 import org.pablos.backendcountingservice.domain.entity.Click;
 import org.pablos.shortic.dto.ClickDTO;
@@ -24,13 +24,6 @@ public class ClickMapper {
                 click.getLanguage(),
                 click.getReferrer(),
                 click.getUserAgent());
-    }
-
-    public static List<Click> toEntityList(List<ClickDTO> dto) {
-        return dto.stream().map(ClickMapper::toEntity).toList();
-    }
-    public static List<ClickDTO> toDTOList(List<Click> click) {
-        return click.stream().map(ClickMapper::toDTO).toList();
     }
 
 }

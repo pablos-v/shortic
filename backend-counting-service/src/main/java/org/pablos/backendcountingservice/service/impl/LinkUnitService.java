@@ -1,4 +1,4 @@
-package org.pablos.backendcountingservice.service;
+package org.pablos.backendcountingservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.domain.entity.Click;
@@ -7,6 +7,11 @@ import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkExcept
 import org.pablos.backendcountingservice.domain.exception.LinkNotFoundWhileActivationException;
 import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
 import org.pablos.backendcountingservice.repository.LinkUnitRepository;
+import org.pablos.backendcountingservice.service.IGivingServiceClient;
+import org.pablos.backendcountingservice.service.ILinkCheckingService;
+import org.pablos.backendcountingservice.service.ILinkUnitService;
+import org.pablos.backendcountingservice.service.mapper.ClickMapper;
+import org.pablos.backendcountingservice.service.mapper.LinkUnitMapper;
 import org.pablos.shortic.dto.ClickDTO;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.LinkUnitDTO;
@@ -25,23 +30,20 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class LinkUnitService {
+public class LinkUnitService implements ILinkUnitService {
 
     private final LinkUnitRepository linkUnitRepository;
     private final IGivingServiceClient givingServiceClient;
     private final ILinkCheckingService checkingService;
 
-    /**
-     * @param shortLink
-     * @return
-     * @throws LinkNotFoundException если ссылка не найдена
-     */
+    @Override
     @Transactional(readOnly = true)
-    Long getLinkUnitIdByShortLink(final String shortLink) throws LinkNotFoundException {
+    public Long getLinkUnitIdByShortLink(final String shortLink) throws LinkNotFoundException {
         LinkUnit linkUnit = getLinkUnitByShortLink(shortLink);
         return linkUnit.getId();
     }
 
+    @Override
     @Transactional
     public LinkUnitDTO createLinkUnit(final FastLinkDTO input) throws LinkNotFoundWhileActivationException,
             FullLinkSizeException, FullLinkFormatException, FullLinkNotProvidedException {
@@ -55,18 +57,12 @@ public class LinkUnitService {
         LinkUnit saved = linkUnitRepository.save(new LinkUnit(shortLink, input.getFullLink()));
 
         // отправит ссылку на проверку и присвоит ей соответствующий статус
-        new Thread(() -> checkNewLinkSecurity(saved)).start();
+        new Thread(() -> checkNewLinkSecurity(LinkUnitMapper.toDto(saved))).start();
 
         return LinkUnitMapper.toDto(saved);
     }
 
-
-    /**
-     * Получает из репозитория LinkUnit и формирует на основе PageRequestDTO страницу для пагинации.
-     * @return
-     * @throws LinkNotFoundException
-     * @throws WrongPasswordException
-     */
+    @Override
     public PageDTO getPage(int page, int size, String shortLink, String password) throws LinkNotFoundException, WrongPasswordException {
         LinkUnit linkUnit = getLinkUnitByShortLink(shortLink);
 
@@ -91,9 +87,6 @@ public class LinkUnitService {
         int start = (int) paging.getOffset();
         int end = Math.min(start + paging.getPageSize(), clicks.size());
 
-//        ArrayList<ClickDTO> DTOclicks = new ArrayList<>(ClickMapper.toDTOList(clicks));
-//        DTOclicks.sort(Comparator.comparing(ClickDTO::getClickTime));
-
         List<ClickDTO> pagedList = clicks.stream()
                 .map(ClickMapper::toDTO)
                 .sorted(Comparator.comparing(ClickDTO::getClickTime))
@@ -103,58 +96,43 @@ public class LinkUnitService {
         return new PageImpl<>(pagedList, paging, clicks.size());
     }
 
-    /**
-     * Проверяет безопасность новой ссылки. Активирует и сохраняет ее в БД.
-     * Также запрашивает сохранение этой ссылки в backend-giving-service.
-     * @param linkUnit
-     * @throws LinkNotFoundWhileActivationException
-     * @throws SavingFastLinkException
-     * @throws DeletingFastLinkException
-     */
+    @Override
     @Transactional
-    void checkNewLinkSecurity(final LinkUnit linkUnit)
+    public void checkNewLinkSecurity(final LinkUnitDTO dto)
             throws LinkNotFoundWhileActivationException, SavingFastLinkException, DeletingFastLinkException {
-        boolean linkIsOk = checkingService.checkLink(linkUnit.getFullLink());
+        boolean linkIsOk = checkingService.checkLink(dto.getFullLink());
         if (linkIsOk) {
+            LinkUnit linkUnit = getLinkUnitByShortLink(dto.getShortLink());
             linkUnit.setActive(true);
             linkUnitRepository.save(linkUnit);
 
-            givingServiceClient.saveFastLink(new FastLinkDTO(linkUnit.getShortLink(), linkUnit.getFullLink()));
+            givingServiceClient.saveFastLink(new FastLinkDTO(dto.getShortLink(), dto.getFullLink()));
         }
     }
 
-    /**
-     * Проверяет безопасность существующей ссылки. Деактивирует ссылку и сохраняет в БД.
-     * Также запрашивает удаление этой ссылки из backend-giving-service.
-     * @param linkUnit
-     * @throws LinkNotFoundWhileActivationException
-     * @throws SavingFastLinkException
-     * @throws DeletingFastLinkException
-     */
+    @Override
     @Transactional
-    boolean checkExistingLinkSecurity(final LinkUnit linkUnit)
+    public boolean checkExistingLinkSecurity(final LinkUnitDTO dto)
             throws LinkNotFoundWhileActivationException, SavingFastLinkException, DeletingFastLinkException {
-        boolean linkIsOk = checkingService.checkLink(linkUnit.getFullLink());
+        boolean linkIsOk = checkingService.checkLink(dto.getFullLink());
         if (!linkIsOk) {
+            LinkUnit linkUnit = getLinkUnitByShortLink(dto.getShortLink());
             linkUnit.setActive(false);
             linkUnitRepository.save(linkUnit);
 
-            givingServiceClient.deleteFastLink(new FastLinkDTO(linkUnit.getShortLink(), linkUnit.getFullLink()));
+            givingServiceClient.deleteFastLink(new FastLinkDTO(dto.getShortLink(), dto.getFullLink()));
             return false;
         }
         return true;
     }
 
+    @Override
     @Transactional(readOnly = true)
-    List<LinkUnit> getAllLinks() {
+    public List<LinkUnit> getAllLinks() {
         return linkUnitRepository.findAll();
     }
 
-    /**
-     * Меняет полную ссылку у существующего LinkUnit. Проверяет безопасность новой ссылки.
-     * @return
-     * @throws LinkNotSecureException
-     */
+    @Override
     @Transactional
     public void updateLinkUnit(final String shortLink, final String fullLink) throws LinkNotSecureException,
             LinkNotFoundException, FullLinkNotProvidedException, FullLinkFormatException, FullLinkSizeException {
@@ -162,13 +140,15 @@ public class LinkUnitService {
         CommonUtil.validateFullLink(fullLink);
         LinkUnit linkUnit = getLinkUnitByShortLink(shortLink);
         linkUnit.setFullLink(fullLink);
-        boolean secure = checkExistingLinkSecurity(linkUnit);
+        boolean secure = checkExistingLinkSecurity(LinkUnitMapper.toDto(linkUnit));
         if (!secure) {
-            throw new LinkNotSecureException();
+            return;
         }
         linkUnitRepository.save(linkUnit);
+        givingServiceClient.updateFastLink(new FastLinkDTO(linkUnit.getShortLink(), linkUnit.getFullLink()));
     }
 
+    @Override
     @Transactional
     public void setPassword(final String shortLink, final String password)
             throws PasswordIncorrectException, LinkNotFoundException {

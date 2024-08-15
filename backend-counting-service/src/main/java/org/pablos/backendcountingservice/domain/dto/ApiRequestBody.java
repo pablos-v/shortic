@@ -12,9 +12,9 @@ public class ApiRequestBody {
     public ApiRequestBody(String link) {
         this.client = new Client("shortic", "1.0");
         this.threatInfo = new ThreatInfo(
-                new String[]{"THREAT_TYPE_UNSPECIFIED"},
-                new String[]{"PLATFORM_TYPE_UNSPECIFIED"},
-                new String[]{"THREAT_ENTRY_TYPE_UNSPECIFIED"},
+                new String[]{"MALWARE", "SOCIAL_ENGINEERING", "UNWANTED_SOFTWARE", "POTENTIALLY_HARMFUL_APPLICATION"},
+                new String[]{"ALL_PLATFORMS"},
+                new String[]{"URL", "EXECUTABLE"},
                 new ThreatEntry[]{new ThreatEntry(link)}
         );
     }

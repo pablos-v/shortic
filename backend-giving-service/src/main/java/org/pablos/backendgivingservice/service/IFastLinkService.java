@@ -1,6 +1,6 @@
 package org.pablos.backendgivingservice.service;
 
-import org.pablos.backendgivingservice.domain.entity.FastLink;
+import org.pablos.backendgivingservice.entity.FastLink;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkProcessingException;

@@ -18,6 +18,10 @@ public final class ClickDTO implements IShortLink {
     private final String referer;
     private final String userAgent;
 
+    /**
+     * Форматирование времени для удобного отображения. Используется шаблоном Thymeleaf statistics.html
+     * @return Строку с форматированным временем
+     */
     public String getFormattedTime(){
         return clickTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }

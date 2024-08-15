@@ -4,15 +4,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.pablos.frontendservice.config.FrontendConfiguration;
-import org.pablos.frontendservice.service.CountingService;
-import org.pablos.frontendservice.service.GivingService;
+import org.pablos.frontendservice.service.ICountingService;
+import org.pablos.frontendservice.service.IGivingService;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.LinkUnitDTO;
 import org.pablos.shortic.dto.PageDTO;
 import org.pablos.shortic.util.CommonUtil;
+import org.slf4j.Logger;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Arrays;
@@ -26,8 +30,8 @@ public class FrontController {
     public static final String PAGE_SIZE_BY_DEFAULT = "10";
     public static final String PAGE_NUMBER_BY_DEFAULT = "1";
     private final FrontendConfiguration configuration;
-    private final GivingService givingService;
-    private final CountingService countingService;
+    private final IGivingService IGivingService;
+    private final ICountingService ICountingService;
 
     @GetMapping
     public String mainPage(final Model model, final @ModelAttribute FastLinkDTO input){
@@ -38,7 +42,7 @@ public class FrontController {
 
     @GetMapping("{shortLink}")
     public RedirectView getLink(final @PathVariable String shortLink, final HttpServletRequest request) {
-        String fullLink = givingService.clickProcessing(shortLink, request);
+        String fullLink = IGivingService.clickProcessing(shortLink, request);
         return new RedirectView(fullLink);
     }
 
@@ -48,7 +52,7 @@ public class FrontController {
             final Model model,
             HttpServletRequest request
     ){
-        LinkUnitDTO linkUnit = countingService.createLink(input);
+        LinkUnitDTO linkUnit = ICountingService.createLink(input);
         String serverUrl = getServerUrl(request);
 
         model.addAttribute("linkUnit", linkUnit);
@@ -59,7 +63,7 @@ public class FrontController {
 
     @PutMapping
     public String updateLink(
-            final @RequestParam String shortLink,
+            @RequestParam String shortLink,
             final @RequestParam String fullLink,
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
@@ -67,7 +71,8 @@ public class FrontController {
             final HttpServletRequest request,
             final HttpSession session
     ){
-        countingService.updateLink(shortLink, fullLink);
+        shortLink = CommonUtil.clearShortLink(shortLink);
+        ICountingService.updateLink(shortLink, fullLink);
         return getStatistics(shortLink, password, page, size, request, session);
     }
 
@@ -80,7 +85,7 @@ public class FrontController {
             final HttpServletRequest request,
             final HttpSession session
     ){
-        countingService.setPassword(shortLink, password);
+        ICountingService.setPassword(shortLink, password);
         return getStatistics(shortLink, password, page, size, request, session);
     }
 
@@ -132,7 +137,7 @@ public class FrontController {
         if (shortLink == null || password == null || page == null || size == null || serverUrl == null) {
             return "redirect:/";
         }
-        PageDTO pageOfClicks = countingService.getPageOfClicks(page, size, shortLink, password);
+        PageDTO pageOfClicks = ICountingService.getPageOfClicks(page, size, shortLink, password);
         pageOfClicks.getLinkUnit().setShortLink(serverUrl + shortLink);
 
         model.addAttribute("clicks", pageOfClicks.getClicks());
@@ -163,6 +168,12 @@ public class FrontController {
         return "error/410";
     }
 
+    @GetMapping("/error/500")
+    public String serverError(Model model) {
+        model.addAttribute("isMainPage", false);
+        return "error/500";
+    }
+
     @GetMapping("/error/password")
     public String wrongPassword(final Model model){
         model.addAttribute("isMainPage", false);
@@ -185,7 +196,6 @@ public class FrontController {
         model.addAttribute("thisPageUrl", getServerUrl(request)+ "privacy");
         return "legal/privacy";
     }
-
     private String getServerUrl(HttpServletRequest request) {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
     }

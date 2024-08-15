@@ -1,8 +1,9 @@
-package org.pablos.frontendservice.service;
+package org.pablos.frontendservice.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.pablos.frontendservice.exception.WrongInputException;
+import org.pablos.frontendservice.service.ICountingService;
 import org.pablos.shortic.dto.*;
 import org.pablos.shortic.exception.*;
 import org.pablos.shortic.util.CommonUtil;
@@ -19,16 +20,12 @@ import java.util.Objects;
 @Data
 @Service
 @AllArgsConstructor
-public class CountingService {
+public class CountingService implements ICountingService {
 
     private final RestTemplate restTemplate;
     private String countingServiceUrl;
 
-    /**
-     * Посылает запрос на создание ссылки.
-     * @param input
-     * @return
-     */
+    @Override
     public LinkUnitDTO createLink(final FastLinkDTO input) throws WrongInputException, FullLinkNotProvidedException,
             FullLinkSizeException, FullLinkFormatException {
         CommonUtil.validateDTOFullLink(input);
@@ -48,6 +45,7 @@ public class CountingService {
         throw new WrongInputException("Unknown error");
     }
 
+    @Override
     public PageDTO getPageOfClicks(int page, int size, String shortLink, String password) throws WrongInputException,
             WrongPasswordException, LinkNotFoundException {
         try {
@@ -77,22 +75,21 @@ public class CountingService {
         throw new LinkNotFoundException();
     }
 
+    @Override
     public void postStatistics(ClickDTO clickDTO) {
         restTemplate.postForLocation(countingServiceUrl + "/click", clickDTO);
     }
 
+    @Override
     public void updateLink(String shortLink, String fullLink) throws LinkNotSecureException, WrongInputException,
             FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
         CommonUtil.validateFullLink(fullLink);
         try {
-            ResponseEntity<Void> response = restTemplate.exchange(
+            restTemplate.exchange(
                     countingServiceUrl + "/link" + "?shortLink=" + shortLink + "&fullLink=" + fullLink,
                     HttpMethod.PUT,
                     null,
                     Void.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                return;
-            }
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(410))){
                 throw new LinkNotSecureException();
@@ -103,17 +100,15 @@ public class CountingService {
         }
     }
 
+    @Override
     public void setPassword(String shortLink, String password) {
         try {
-            ResponseEntity<Void> response = restTemplate.exchange(
+            restTemplate.exchange(
                         countingServiceUrl + "/link/password" + "?shortLink=" + shortLink
                                 + "&password=" + CommonUtil.encodePassword(password),
                         HttpMethod.PUT,
                         null,
                         Void.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                return;
-            }
         } catch (HttpClientErrorException e) {
             ViolationDTO responseBody = e.getResponseBodyAs(ViolationDTO.class);
             if (responseBody!=null && e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(400))
