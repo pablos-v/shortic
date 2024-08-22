@@ -28,7 +28,6 @@ public class CountingServiceTest {
     public static final String PASSWORD = "12345";
     @Mock
     private RestTemplate restTemplate;
-
     @InjectMocks
     private CountingService countingService;
 
