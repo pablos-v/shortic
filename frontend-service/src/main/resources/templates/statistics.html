@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{fragments/head :: head('Статистика кликов')}">
+    <!-- Включение head -->
+</div>
+<body>
+<div class="top-block" th:replace="~{fragments/nav :: nav}">
+    <!-- Включение меню -->
+</div>
+
+<div class="container-fluid">
+    <div class="column">
+        <h2 class="text-center">Статистика кликов</h2>
+        <div class="inner">
+            <span th:class="${linkUnit.isActive()} ? 'text-success font-weight-bold' : 'text-danger font-weight-bold'"
+                  th:text="${linkUnit.isActive()} ? 'ссылка активна' : 'ссылка заблокирована как небезопасная'">
+            </span>
+            <span th:if="${linkUnit.isActive()}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-check-circle-fill text-success" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+            </span>
+            <span th:if="${!linkUnit.isActive()}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-exclamation-circle-fill text-danger"
+                     viewBox="0 0 16 16">
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                </svg>
+            </span>
+        </div>
+    </div>
+    <!--TODO можно попробовать передавать в message текст ошибки-->
+    <!--    <div th:if="${message != null}" class="alert alert-success alert-dismissible fade show text-center message"-->
+    <!--         role="alert">-->
+    <!--        [[${message}]]-->
+    <!--        <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">-->
+    <!--            <span aria-hidden="true">&times;</span>-->
+    <!--        </button>-->
+    <!--    </div>-->
+
+    <div class="column">
+        <div class="inner">
+            <label class="text-secondary">Сокращённая ссылка:</label>
+            <span class="font-weight-bold input-group-text" th:text="${linkUnit.getShortLink()}"> </span>
+            <label class="text-secondary">Пароль статистики:</label>
+            <span class="font-weight-bold input-group-text" th:text="${linkUnit.getPassword()}"> </span>
+        </div>
+
+        <div class="inner">
+            <label class="text-secondary">Дата создания:</label>
+            <span class="font-weight-bold input-group-text" th:text="${linkUnit.getFormattedTime()}"> </span>
+            <label class="text-secondary">Всего кликов:</label>
+            <span class="font-weight-bold input-group-text" th:text="${clicks.size()}"> </span>
+        </div>
+
+        <div class="column w-80">
+            <label class="text-secondary">Полная ссылка:</label>
+            <span class="font-weight-bold input-group-text" th:text="${linkUnit.getFullLink()}"> </span>
+
+            <div th:if="${linkUnit.isActive()}" class="column w-80">
+                <label for="fullLink" class="text-secondary font-size-big">Вы можете изменить ссылку</label>
+                <form class="stats-form-chlink" th:method="put" th:action="@{/(page=${currentPage}, size=${pageSize},
+            shortLink=${linkUnit.getShortLink()}, password=${linkUnit.getPassword()})}">
+                    <input class="form-control"
+                           placeholder="Формат https://*.* Проверка займёт немного времени"
+                           required="true"
+                           id="fullLink"
+                           maxlength="4096"
+                           pattern="^(http://|https://)[^\s_]+(\.[^\s_]+)+$"
+                           name="fullLink"
+                           type="text"/>
+                    <input class="btn btn-primary" type="submit" value="ИЗМЕНИТЬ ССЫЛКУ"/>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${clicks.size() > 0}" class="column left">
+            <form class="inner" method="get" th:action="@{/stats}" id="selectPageSizeForm">
+                    <label class="input-group-text" for="pageSize">Показывать на странице:</label>
+                    <select form="selectPageSizeForm" name="size" onchange="changePageSize()" class="size-select"
+                            id="pageSize">
+                        <option th:each="s : ${clicksPerPage}" th:value="${s}" th:text="${s}"
+                                th:selected="${s == pageSize}"> </option>
+                    </select>
+                <input type="hidden" name="shortLink" th:value="${linkUnit.getShortLink()}"/>
+                <input type="hidden" name="password" th:value="${linkUnit.getPassword()}"/>
+            </form>
+
+        <table class="table table-striped table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">CLICK TIME</th>
+                <th scope="col">IP ADDRESS</th>
+                <th scope="col">LANGUAGE</th>
+                <th scope="col">REFERER</th>
+                <th scope="col">USER-AGENT</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="click : ${clicks}">
+                <td> [[${click.getId()}]]</td>
+                <td> [[${click.getFormattedTime()}]]</td>
+                <td> [[${click.getIpAddress()}]]</td>
+                <td> [[${click.getLanguage()}]]</td>
+                <td> [[${click.getReferer()}]]</td>
+                <td> [[${click.getUserAgent()}]]</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:unless="${clicks.size() > 0}" class="column">
+        <span>Не было кликов по этой ссылке.</span>
+    </div>
+
+    <nav aria-label="Пагинация" th:if="${totalPages > 0}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a th:replace="~{fragments/paging :: paging(1, '<<', 'Первая страница', ${pageSize}, ${linkUnit.getShortLink()}, ${linkUnit.getPassword()})}"> </a>
+            </li>
+            <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a th:replace="~{fragments/paging :: paging(${currentPage - 1}, 'Пред', 'Предыдущая страница', ${pageSize}, ${linkUnit.getShortLink()}, ${linkUnit.getPassword()})}"> </a>
+            </li>
+            <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
+                th:each="page : ${#numbers.sequence((currentPage > 2 ? currentPage - 2 : 1), (currentPage + 2 < totalPages ? currentPage + 2 : totalPages))}">
+                <a th:replace="~{fragments/paging :: paging(${page}, ${page}, 'Страница ' + ${page}, ${pageSize}, ${linkUnit.getShortLink()}, ${linkUnit.getPassword()})}"> </a>
+            </li>
+            <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a th:replace="~{fragments/paging :: paging(${currentPage + 1},'След', 'Следующая страница', ${pageSize}, ${linkUnit.getShortLink()}, ${linkUnit.getPassword()})}"> </a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a th:replace="~{fragments/paging :: paging(${totalPages}, '>>', 'Последняя страница', ${pageSize},
+                ${linkUnit.getShortLink()}, ${linkUnit.getPassword()})}"> </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script type="text/javascript">
+    function changePageSize() {
+        document.getElementById("selectPageSizeForm").submit();
+    }
+</script>
+
+<div th:replace="~{fragments/footer :: footer}" th:fragment="footer">
+    <!-- Включение footer -->
+</div>
+</body>
+</html>

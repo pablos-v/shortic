@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{fragments/head :: head('Сократить ссылку')}">
+    <!-- Включение head -->
+</div>
+<body>
+<nav class="menu">
+    <span class="logo"> </span>
+    <form class="menu-form" th:method="get" th:action="@{/stats}" >
+        <input class="form-control"
+               type="text"
+               name="shortLink"
+               placeholder="сокращённая ссылка"
+               required="true"
+               maxlength="30"
+        />
+        <input class="form-control"
+               type="password"
+               name="password"
+               placeholder="пароль 5 цифр"
+               required="true"
+               maxlength="5"
+               pattern="\d{5}"
+        />
+        <input class="btn btn-secondary btn-menu" type="submit" value="СТАТИСТИКА"/>
+    </form>
+</nav>
+
+<form class="main col p-3 mb-5" th:method="post" th:action="@{/}" th:object="${input}">
+    <div class="form-group">
+        <input class="form-control form-control-lg"
+           id="link"
+           type="text"
+           placeholder="формат ссылки: https://*.*"
+           required="true"
+           maxlength="4096"
+           pattern="^(http://|https://)[^\s_]+(\.[^\s_]+)+$"
+           th:field="${input.fullLink}"
+    />
+        <input class="btn btn-primary shadow-custom btn-main" type="submit" value="СОКРАТИТЬ"/>
+    </div>
+</form>
+
+<div th:replace="~{fragments/footer :: footer}" th:fragment="footer">
+    <!-- Включение footer -->
+</div>
+</body>
+</html>

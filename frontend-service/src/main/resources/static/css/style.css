@@ -1,0 +1,220 @@
+@font-face {
+    font-family: 'Roboto-Regular';
+    src: url('/static/fonts/Roboto-Regular.ttf') format('truetype');
+}
+
+.navbar {
+    padding: 0 10px;
+}
+
+.stats-form-chlink {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 5px 20px 5px;
+}
+
+.form-control {
+    border-radius: .9rem !important;
+    height: calc(1.5em + 0.75rem + 12px) !important;
+    padding: .375rem 1rem !important;
+    font-size: 1.2rem !important;
+}
+
+.form-control-lg {
+    height: calc(1.5em + 1rem + 10px) !important;
+    font-size: 1.5rem !important;
+}
+
+body {
+    font-family: 'Roboto-Regular', sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Высота на весь экран */
+    background-color: #ede6d2 !important;
+}
+
+.top-block {
+    height: 10%;
+}
+
+.middle-block {
+    flex: 1; /* Занимает всё оставшееся место */
+}
+
+.bottom-block {
+    height: 10%;
+}
+
+.footer-style {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin: 10px;
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+    height: 70vh;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 55%;
+    gap: 15px;
+    border-radius: 8px;
+}
+
+.input-group-text {
+    border-radius: .75rem !important;
+}
+
+.menu-form {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 20px;
+}
+
+.btn {
+    border-radius: .9rem !important;
+}
+
+.btn-main {
+    height: calc(1.5em + 1rem + 10px) !important;
+    font-size: 1.5rem !important;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.w-80 {
+    width: 80%;
+}
+
+.margin-20 {
+    margin: 20px;
+}
+
+.left {
+    align-items: flex-start !important;
+}
+
+.container-fluid {
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+label {
+    margin: .5rem !important;
+}
+
+.font-size-big {
+    font-size: 1.2rem !important;
+}
+
+.created-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 8px;
+}
+
+.inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-menu {
+    height: calc(1.5em + 0.75rem + 12px) !important;
+    font-size: 1.2rem !important;
+}
+
+.flex-center {
+    display: flex !important;
+    align-items: center !important;
+    margin-left: 15px;
+}
+
+.shadow-custom {
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
+}
+
+*.icon-dark {
+    color: grey;
+}
+
+.message {
+    position: absolute;
+    top: 40px;
+    right:5px;
+}
+
+/*.search {*/
+/*    position: relative;*/
+/*}*/
+
+/*.search input {*/
+/*    text-indent: 25px;*/
+/*    border: 2px solid #d6d4d4;*/
+/*}*/
+
+/*.search input:focus {*/
+/*    box-shadow: none;*/
+/*    border: 1px solid grey;*/
+/*}*/
+
+/*.search .fa-search {*/
+/*    position: absolute;*/
+/*    top: 12px;*/
+/*    left: 10px;*/
+/*}*/
+
+/*.search button {*/
+/*    position: absolute;*/
+/*    top: 0px;*/
+/*    right: 0px;*/
+/*    width: 80px;*/
+/*    background: grey;*/
+/*}*/
+
+.size-select {
+    /*width: 60px;*/
+    color: #495057;
+    vertical-align: middle;
+    padding: 6px 12px;
+    /*border: 1px solid #ced4da;*/
+    /*border-radius: 0.25rem;*/
+    border-radius: 0.5rem;
+}
+
+.logo{
+    width: 165px; /* Ширина логотипа */
+    height: 55px; /* Высота логотипа */
+    margin-left: 15px;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAABkCAYAAAA8AQ3AAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABTxJREFUeNrs3bFrXWUcxvF7a9BFh4B1rJBRu/UvCNRVcGhti6vJ3aSDpEumDKZDEbeb4qrYOgiuBvUfyNauUYOTCh3sokKuv0OPi/SchOSe0997zucLPy406Rt4Lu/T57x5n97pYrGYAEAJXCABAIYFAEtmhQT5mG7397MWO/QZkjYMCxm5FHMrZj3mrZiLMf/E/BrzS8yPMQ9ifqIPfQb1j7lD96ISRLURd2Oux7x0wjLH9aa8E3M0koS1VH0krHw4wyqHd2Mexdw8xWb8772tvvdx/UqfcevDsNAbH8V8E/PaGf7uqzFfxNymz2j1YVjojfdjPj3nezWNuVevRZ9x6cOw0BvVmczn9YY6L9N6rUv0GY0+DAu98kn9yLIsqrXu0mc0+jAs9MabMTc6WPd6vTZ9hq0Pw0Kv3Ojo/bnQ0UanDxjWiFkvdG36gGGNkMuFrk0fMKwR8nqHa1+kz+D1YVjolVc6XPtl+gxen0Gi/IxzMZ2e7wrU/7uss9lsLV7WGr79YD6fP6E6wwKy8F2DYe2HWb1DHo+EQAoiXW21pCsXOsGwkMasVuNlq+HL9yNd7VMJDAtZ2IhZla7AsJA9Xa21pKu7ka4OqQSGhSxsNaSrJ9IVGBaypauNlnTlGgMYFtKw1/Dn1WPgffKAYSEFm5ubV+PlqnQFhoUSaDpor260S1dgWEiTrjZa0tUdCoFhoYR0te+SKBgWMqWrtgqOdAWGhTRmdVIF54BKYFjIggoOGBaKSFfVY+Bu06OgCg4YFjLR9ChY3bdyjQEMC2nS1ZWJCg4YFgqh6VHwMMzK2RUYFtKkq9YKDoVwWlam20TAC0tXqSs49kZCw4pZkAEdpqvq3OpKw5czXxK1LzwSYoQ0VnD29vZUcMCwkCZdqeCAYaEIs2qt4ES6UsEBw0IaVHDAsFBEumqt4ES6UsEBw0IaVHDAsFBEumqt4ES6UsEBw0IaGis4YVbOrsCwkCZdqeCAYaH4dHUQ6crZFRgW0qSrUis4YFgYmVm1XRJVwQHDQiqqdKWCA4aFotOVCg4YFlJRmZUKDhgWcjObzdZa0pUKDhgW0qWr56GCA4aFVOmquiCqggOGhaLTlQoOGBbSpSsVHDAsFMFew5+r4IBhIVW6ckkUDAtFmJUKDl4o1ecSTsmQkoyfizemdGVfZDSsxQ4R0u2UhJ84fEK6GmQFx97wSIhyUcEBw0J+VHDAsFBaunoeKjhgWEiVrlRwwLBQfLo6nM/nzq7AsJAmXV2bqOCAYaEQGj8FJ9KVsyswLKRJVyo4YFgowqxWW9LVfqQrFRwwLKShSldNl0Q3yQOGhUzpqrGCE+nKJVEwLKRhtyFdVfet/GYQDAtp0tXapOWSqHQFhoVs6WrSkK5cYwDDQpp0VV0QvdaSrlRwwLCQBhUcMCwUka5UcFAEKyRAJKivJ2f8L4EXiwUBIWEBAMMqh786XPtv+gxeH4aFXvmjw7V/p8/g9WFY6JXHHa79iD6D14dhoVe+73DtH+gzeH0YFnrlQcxxB+se12vTZ9j6MCz0ys8xDztY92G9Nn2GrQ/DQu9Ut8+fLnG9p5PmG+30GZ4+DAu9chTzYcwybmcu6rWO6DMafRgWeuermNuT853XVJvx43ot+oxLH4aF3vks5r2YP8/4mPNBzD36jFYfhoXe+Tbmcp0CTpMmjuvvfTvmS/qMXp9BoPxcFtX5ys3Js4PhWzHr9YZ7o/76b5NnFyqre0TVb7sO6UOfITHVtk/4pmz397MWO/QZkjYMCwCS4AwLAMMCgGXzrwADAPx0fviZLqiAAAAAAElFTkSuQmCC");
+    background-size: contain; /* Масштабируем изображение, чтобы оно поместилось в блок */
+    background-repeat: no-repeat; /* Не повторяем изображение */
+    background-position: center; /* Центрируем изображение внутри блока */
+}

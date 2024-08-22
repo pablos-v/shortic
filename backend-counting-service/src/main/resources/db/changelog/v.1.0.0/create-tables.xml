@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="1" author="pavel_kuzmin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="link_units"/>
+                <tableExists tableName="clicks"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="shortic" tableName="link_units">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="short_link" type="varchar(10)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)"/>
+            <column name="full_link" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable schemaName="shortic" tableName="clicks">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="click_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ip_address" type="varchar(45)"/>
+            <column name="user_agent" type="varchar(255)"/>
+            <column name="referrer" type="varchar(4096)"/>
+            <column name="language" type="varchar(30)"/>
+            <column name="link_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk-link-id" references="shortic.link_units(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
+
+
+

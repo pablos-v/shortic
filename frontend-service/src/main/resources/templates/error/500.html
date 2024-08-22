@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{fragments/head :: head('Ошибка на сервере')}">
+    <!-- Включение head -->
+</div>
+<body>
+<div class="top-block" th:replace="~{fragments/nav :: nav}">
+    <!-- Включение меню -->
+</div>
+
+<content class="column middle-block">
+    <h2 class="text-danger">Что-то пошло не так, простите</h2>
+    <p class="text-secondary">Ремонтная бригада уже выехала.</p>
+    <p>Попробуйте ещё раз.</p>
+</content>
+
+<div class="bottom-block" th:replace="~{fragments/footer :: footer}" th:fragment="footer">
+    <!-- Включение footer -->
+</div>
+</body>
+</html>

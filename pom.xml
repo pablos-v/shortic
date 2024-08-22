@@ -11,8 +11,12 @@
     <groupId>org.pablos</groupId>
     <artifactId>Shortic</artifactId>
     <version>0.0.1</version>
+    <packaging>pom</packaging>
     <name>Shortic</name>
     <description>Shortic</description>
+    <modules>
+        <module>common-storage</module>
+    </modules>
     <properties>
         <java.version>17</java.version>
     </properties>

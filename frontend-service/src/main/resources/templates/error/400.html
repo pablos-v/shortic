@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{fragments/head :: head('Неправльные данные')}">
+    <!-- Включение head -->
+</div>
+<body>
+<div class="top-block" th:replace="~{fragments/nav :: nav}">
+    <!-- Включение меню -->
+</div>
+
+<content class="column middle-block">
+    <h2 class="text-danger">Указаны ошибочные данные</h2>
+    <p class="text-danger" th:text="${message} ?: 'Неизвестная ошибка'"> </p>
+</content>
+
+<div class="bottom-block" th:replace="~{fragments/footer :: footer}" th:fragment="footer">
+    <!-- Включение footer -->
+</div>
+</body>
+</html>

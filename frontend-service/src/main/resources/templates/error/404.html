@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{fragments/head :: head('Ссылка не найдена')}">
+    <!-- Включение head -->
+</div>
+<body>
+<div class="top-block" th:replace="~{fragments/nav :: nav}">
+    <!-- Включение меню -->
+</div>
+
+<content class="column middle-block">
+    <h2 class="text-danger">Такой ссылки нет</h2>
+    <p class="text-secondary">Возможно она была удалена как небезопасная, или её никогда и не было.</p>
+    <p>Сделайте себе чаю, можно даже с конфеткой. Всё будет хорошо!</p>
+</content>
+
+<div class="bottom-block" th:replace="~{fragments/footer :: footer}" th:fragment="footer">
+    <!-- Включение footer -->
+</div>
+</body>
+</html>

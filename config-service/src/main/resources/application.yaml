@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/services
+
+server:
+  port: 18001
