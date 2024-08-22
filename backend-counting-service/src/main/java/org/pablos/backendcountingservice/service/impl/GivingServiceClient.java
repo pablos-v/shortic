@@ -27,55 +27,31 @@ public class GivingServiceClient implements IGivingServiceClient {
 
     @Override
     public FastLinkDTO saveFastLink(final FastLinkDTO dto) throws SavingFastLinkException {
-        ResponseEntity<?> response = restTemplate.postForEntity(givingServiceUrl, dto, FastLinkDTO.class);
-        if (response.getStatusCode().is2xxSuccessful()) {
-            return (FastLinkDTO) response.getBody();
-        } else {
-            ViolationDTO violationDTO = (ViolationDTO) response.getBody();
-            String message = violationDTO == null ? "Unknown error" : violationDTO.getMessage();
-            throw new SavingFastLinkException(message);
+        try {
+            ResponseEntity<FastLinkDTO> response = restTemplate.postForEntity(givingServiceUrl, dto, FastLinkDTO.class);
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new SavingFastLinkException(e.getResponseBodyAsString());
         }
     }
 
     @Override
     public FastLinkDTO deleteFastLink(final FastLinkDTO dto) throws DeletingFastLinkException {
-        ResponseEntity<?> response = restTemplate.exchange(
-                givingServiceUrl,
-                HttpMethod.DELETE,
-                new HttpEntity<>(dto.getShortLink()),
-                FastLinkDTO.class
-//                new ParameterizedTypeReference<>() {}
-                );
-        if (response.getStatusCode().is2xxSuccessful()) {
-            return (FastLinkDTO) response.getBody();
-        } else {
-            ViolationDTO violationDTO = (ViolationDTO) response.getBody();
-            String message = violationDTO == null ? "Unknown error" : violationDTO.getMessage();
-            throw new DeletingFastLinkException(message);
+        try {
+            ResponseEntity<FastLinkDTO> response = restTemplate.exchange(givingServiceUrl, HttpMethod.DELETE,
+                    new HttpEntity<>(dto.getShortLink()), FastLinkDTO.class);
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new DeletingFastLinkException(e.getResponseBodyAsString());
         }
-//        TODO оба метода
-//         try {
-//            restTemplate.delete(givingServiceUrl + "/" + shortLink);
-//        } catch (HttpClientErrorException e) {
-//            ViolationDTO violationDTO = e.getResponseBodyAs(ViolationDTO.class);
-//            String message = violationDTO == null ? "Unknown error" : violationDTO.getMessage();
-//            throw new DeletingFastLinkException(message);
-//        }
     }
 
     @Override
     public void updateFastLink(FastLinkDTO fastLinkDTO) {
         try {
-            restTemplate.exchange(
-                    givingServiceUrl,
-                    HttpMethod.PUT,
-                    new HttpEntity<>(fastLinkDTO),
-                    Void.class
-            );
+            restTemplate.exchange(givingServiceUrl, HttpMethod.PUT, new HttpEntity<>(fastLinkDTO), Void.class);
         } catch (HttpClientErrorException e) {
-            ViolationDTO violationDTO = e.getResponseBodyAs(ViolationDTO.class);
-            String message = violationDTO == null ? "Unknown error" : violationDTO.getMessage();
-            throw new UpdatingFastLinkException(message);
+            throw new UpdatingFastLinkException(e.getResponseBodyAsString());
         }
     }
 }

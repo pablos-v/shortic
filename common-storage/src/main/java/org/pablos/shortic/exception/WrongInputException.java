@@ -1,10 +1,8 @@
-package org.pablos.frontendservice.exception;
+package org.pablos.shortic.exception;
 
 public class WrongInputException extends RuntimeException{
     public WrongInputException(String message) {
         super(message);
-    }
-    public WrongInputException() {
     }
 
 }

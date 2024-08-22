@@ -1,7 +1,6 @@
-<nav class="menu" th:fragment="nav(isMainPage)">
-    <a th:if="${!isMainPage}" th:href="@{'/'}" class="btn btn-primary btn-menu flex-center">НА ГЛАВНУЮ</a>
-    <div th:if="${isMainPage}" class="logo"> </div>
-    <form class="menu-form" th:method="get" th:action="@{/stats}" >
+<nav class="menu" th:fragment="nav">
+    <a href="/" class="btn btn-primary btn-menu flex-center">НА ГЛАВНУЮ</a>
+    <form class="menu-form" th:method="get" th:action="@{/stats}">
         <input class="form-control"
                type="text"
                name="shortLink"

@@ -5,7 +5,6 @@ import org.pablos.shortic.dto.ClickDTO;
 import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkProcessingException;
 import org.pablos.shortic.exception.ObjectNotProvidedException;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface IClickService {
     /**

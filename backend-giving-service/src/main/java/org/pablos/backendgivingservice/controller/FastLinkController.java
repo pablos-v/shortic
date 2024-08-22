@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.pablos.backendgivingservice.entity.FastLink;
 import org.pablos.backendgivingservice.service.IFastLinkService;
 import org.pablos.shortic.dto.FastLinkDTO;
+import org.pablos.shortic.exception.LinkProcessingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

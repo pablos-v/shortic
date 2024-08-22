@@ -151,7 +151,7 @@ public class LinkUnitService implements ILinkUnitService {
     @Override
     @Transactional
     public void setPassword(final String shortLink, final String password)
-            throws PasswordIncorrectException, LinkNotFoundException {
+            throws WrongInputException, LinkNotFoundException {
 
         CommonUtil.validatePassword(CommonUtil.decodePassword(password));
         LinkUnit linkUnit = getLinkUnitByShortLink(shortLink);

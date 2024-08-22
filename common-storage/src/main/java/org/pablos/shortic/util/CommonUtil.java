@@ -14,10 +14,6 @@ public class CommonUtil {
      * Здесь задаётся длина сокращённой ссылки.
      */
     public static final String EXISTS = "This short link already exists";
-    public static final String SHORT_LINK = "shortLink";
-    public static final String FULL_LINK = "fullLink";
-    public static final String PASSWORD = "password";
-    public static final String OBJECT = "object";
     public static final int SHORT_LINK_LENGTH = 6;
     private static final int FULL_LINK_MAX_LENGTH = 4096;
     private static final String NOT_PROVIDED = "Link was not provided";
@@ -26,6 +22,7 @@ public class CommonUtil {
     private static final String INVALID_CHARS = "Link contains invalid characters";
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final SecureRandom random = new SecureRandom();
+    public static final String PASSWORD_NOT_MATCHES_PATTERN = "Password must be exactly 5 digits";
 
     /**
      * Генерирует случайную строку с длиной SHORT_LINK_LENGTH.
@@ -69,7 +66,8 @@ public class CommonUtil {
         }
     }
 
-    public static void validateDTOFullLink(IFullLink dto) throws FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
+    public static void validateDTOFullLink(IFullLink dto) throws FullLinkNotProvidedException, FullLinkSizeException,
+            FullLinkFormatException {
         if (dto == null || dto.getFullLink() == null || dto.getFullLink().isEmpty()) {
             throw new FullLinkNotProvidedException();
         }
@@ -90,9 +88,9 @@ public class CommonUtil {
         }
     }
 
-    public static void validatePassword(String password) throws PasswordIncorrectException {
+    public static void validatePassword(String password) throws WrongInputException {
         if (password == null || !password.matches("\\d{5}")) {
-            throw new PasswordIncorrectException();
+            throw new WrongInputException(PASSWORD_NOT_MATCHES_PATTERN);
         }
     }
 

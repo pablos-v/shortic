@@ -4,9 +4,27 @@
     <!-- Включение head -->
 </div>
 <body>
-<div th:replace="~{fragments/nav :: nav(${isMainPage})}">
-    <!-- Включение меню -->
-</div>
+<nav class="menu">
+    <span class="logo"> </span>
+    <form class="menu-form" th:method="get" th:action="@{/stats}" >
+        <input class="form-control"
+               type="text"
+               name="shortLink"
+               placeholder="сокращённая ссылка"
+               required="true"
+               maxlength="30"
+        />
+        <input class="form-control"
+               type="password"
+               name="password"
+               placeholder="пароль 5 цифр"
+               required="true"
+               maxlength="5"
+               pattern="\d{5}"
+        />
+        <input class="btn btn-secondary btn-menu" type="submit" value="СТАТИСТИКА"/>
+    </form>
+</nav>
 
 <form class="main col p-3 mb-5" th:method="post" th:action="@{/}" th:object="${input}">
     <div class="form-group">

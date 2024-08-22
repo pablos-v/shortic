@@ -11,6 +11,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Configuration
 @RequiredArgsConstructor
@@ -22,13 +23,15 @@ public class FrontendConfiguration {
 
     private final EurekaClient eurekaClient;
 
+    private String serverUrl;
+
     @Bean
-    public String countingServiceUrl(){
-     return  getBackendIp("BACKEND-COUNTING-SERVICE");
+    public String countingServiceUrl() {
+        return getBackendIp("BACKEND-COUNTING-SERVICE");
     }
 
     @Bean
-    public String givingServiceUrl(){
+    public String givingServiceUrl() {
         return getBackendIp("BACKEND-GIVING-SERVICE");
     }
 
@@ -40,6 +43,17 @@ public class FrontendConfiguration {
     @Bean
     public Logger getLogger() {
         return LoggerFactory.getLogger(getClass());
+    }
+
+    /**
+     * Предоставляет адрес текущего сервера, готовый для подстановки - со слешем "/" на конце.
+     * @return
+     */
+    public String getServerUrl() {
+        if (serverUrl == null) {
+            serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/";
+        }
+        return serverUrl;
     }
 
     /**

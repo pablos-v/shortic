@@ -3,13 +3,12 @@ package org.pablos.frontendservice.service.impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.pablos.frontendservice.exception.WrongInputException;
 import org.pablos.frontendservice.service.ICountingService;
 import org.pablos.frontendservice.service.IGivingService;
 import org.pablos.shortic.dto.ClickDTO;
-import org.pablos.shortic.dto.ViolationDTO;
 import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkProcessingException;
+import org.pablos.shortic.exception.WrongInputException;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Data
 @Service
@@ -25,12 +23,11 @@ import java.util.Objects;
 public class GivingService implements IGivingService {
 
     private final RestTemplate restTemplate;
-    private final org.pablos.frontendservice.service.ICountingService ICountingService;
+    private final ICountingService ICountingService;
     private final String givingServiceUrl;
 
     @Override
-    public String clickProcessing(final String shortLink, final HttpServletRequest request) throws LinkNotFoundException,
-            WrongInputException, LinkProcessingException {
+    public String clickProcessing(final String shortLink, final HttpServletRequest request) throws LinkNotFoundException, WrongInputException, LinkProcessingException {
 
         CommonUtil.validateShortLink(shortLink);
 
@@ -40,17 +37,16 @@ public class GivingService implements IGivingService {
         try {
             return restTemplate.getForObject(givingServiceUrl + "/click/" + shortLink, String.class);
         } catch (HttpClientErrorException e) {
-            ViolationDTO responseBody = e.getResponseBodyAs(ViolationDTO.class);
-            if (e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(400))){
-                throw new WrongInputException(Objects.requireNonNullElse(responseBody, "Неизвестная ошибка").toString());
-            } else if (e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(404))){
-                throw new LinkNotFoundException(Objects.requireNonNullElse(responseBody, "Неизвестная ошибка").toString());
+            if (e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(400))) {
+                throw new WrongInputException(e.getResponseBodyAsString());
+            } else if (e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(404))) {
+                throw new LinkNotFoundException(e.getResponseBodyAsString());
             }
-                throw new WrongInputException("Неизвестная ошибка");
+            throw new WrongInputException("Unknown error");
         }
     }
 
-    private void postStatistics(final String shortLink, final HttpServletRequest request){
+    private void postStatistics(final String shortLink, final HttpServletRequest request) {
         ClickDTO clickDTO = prepareClickDTO(shortLink, request);
         ICountingService.postStatistics(clickDTO);
     }

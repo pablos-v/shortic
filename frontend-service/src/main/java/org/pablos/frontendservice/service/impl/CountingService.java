@@ -2,9 +2,11 @@ package org.pablos.frontendservice.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.pablos.frontendservice.exception.WrongInputException;
 import org.pablos.frontendservice.service.ICountingService;
-import org.pablos.shortic.dto.*;
+import org.pablos.shortic.dto.ClickDTO;
+import org.pablos.shortic.dto.FastLinkDTO;
+import org.pablos.shortic.dto.LinkUnitDTO;
+import org.pablos.shortic.dto.PageDTO;
 import org.pablos.shortic.exception.*;
 import org.pablos.shortic.util.CommonUtil;
 import org.springframework.http.HttpMethod;
@@ -14,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Objects;
 
 @Data
 @Service
@@ -29,6 +29,7 @@ public class CountingService implements ICountingService {
     public LinkUnitDTO createLink(final FastLinkDTO input) throws WrongInputException, FullLinkNotProvidedException,
             FullLinkSizeException, FullLinkFormatException {
         CommonUtil.validateDTOFullLink(input);
+        String message = "Unknown error";
         try {
             ResponseEntity<LinkUnitDTO> response = restTemplate.postForEntity(
                     countingServiceUrl + "/link",
@@ -39,10 +40,9 @@ public class CountingService implements ICountingService {
                 return response.getBody();
             }
         } catch (HttpClientErrorException e) {
-            ViolationDTO violationDTO = e.getResponseBodyAs(ViolationDTO.class);
-            throw new WrongInputException(Objects.requireNonNullElse(violationDTO, "Unknown error").toString());
+            message = e.getResponseBodyAsString();
         }
-        throw new WrongInputException("Unknown error");
+        throw new WrongInputException(message);
     }
 
     @Override
@@ -66,10 +66,9 @@ public class CountingService implements ICountingService {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new WrongPasswordException();
             } else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new LinkNotFoundException();
+                throw new LinkNotFoundException(e.getResponseBodyAsString());
             } else if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                ViolationDTO responseBody = e.getResponseBodyAs(ViolationDTO.class);
-                throw new WrongInputException(Objects.requireNonNullElse(responseBody, "Неизвестная ошибка").toString());
+                throw new WrongInputException(e.getResponseBodyAsString());
             }
         }
         throw new LinkNotFoundException();
@@ -94,8 +93,7 @@ public class CountingService implements ICountingService {
             if (e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(410))){
                 throw new LinkNotSecureException();
             } else {
-                ViolationDTO responseBody = e.getResponseBodyAs(ViolationDTO.class);
-                throw new WrongInputException(Objects.requireNonNullElse(responseBody, "Неизвестная ошибка").toString());
+                throw new WrongInputException(e.getResponseBodyAsString());
             }
         }
     }
@@ -110,12 +108,7 @@ public class CountingService implements ICountingService {
                         null,
                         Void.class);
         } catch (HttpClientErrorException e) {
-            ViolationDTO responseBody = e.getResponseBodyAs(ViolationDTO.class);
-            if (responseBody!=null && e.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(400))
-            && responseBody.getFieldName().equals("password")) {
-                throw new PasswordIncorrectException();
-            }
-            throw new WrongInputException();
+            throw new WrongInputException(e.getResponseBodyAsString());
         }
     }
 }

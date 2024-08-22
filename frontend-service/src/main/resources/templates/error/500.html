@@ -4,7 +4,9 @@
     <!-- Включение head -->
 </div>
 <body>
-<a href="/" class="btn btn-primary btn-menu flex-center">НА ГЛАВНУЮ</a>
+<div class="top-block" th:replace="~{fragments/nav :: nav}">
+    <!-- Включение меню -->
+</div>
 
 <content class="column middle-block">
     <h2 class="text-danger">Что-то пошло не так, простите</h2>

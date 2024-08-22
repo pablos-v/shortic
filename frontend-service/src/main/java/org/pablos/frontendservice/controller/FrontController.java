@@ -10,13 +10,9 @@ import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.LinkUnitDTO;
 import org.pablos.shortic.dto.PageDTO;
 import org.pablos.shortic.util.CommonUtil;
-import org.slf4j.Logger;
-import org.springframework.boot.web.servlet.error.ErrorAttributes;
-import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Arrays;
@@ -29,14 +25,13 @@ public class FrontController {
     public static final List<Integer> CLICKS_PER_PAGE = Arrays.asList(10, 25, 50);
     public static final String PAGE_SIZE_BY_DEFAULT = "10";
     public static final String PAGE_NUMBER_BY_DEFAULT = "1";
-    private final FrontendConfiguration configuration;
     private final IGivingService IGivingService;
     private final ICountingService ICountingService;
+    private final FrontendConfiguration configuration;
 
     @GetMapping
     public String mainPage(final Model model, final @ModelAttribute FastLinkDTO input){
         model.addAttribute("input", input);
-        model.addAttribute("isMainPage", true);
         return "index";
     }
 
@@ -49,15 +44,12 @@ public class FrontController {
     @PostMapping
     public String createLink(
             final FastLinkDTO input,
-            final Model model,
-            HttpServletRequest request
+            final Model model
     ){
         LinkUnitDTO linkUnit = ICountingService.createLink(input);
-        String serverUrl = getServerUrl(request);
 
         model.addAttribute("linkUnit", linkUnit);
-        model.addAttribute("shortLink", serverUrl + linkUnit.getShortLink());
-        model.addAttribute("isMainPage", false);
+        model.addAttribute("shortLink", configuration.getServerUrl() + linkUnit.getShortLink());
         return "created";
     }
 
@@ -68,12 +60,11 @@ public class FrontController {
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final HttpServletRequest request,
             final HttpSession session
     ){
         shortLink = CommonUtil.clearShortLink(shortLink);
         ICountingService.updateLink(shortLink, fullLink);
-        return getStatistics(shortLink, password, page, size, request, session);
+        return getStatistics(shortLink, password, page, size, session);
     }
 
     @PutMapping("/password")
@@ -82,11 +73,10 @@ public class FrontController {
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final HttpServletRequest request,
             final HttpSession session
     ){
         ICountingService.setPassword(shortLink, password);
-        return getStatistics(shortLink, password, page, size, request, session);
+        return getStatistics(shortLink, password, page, size, session);
     }
 
     /**
@@ -105,14 +95,12 @@ public class FrontController {
             final @RequestParam String password,
             final @RequestParam(defaultValue = PAGE_NUMBER_BY_DEFAULT) int page,
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
-            final HttpServletRequest request,
             final HttpSession session
     ){
         shortLink = CommonUtil.clearShortLink(shortLink);
         CommonUtil.validateShortLink(shortLink);
-        String serverUrl = getServerUrl(request);
 
-        session.setAttribute("serverUrl", serverUrl);
+        session.setAttribute("serverUrl", configuration.getServerUrl());
         session.setAttribute("shortLink", shortLink);
         session.setAttribute("password", password);
         session.setAttribute("page", page);
@@ -146,57 +134,7 @@ public class FrontController {
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
         model.addAttribute("linkUnit", pageOfClicks.getLinkUnit());
-        model.addAttribute("isMainPage", false);
         return "statistics";
     }
 
-    @GetMapping("/error/404")
-    public String notFound(final Model model){
-        model.addAttribute("isMainPage", false);
-        return "error/404";
-    }
-
-    @GetMapping("/error/400")
-    public String wrongInput(final Model model){
-        model.addAttribute("isMainPage", false);
-        return "error/400";
-    }
-
-    @GetMapping("/error/410")
-    public String badLink(final Model model){
-        model.addAttribute("isMainPage", false);
-        return "error/410";
-    }
-
-    @GetMapping("/error/500")
-    public String serverError(Model model) {
-        model.addAttribute("isMainPage", false);
-        return "error/500";
-    }
-
-    @GetMapping("/error/password")
-    public String wrongPassword(final Model model){
-        model.addAttribute("isMainPage", false);
-        return "error/password";
-    }
-
-    @GetMapping("/oferta")
-    public String showOffer(final Model model, final HttpServletRequest request){
-        model.addAttribute("isMainPage", false);
-        model.addAttribute("fromWho", configuration.getFromWho());
-        model.addAttribute("thisPageUrl", getServerUrl(request)+ "oferta");
-        return "legal/oferta";
-    }
-
-    @GetMapping("/privacy")
-    public String showPrivacyPolicy(final Model model, final HttpServletRequest request){
-        model.addAttribute("isMainPage", false);
-        model.addAttribute("fromWho", configuration.getFromWho());
-        model.addAttribute("thisSiteUrl", getServerUrl(request));
-        model.addAttribute("thisPageUrl", getServerUrl(request)+ "privacy");
-        return "legal/privacy";
-    }
-    private String getServerUrl(HttpServletRequest request) {
-        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
-    }
 }

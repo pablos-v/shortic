@@ -1,6 +1,5 @@
 package org.pablos.frontendservice.service;
 
-import org.pablos.frontendservice.exception.WrongInputException;
 import org.pablos.shortic.dto.ClickDTO;
 import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.LinkUnitDTO;

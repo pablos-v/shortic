@@ -1,9 +1,9 @@
 package org.pablos.frontendservice.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.pablos.frontendservice.exception.WrongInputException;
 import org.pablos.shortic.exception.LinkNotFoundException;
 import org.pablos.shortic.exception.LinkProcessingException;
+import org.pablos.shortic.exception.WrongInputException;
 
 public interface IGivingService {
     /**

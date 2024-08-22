@@ -28,79 +28,36 @@ public class ExceptionHandlingService {
      * @return {@link ViolationDTO}
      */
     @ResponseBody
-    @ExceptionHandler(LinkProcessingException.class)
+    @ExceptionHandler({LinkProcessingException.class, ObjectNotProvidedException.class, WrongInputException.class,
+            FullLinkNotProvidedException.class, FullLinkSizeException.class, FullLinkFormatException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ViolationDTO onLinkProcessingException(LinkProcessingException e) {
-        logger.error("Link not correct: {}", e.getMessage(), e);
-        return new ViolationDTO(CommonUtil.SHORT_LINK, e.getMessage());
+    public String onLinkProcessingException(Exception e) {
+        logger.warn(e.getMessage(), e);
+        return e.getMessage();
     }
-
-    /**
-     * Метод обрабатывает исключения {@link ObjectNotProvidedException}, возникающие когда объект не передан.
-     * Передаёт статус ответа 400 и объект {@link ViolationDTO}, содержащий имя объекта и сообщение.
-     * @param e выбрасываемое исключение
-     * @return {@link ViolationDTO}
-     */
-    @ResponseBody
-    @ExceptionHandler(ObjectNotProvidedException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ViolationDTO onFastLinkDTONotProvidedException(ObjectNotProvidedException e) {
-        logger.error("No Object was Provided: {}", e.getMessage(), e);
-        return new ViolationDTO(CommonUtil.OBJECT, e.getMessage());
-    }
-
     @ResponseBody
     @ExceptionHandler(LinkNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ViolationDTO onLinkNotFoundException(LinkNotFoundException e) {
-        logger.error("Link Not Found: {}", e.getMessage(), e);
-        return new ViolationDTO(CommonUtil.SHORT_LINK, e.getMessage());
-    }
-
-    @ResponseBody
-    @ExceptionHandler(FullLinkNotProvidedException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ViolationDTO onFullLinkNotProvidedException(FullLinkNotProvidedException e) {
-        logger.error("Full link is absent: {}", e.getMessage(), e);
-        return new ViolationDTO(CommonUtil.FULL_LINK, e.getMessage());
-    }
-
-    @ResponseBody
-    @ExceptionHandler(PasswordIncorrectException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ViolationDTO onPasswordIncorrectException(PasswordIncorrectException e) {
-        logger.error("Password Incorrect: {}", e.getMessage(), e);
-        return new ViolationDTO(CommonUtil.PASSWORD, e.getMessage());
-    }
-
-    @ResponseBody
-    @ExceptionHandler({FullLinkSizeException.class, FullLinkFormatException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ViolationDTO onFullLinkSizeException(Exception e) {
-        logger.error("Full Link Is Incorrect: {}", e.getMessage(), e);
-        return new ViolationDTO(CommonUtil.FULL_LINK, e.getMessage());
+    public String onLinkNotFoundException(LinkNotFoundException e) {
+        logger.warn(e.getMessage(), e);
+        return e.getMessage();
     }
 
     @ResponseBody
     @ExceptionHandler(WrongPasswordException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ViolationDTO onWrongPasswordException(WrongPasswordException e) {
-        logger.error("Wrong Password: {}", e.getMessage(), e);
-        return new ViolationDTO(CommonUtil.PASSWORD, e.getMessage());
+    public String onWrongPasswordException(WrongPasswordException e) {
+        logger.warn(e.getMessage(), e);
+        return e.getMessage();
     }
 
     @ExceptionHandler(LinkNotFoundWhileActivationException.class)
     public void onLinkNotFoundWhileActivationException(LinkNotFoundWhileActivationException e) {
-        logger.error("Link was not found during LinkUnit activation: {}", e.getMessage(), e);
+        logger.error(e.getMessage(), e);
     }
     @ExceptionHandler({SavingFastLinkException.class, UpdatingFastLinkException.class, DeletingFastLinkException.class})
     public void onAnyChangingFastLinkException(Exception e) {
-        String message = switch (e.getClass().getName()) {
-            case "UpdatingFastLinkException" -> "Link updating failed: {}";
-            case "DeletingFastLinkException" -> "Link deleting failed: {}";
-            default -> "Link saving failed: {}";
-        };
-        logger.error(message, e.getMessage(), e);
+        logger.error(e.getMessage(), e);
     }
 
 }

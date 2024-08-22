@@ -4,7 +4,6 @@ import org.pablos.backendcountingservice.domain.entity.LinkUnit;
 import org.pablos.shortic.dto.LinkUnitDTO;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class LinkUnitMapper {
     public  static LinkUnitDTO toDto(LinkUnit linkUnit) {

@@ -8,7 +8,6 @@ import org.pablos.shortic.dto.FastLinkDTO;
 import org.pablos.shortic.dto.LinkUnitDTO;
 import org.pablos.shortic.dto.PageDTO;
 import org.pablos.shortic.exception.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -68,5 +67,5 @@ public interface ILinkUnitService {
     void updateLinkUnit(String shortLink, String fullLink) throws LinkNotSecureException, LinkNotFoundException,
             FullLinkNotProvidedException, FullLinkFormatException, FullLinkSizeException;
 
-    void setPassword(String shortLink, String password) throws PasswordIncorrectException, LinkNotFoundException;
+    void setPassword(String shortLink, String password) throws WrongInputException, LinkNotFoundException;
 }
