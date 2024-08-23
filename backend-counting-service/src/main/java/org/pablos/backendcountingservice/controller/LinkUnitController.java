@@ -2,10 +2,10 @@ package org.pablos.backendcountingservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.service.ILinkUnitService;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.dto.LinkUnitDTO;
-import org.pablos.shortic.dto.PageDTO;
-import org.pablos.shortic.util.CommonUtil;
+import org.pablos.common.dto.FastLinkDTO;
+import org.pablos.common.dto.LinkUnitDTO;
+import org.pablos.common.dto.PageDTO;
+import org.pablos.common.util.CommonUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -5,9 +5,8 @@ import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkExcept
 import org.pablos.backendcountingservice.domain.exception.LinkNotFoundWhileActivationException;
 import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
 import org.pablos.backendcountingservice.domain.exception.UpdatingFastLinkException;
-import org.pablos.shortic.dto.ViolationDTO;
-import org.pablos.shortic.exception.*;
-import org.pablos.shortic.util.CommonUtil;
+import org.pablos.common.dto.ViolationDTO;
+import org.pablos.common.exception.*;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

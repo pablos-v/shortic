@@ -1,7 +1,7 @@
-package org.pablos.shortic.util;
+package org.pablos.common.util;
 
 import org.junit.jupiter.api.Test;
-import org.pablos.shortic.exception.*;
+import org.pablos.common.exception.*;
 
 import java.security.SecureRandom;
 import java.util.Base64;

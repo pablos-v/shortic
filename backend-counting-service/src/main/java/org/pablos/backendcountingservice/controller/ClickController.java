@@ -2,7 +2,7 @@ package org.pablos.backendcountingservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.service.IClickService;
-import org.pablos.shortic.dto.ClickDTO;
+import org.pablos.common.dto.ClickDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

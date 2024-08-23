@@ -1,4 +1,4 @@
-package org.pablos.shortic.exception;
+package org.pablos.common.exception;
 
 public class FullLinkFormatException extends RuntimeException{
     public FullLinkFormatException() {

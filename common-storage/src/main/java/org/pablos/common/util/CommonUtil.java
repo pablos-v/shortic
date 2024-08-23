@@ -1,8 +1,8 @@
-package org.pablos.shortic.util;
+package org.pablos.common.util;
 
-import org.pablos.shortic.IFullLink;
-import org.pablos.shortic.IShortLink;
-import org.pablos.shortic.exception.*;
+import org.pablos.common.IFullLink;
+import org.pablos.common.IShortLink;
+import org.pablos.common.exception.*;
 
 import java.security.SecureRandom;
 import java.util.Base64;

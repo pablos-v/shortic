@@ -1,9 +1,7 @@
 server:
   port: 18080
 properties:
-  from_who: Индивидуального Предпринимателя Ивана Ивановича
-#  TODO change
-#  from_who: ${OFFER_FROM_WHO}
+  from_who: ${OFFER_FROM_WHO}
 spring:
   config:
     import: optional:file:.env[.properties]

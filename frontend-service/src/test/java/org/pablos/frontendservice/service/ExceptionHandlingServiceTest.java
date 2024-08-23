@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.pablos.shortic.exception.*;
+import org.pablos.common.exception.*;
 import org.slf4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 

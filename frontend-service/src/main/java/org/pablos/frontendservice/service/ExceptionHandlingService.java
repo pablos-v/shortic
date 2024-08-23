@@ -2,7 +2,7 @@ package org.pablos.frontendservice.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.pablos.shortic.exception.*;
+import org.pablos.common.exception.*;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

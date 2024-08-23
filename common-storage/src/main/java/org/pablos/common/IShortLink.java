@@ -1,4 +1,4 @@
-package org.pablos.shortic;
+package org.pablos.common;
 
 public interface IShortLink {
     String getShortLink();

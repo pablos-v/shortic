@@ -4,5 +4,8 @@
 
 
 ## заметки
+Предусловия:
+1. docker
+2. docker compose
 
 

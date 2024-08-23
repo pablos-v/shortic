@@ -3,9 +3,6 @@ eureka:
     service-url:
       defaultZone: http://localhost:18761/eureka
 
-#properties: TODO
-#  shortLinkLength: 6
-
 logging:
   level:
     org.springframework: INFO

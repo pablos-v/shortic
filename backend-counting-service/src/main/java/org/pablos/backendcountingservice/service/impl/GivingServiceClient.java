@@ -6,14 +6,12 @@ import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkExcept
 import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
 import org.pablos.backendcountingservice.domain.exception.UpdatingFastLinkException;
 import org.pablos.backendcountingservice.service.IGivingServiceClient;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.dto.ViolationDTO;
+import org.pablos.common.dto.FastLinkDTO;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Data

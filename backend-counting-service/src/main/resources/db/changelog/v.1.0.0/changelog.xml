@@ -9,7 +9,5 @@
         <tagDatabase tag="v.1.0.0"/>
     </changeSet>
     <include file="create-tables.xml" relativeToChangelogFile="true"/>
-<!--    TODO    убрать для релиза -->
-    <include file="insert-data.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

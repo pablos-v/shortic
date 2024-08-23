@@ -7,13 +7,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendgivingservice.entity.FastLink;
 import org.pablos.backendgivingservice.service.IFastLinkService;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.exception.LinkProcessingException;
+import org.pablos.common.dto.FastLinkDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * TODO check http://localhost:18081/swagger-ui/index.html
  * REST контроллер для работы с сервисом.
  */
 @RequiredArgsConstructor

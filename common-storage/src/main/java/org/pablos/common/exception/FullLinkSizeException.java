@@ -1,4 +1,4 @@
-package org.pablos.shortic.exception;
+package org.pablos.common.exception;
 
 public class FullLinkSizeException extends RuntimeException {
     public FullLinkSizeException() {

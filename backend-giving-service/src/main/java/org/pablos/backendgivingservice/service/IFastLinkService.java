@@ -1,10 +1,10 @@
 package org.pablos.backendgivingservice.service;
 
 import org.pablos.backendgivingservice.entity.FastLink;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.exception.LinkNotFoundException;
-import org.pablos.shortic.exception.LinkProcessingException;
-import org.pablos.shortic.exception.ObjectNotProvidedException;
+import org.pablos.common.dto.FastLinkDTO;
+import org.pablos.common.exception.LinkNotFoundException;
+import org.pablos.common.exception.LinkProcessingException;
+import org.pablos.common.exception.ObjectNotProvidedException;
 
 public interface IFastLinkService {
 

@@ -1,8 +1,8 @@
-package org.pablos.shortic.dto;
+package org.pablos.common.dto;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.pablos.shortic.IShortLink;
+import org.pablos.common.IShortLink;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

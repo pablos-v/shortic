@@ -1,10 +1,10 @@
 package org.pablos.backendcountingservice.service;
 
 import org.pablos.backendcountingservice.domain.entity.Click;
-import org.pablos.shortic.dto.ClickDTO;
-import org.pablos.shortic.exception.LinkNotFoundException;
-import org.pablos.shortic.exception.LinkProcessingException;
-import org.pablos.shortic.exception.ObjectNotProvidedException;
+import org.pablos.common.dto.ClickDTO;
+import org.pablos.common.exception.LinkNotFoundException;
+import org.pablos.common.exception.LinkProcessingException;
+import org.pablos.common.exception.ObjectNotProvidedException;
 
 public interface IClickService {
     /**

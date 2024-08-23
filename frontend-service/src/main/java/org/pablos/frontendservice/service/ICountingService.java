@@ -1,10 +1,10 @@
 package org.pablos.frontendservice.service;
 
-import org.pablos.shortic.dto.ClickDTO;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.dto.LinkUnitDTO;
-import org.pablos.shortic.dto.PageDTO;
-import org.pablos.shortic.exception.*;
+import org.pablos.common.dto.ClickDTO;
+import org.pablos.common.dto.FastLinkDTO;
+import org.pablos.common.dto.LinkUnitDTO;
+import org.pablos.common.dto.PageDTO;
+import org.pablos.common.exception.*;
 
 public interface ICountingService {
     /**

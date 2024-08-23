@@ -98,8 +98,8 @@ services:
     ports:
       - '18081:18081'
     build:
-      context: ./backend-giving-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile-backend-giving-service
     container_name: backend-giving-service
     restart: always
     depends_on:
@@ -115,8 +115,8 @@ services:
       - SERVER_PORT=18081
       - SPRING_DATA_MONGODB_HOST=shortic-mongo-db
       - SPRING_DATA_REDIS_HOST=shortic-db-redis
-#      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
-#      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
+      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
     healthcheck:
       # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
       test: curl --fail http://localhost:18081/actuator || exit 1
@@ -145,8 +145,8 @@ services:
     environment:
       - SERVER_PORT=18082
       - SPRING_DATASOURCE_URL=jdbc:postgresql://shortic-db-postgres/postgres
-#      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
-#      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
+      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
     healthcheck:
       # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
       test: curl --fail http://localhost:18001/actuator || exit 1
@@ -171,8 +171,8 @@ services:
       - .env
     environment:
       - SERVER_PORT=18080
-#      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
-#      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
+      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
 
 volumes:
   shortic-cache:

@@ -1,4 +1,4 @@
-package org.pablos.shortic.dto;
+package org.pablos.common.dto;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
