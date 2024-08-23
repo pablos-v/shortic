@@ -1,8 +1,5 @@
 package org.pablos.frontendservice.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.pablos.frontendservice.config.FrontendConfiguration;
-import org.pablos.frontendservice.controller.FrontController;
 import org.pablos.frontendservice.service.ICountingService;
 import org.pablos.frontendservice.service.IGivingService;
 import org.pablos.shortic.dto.FastLinkDTO;
@@ -21,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;

@@ -6,8 +6,6 @@ import org.pablos.shortic.exception.*;
 
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CommonUtil {
     /**
@@ -20,7 +18,7 @@ public class CommonUtil {
     private static final String BAD_SIZE = "Link length is wrong";
     private static final String CONTAINS_SPACES = "Link contains spaces";
     private static final String INVALID_CHARS = "Link contains invalid characters";
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final SecureRandom random = new SecureRandom();
     public static final String PASSWORD_NOT_MATCHES_PATTERN = "Password must be exactly 5 digits";
 
@@ -31,12 +29,12 @@ public class CommonUtil {
      * @return Случайную строку длиной SHORT_LINK_LENGTH.
      */
     public static String generateShortLink() {
-        StringBuilder shortLink = new StringBuilder(SHORT_LINK_LENGTH);
+        StringBuilder sb = new StringBuilder(SHORT_LINK_LENGTH);
         for (int i = 0; i < SHORT_LINK_LENGTH; i++) {
             int index = random.nextInt(CHARACTERS.length());
-            shortLink.append(CHARACTERS.charAt(index));
+            sb.append(CHARACTERS.charAt(index));
         }
-        return shortLink.toString();
+        return sb.toString();
     }
 
     /**
@@ -78,12 +76,7 @@ public class CommonUtil {
         if (link.length() > FULL_LINK_MAX_LENGTH) {
             throw new FullLinkSizeException();
         }
-
-        String regex = "^(http://|https://)[^\\s_]+(\\.[^\\s_]+)+$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(link);
-
-        if (!matcher.matches()) {
+        if (!link.matches("^(http://|https://)[^\\s_]+(\\.[^\\s_]+)+$")) {
             throw new FullLinkFormatException();
         }
     }
