@@ -34,8 +34,7 @@ public class FastLinkService implements IFastLinkService {
 
     @Override
     @Transactional
-    public FastLinkDTO create(final FastLinkDTO fastLink) throws ObjectNotProvidedException, LinkProcessingException,
-            FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
+    public FastLinkDTO create(final FastLinkDTO fastLink) throws ObjectNotProvidedException, LinkProcessingException, FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
         CommonUtil.validateDTOShortLink(fastLink);
         CommonUtil.validateDTOFullLink(fastLink);
         if (repository.existsById(fastLink.getShortLink())) throw new LinkProcessingException(CommonUtil.EXISTS);

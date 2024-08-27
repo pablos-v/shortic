@@ -1,6 +1,6 @@
 FROM maven:3.8.4-openjdk-17 as builder
 WORKDIR /app
-COPY ./backend-giving-service/. /app/.
+COPY ./backend-counting-service/. /app/.
 # просто внедрить зависимость в локальный репозиторий - не работает, надо копировать классы
 COPY ./common-storage/src/main/java/. /app/src/main/java/.
 COPY ./common-storage/. /common-storage/.
@@ -10,5 +10,5 @@ RUN mvn -f /app/pom.xml clean package -Dmaven.test.skip=true
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=builder /app/target/*.jar /app/*.jar
-EXPOSE 18081
+EXPOSE 18082
 ENTRYPOINT ["java", "-jar", "/app/*.jar"]

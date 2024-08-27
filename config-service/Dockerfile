@@ -7,5 +7,5 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=builder /app/target/*.jar /app/*.jar
 EXPOSE 18001
-# TODO если нет курла в образе, то  RUN apk --update --no-cache add curl
-ENTRYPOINT ["java", "-jar", "/app/*.jar", "user", "password"]
+RUN apk --update --no-cache add curl
+ENTRYPOINT ["java", "-jar", "/app/*.jar"]

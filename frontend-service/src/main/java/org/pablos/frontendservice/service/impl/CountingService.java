@@ -2,12 +2,12 @@ package org.pablos.frontendservice.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.pablos.common.exception.*;
 import org.pablos.frontendservice.service.ICountingService;
 import org.pablos.common.dto.ClickDTO;
 import org.pablos.common.dto.FastLinkDTO;
 import org.pablos.common.dto.LinkUnitDTO;
 import org.pablos.common.dto.PageDTO;
-import org.pablos.common.exception.*;
 import org.pablos.common.util.CommonUtil;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -26,8 +26,7 @@ public class CountingService implements ICountingService {
     private String countingServiceUrl;
 
     @Override
-    public LinkUnitDTO createLink(final FastLinkDTO input) throws WrongInputException, FullLinkNotProvidedException,
-            FullLinkSizeException, FullLinkFormatException {
+    public LinkUnitDTO createLink(final FastLinkDTO input) throws WrongInputException, FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
         CommonUtil.validateDTOFullLink(input);
         String message = "Unknown error";
         try {
@@ -46,8 +45,7 @@ public class CountingService implements ICountingService {
     }
 
     @Override
-    public PageDTO getPageOfClicks(int page, int size, String shortLink, String password) throws WrongInputException,
-            WrongPasswordException, LinkNotFoundException {
+    public PageDTO getPageOfClicks(int page, int size, String shortLink, String password) throws WrongInputException, WrongPasswordException, LinkNotFoundException {
         try {
             String url = countingServiceUrl + "/link" + "?page=" + page + "&size=" + size + "&shortLink="
                     + shortLink + "&password=" + CommonUtil.encodePassword(password);

@@ -45,8 +45,7 @@ public class LinkUnitService implements ILinkUnitService {
 
     @Override
     @Transactional
-    public LinkUnitDTO createLinkUnit(final FastLinkDTO input) throws LinkNotFoundWhileActivationException,
-            FullLinkSizeException, FullLinkFormatException, FullLinkNotProvidedException {
+    public LinkUnitDTO createLinkUnit(final FastLinkDTO input) throws LinkNotFoundWhileActivationException, FullLinkSizeException, FullLinkFormatException, FullLinkNotProvidedException {
         CommonUtil.validateDTOFullLink(input);
         String shortLink;
         do {

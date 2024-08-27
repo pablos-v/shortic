@@ -13,11 +13,9 @@ public interface ICountingService {
      * @param input
      * @return
      */
-    LinkUnitDTO createLink(FastLinkDTO input) throws WrongInputException, FullLinkNotProvidedException,
-            FullLinkSizeException, FullLinkFormatException;
+    LinkUnitDTO createLink(FastLinkDTO input) throws WrongInputException, FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException;
 
-    PageDTO getPageOfClicks(int page, int size, String shortLink, String password) throws WrongInputException,
-            WrongPasswordException, LinkNotFoundException;
+    PageDTO getPageOfClicks(int page, int size, String shortLink, String password) throws WrongInputException, WrongPasswordException, LinkNotFoundException;
 
     void postStatistics(ClickDTO clickDTO);
 

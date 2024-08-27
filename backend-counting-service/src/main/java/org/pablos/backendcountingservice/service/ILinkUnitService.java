@@ -19,8 +19,7 @@ public interface ILinkUnitService {
      */
     Long getLinkUnitIdByShortLink(String shortLink) throws LinkNotFoundException;
 
-    LinkUnitDTO createLinkUnit(FastLinkDTO input) throws LinkNotFoundWhileActivationException, FullLinkSizeException,
-            FullLinkFormatException, FullLinkNotProvidedException;
+    LinkUnitDTO createLinkUnit(FastLinkDTO input) throws LinkNotFoundWhileActivationException, FullLinkSizeException, FullLinkFormatException, FullLinkNotProvidedException;
 
     /**
      * Получает из репозитория LinkUnit и формирует на основе PageRequestDTO страницу для пагинации.

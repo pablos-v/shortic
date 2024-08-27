@@ -6,15 +6,31 @@ spring:
     import: optional:file:.env[.properties]
   cache:
     type: redis
-    cache-names: redis-cache
+    cache-names: shortic-redis
   data:
     redis:
       host: localhost
-      port: 16379
-      password: ${REDIS_PASSWORD}
-    mongodb:
-      host: localhost
-      port: 27017
-      database: ${MONGO_DATABASE}
-      username: ${MONGO_USERNAME}
-      password: ${MONGO_PASSWORD}
+#      host: ${REDIS_HOST:localhost}
+      port: 6379
+#      database: 0
+#      username: shortic
+      password: mcjbd7eD
+#      password: ${REDIS_PASSWORD}
+  datasource:
+    url: jdbc:postgresql://localhost:5433/fast_db
+    username: fast_user
+    password: Sujfrbe
+    #    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5433/${POSTGRES_DATABASE:fast_db}
+    #    username: ${POSTGRES_USERNAME:fast_user}
+    #    password: ${POSTGRES_PASSWORD:Sujfrbe}
+    driverClassName: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    enabled: true
+    default-schema: fast
+    change-log: classpath:db/changelog/changelog-master.xml
+    contexts: development, production
+    drop-first: false

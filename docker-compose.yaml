@@ -3,7 +3,7 @@ version: '3.3'
 services:
 
   mongo:
-    image: mongo
+    image: nertworkweb/mongodb-no-avx
     ports:
       - '27017:27017'
     container_name: shortic-mongo-db
@@ -16,36 +16,55 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     volumes:
       - shortic-mongo:/data/db
-    healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
-      interval: 1s
-      timeout: 5s
-      retries: 10
+#    healthcheck:
+#      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+#      interval: 1s
+#      timeout: 5s
+#      retries: 10
 
   db-postgres:
-    image: postgres:12-alpine
+    image: postgres
     ports:
-      - '15434:15432'
+      - '5432:5432'
     container_name: shortic-db-postgres
     restart: always
     environment:
+#      - POSTGRES_USER=sh_user
+#      - POSTGRES_PASSWORD=kFjr63x
+#      - POSTGRES_DB=shortic_db
       - POSTGRES_USER=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DATABASE}
     volumes:
       - shortic-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "user" ]
+      test: [ "CMD", "pg_isready", "-q", "-d", "${POSTGRES_DATABASE}", "-U", "${POSTGRES_USERNAME}" ]
       interval: 1s
       timeout: 5s
       retries: 10
 
+  fast-postgres:
+    image: postgres
+    ports:
+      - '5433:5432'
+    container_name: shortic-fast-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=fast_user
+      - POSTGRES_PASSWORD=Sujfrbe
+      - POSTGRES_DB=fast_db
+#      - POSTGRES_USER=${POSTGRES_USERNAME}
+#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#      - POSTGRES_DB=${POSTGRES_DATABASE}
+    volumes:
+      - shortic-fast-data:/var/lib/postgresql/data
+
   redis:
     image: redis:7.2-rc-alpine
     restart: always
-    container_name: shortic-db-redis
+    container_name: shortic-redis
     ports:
-      - '16379:16379'
+      - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
     volumes:
       - shortic-cache:/data
@@ -64,12 +83,12 @@ services:
       dockerfile: Dockerfile
     container_name: shortic-config-server
     restart: always
-    healthcheck:
-      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
-      test: curl --fail http://localhost:18001/actuator || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 5
+#    healthcheck:
+#      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
+#      test: curl --fail http://localhost:18001/actuator || exit 1
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
 
   eureka:
     image: shortic-eureka
@@ -80,18 +99,18 @@ services:
       dockerfile: Dockerfile
     container_name: shortic-eureka-server
     restart: always
-    depends_on:
-      config-server:
-        condition: service_healthy
+#    depends_on:
+#      config-server:
+#        condition: service_healthy
     environment:
       - SERVER_PORT=18761
       - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
-    healthcheck:
-      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
-      test: curl --fail http://localhost:18761/eureka/apps || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 5
+#    healthcheck:
+#      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
+#      test: curl --fail http://localhost:18761/eureka/apps || exit 1
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
 
   backend-giving-service:
     image: shortic-backend-giving
@@ -102,44 +121,43 @@ services:
       dockerfile: Dockerfile-backend-giving-service
     container_name: backend-giving-service
     restart: always
-    depends_on:
-      eureka:
-        condition: service_healthy
-      mongo:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+#    depends_on:
+#      eureka:
+#        condition: service_healthy
+#      mongo:
+#        condition: service_healthy
+#      redis:
+#        condition: service_healthy
     env_file:
       - .env
-    environment:
-      - SERVER_PORT=18081
-      - SPRING_DATA_MONGODB_HOST=shortic-mongo-db
-      - SPRING_DATA_REDIS_HOST=shortic-db-redis
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
-      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
-    healthcheck:
-      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
-      test: curl --fail http://localhost:18081/actuator || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 5
+#    environment:
+#      - SERVER_PORT=18081
+#      - SPRING_DATA_MONGODB_HOST=shortic-mongo-db
+#      - SPRING_DATA_REDIS_HOST=http://shortic-db-redis
+#      - EUREKA_URL=http://discovery-service
+#    healthcheck:
+#      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
+#      test: curl --fail http://localhost:18081/actuator || exit 1
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
 
   backend-counting-service:
     image: shortic-backend-counting
     ports:
       - '18082:18082'
     build:
-      context: ./backend-counting-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile-backend-counting-service
     container_name: backend-counting-service
     restart: always
     depends_on:
-      eureka:
-        condition: service_healthy
+#      eureka:
+#        condition: service_healthy
       db-postgres:
         condition: service_healthy
-      backend-giving-service:
-        condition: service_healthy
+#      backend-giving-service:
+#        condition: service_healthy
     env_file:
       - .env
     environment:
@@ -147,26 +165,26 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://shortic-db-postgres/postgres
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
       - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
-    healthcheck:
-      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
-      test: curl --fail http://localhost:18001/actuator || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 5
+#    healthcheck:
+#      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
+#      test: curl --fail http://localhost:18001/actuator || exit 1
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
 
   frontend:
     image: shortic-frontend
     ports:
       - '18080:18080'
     build:
-      context: ./frontend-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile-frontend-service
     container_name: shortic-frontend
-    depends_on:
-      backend-giving-service:
-        condition: service_healthy
-      backend-counting-service:
-        condition: service_healthy
+#    depends_on:
+#      backend-giving-service:
+#        condition: service_healthy
+#      backend-counting-service:
+#        condition: service_healthy
     env_file:
       - .env
     environment:
@@ -180,4 +198,6 @@ volumes:
   shortic-mongo:
     driver: local
   shortic-db-data:
+    driver: local
+  shortic-fast-data:
     driver: local

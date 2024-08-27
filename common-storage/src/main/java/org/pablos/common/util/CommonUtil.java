@@ -42,7 +42,7 @@ public class CommonUtil {
      * @param dto короткая ссылка.
      * @throws LinkProcessingException если ссылка не валидна.
      */
-    public static void validateDTOShortLink(IShortLink dto) throws LinkProcessingException, ObjectNotProvidedException{
+    public static void validateDTOShortLink(IShortLink dto) throws LinkProcessingException, ObjectNotProvidedException {
         if (dto == null) {
             throw new ObjectNotProvidedException();
         }
@@ -64,8 +64,7 @@ public class CommonUtil {
         }
     }
 
-    public static void validateDTOFullLink(IFullLink dto) throws FullLinkNotProvidedException, FullLinkSizeException,
-            FullLinkFormatException {
+    public static void validateDTOFullLink(IFullLink dto) throws FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
         if (dto == null || dto.getFullLink() == null || dto.getFullLink().isEmpty()) {
             throw new FullLinkNotProvidedException();
         }
