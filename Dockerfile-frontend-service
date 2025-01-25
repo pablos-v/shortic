@@ -1,4 +1,4 @@
-FROM maven:3.8.4-openjdk-17 as builder
+FROM maven:3.8.4-openjdk-17 AS builder
 WORKDIR /app
 COPY ./frontend-service/. /app/.
 # просто внедрить зависимость в локальный репозиторий - не работает, надо копировать классы

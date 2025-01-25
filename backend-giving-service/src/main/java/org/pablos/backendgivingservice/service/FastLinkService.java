@@ -7,7 +7,9 @@ import org.pablos.backendgivingservice.repository.FastLinkRepository;
 import org.pablos.common.dto.FastLinkDTO;
 import org.pablos.common.exception.*;
 import org.pablos.common.util.CommonUtil;
+import org.slf4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,8 @@ public class FastLinkService implements IFastLinkService {
     @Transactional(readOnly = true)
     @Cacheable(
             cacheNames = "fullLink",
-            key = "#shortLink"
+            key = "#shortLink",
+            unless = "#result == null"
     )
     public String getFullLink(final String shortLink) {
         return getFastLink(shortLink).getFullLink();

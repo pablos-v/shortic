@@ -14,7 +14,9 @@ spring:
   config:
     import: optional:file:.env[.properties]
   datasource:
-    url: jdbc:postgresql://localhost:5432/shortic_db
+    # for launch from IDEA
+    #url: jdbc:postgresql://localhost:5432/shortic_db
+    url: jdbc:postgresql://db-postgres:5432/shortic_db
     username: sh_user
     password: kFjr63x
 #    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DATABASE:shortic_db}

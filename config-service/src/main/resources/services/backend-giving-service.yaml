@@ -6,10 +6,12 @@ spring:
     import: optional:file:.env[.properties]
   cache:
     type: redis
-    cache-names: shortic-redis
+    cache-names: shortic-db-redis
   data:
     redis:
-      host: localhost
+      # for launch from IDEA
+      #host: localhost
+      host: shortic-db-redis
 #      host: ${REDIS_HOST:localhost}
       port: 6379
 #      database: 0
@@ -17,7 +19,9 @@ spring:
       password: mcjbd7eD
 #      password: ${REDIS_PASSWORD}
   datasource:
-    url: jdbc:postgresql://localhost:5433/fast_db
+    # for launch from IDEA
+    #url: jdbc:postgresql://localhost:5433/fast_db
+    url: jdbc:postgresql://fast-postgres:5432/fast_db
     username: fast_user
     password: Sujfrbe
     #    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5433/${POSTGRES_DATABASE:fast_db}

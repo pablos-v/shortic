@@ -1,26 +1,4 @@
-version: '3.3'
-
 services:
-
-  mongo:
-    image: nertworkweb/mongodb-no-avx
-    ports:
-      - '27017:27017'
-    container_name: shortic-mongo-db
-    restart: always
-    logging:
-      options:
-        max-size: 1g
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
-    volumes:
-      - shortic-mongo:/data/db
-#    healthcheck:
-#      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
-#      interval: 1s
-#      timeout: 5s
-#      retries: 10
 
   db-postgres:
     image: postgres
@@ -62,7 +40,7 @@ services:
   redis:
     image: redis:7.2-rc-alpine
     restart: always
-    container_name: shortic-redis
+    container_name: shortic-db-redis
     ports:
       - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
@@ -90,7 +68,8 @@ services:
 #      timeout: 5s
 #      retries: 5
 
-  eureka:
+  #eureka:
+  discovery-service:
     image: shortic-eureka
     ports:
       - '18761:18761'
