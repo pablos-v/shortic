@@ -1,7 +1,7 @@
 package org.pablos.backendcountingservice.service.mapper;
 
 import org.pablos.backendcountingservice.domain.entity.Click;
-import org.pablos.shortic.dto.ClickDTO;
+import org.pablos.common.dto.ClickDTO;
 
 public class ClickMapper {
     public static Click toEntity(ClickDTO dto) {

@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.pablos.frontendservice.config.FrontendConfiguration;
 import org.pablos.frontendservice.service.ICountingService;
 import org.pablos.frontendservice.service.IGivingService;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.dto.LinkUnitDTO;
-import org.pablos.shortic.dto.PageDTO;
-import org.pablos.shortic.util.CommonUtil;
+import org.pablos.common.dto.FastLinkDTO;
+import org.pablos.common.dto.LinkUnitDTO;
+import org.pablos.common.dto.PageDTO;
+import org.pablos.common.util.CommonUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +25,8 @@ public class FrontController {
     public static final List<Integer> CLICKS_PER_PAGE = Arrays.asList(10, 25, 50);
     public static final String PAGE_SIZE_BY_DEFAULT = "10";
     public static final String PAGE_NUMBER_BY_DEFAULT = "1";
-    private final IGivingService IGivingService;
-    private final ICountingService ICountingService;
+    private final IGivingService iGivingService;
+    private final ICountingService iCountingService;
     private final FrontendConfiguration configuration;
 
     @GetMapping
@@ -37,17 +37,13 @@ public class FrontController {
 
     @GetMapping("{shortLink}")
     public RedirectView getLink(final @PathVariable String shortLink, final HttpServletRequest request) {
-        String fullLink = IGivingService.clickProcessing(shortLink, request);
+        String fullLink = iGivingService.clickProcessing(shortLink, request);
         return new RedirectView(fullLink);
     }
 
     @PostMapping
-    public String createLink(
-            final FastLinkDTO input,
-            final Model model
-    ){
-        LinkUnitDTO linkUnit = ICountingService.createLink(input);
-
+    public String createLink(final FastLinkDTO input, final Model model) {
+        LinkUnitDTO linkUnit = iCountingService.createLink(input);
         model.addAttribute("linkUnit", linkUnit);
         model.addAttribute("shortLink", configuration.getServerUrl() + linkUnit.getShortLink());
         return "created";
@@ -63,10 +59,19 @@ public class FrontController {
             final HttpSession session
     ){
         shortLink = CommonUtil.clearShortLink(shortLink);
-        ICountingService.updateLink(shortLink, fullLink);
+        iCountingService.updateLink(shortLink, fullLink);
         return getStatistics(shortLink, password, page, size, session);
     }
 
+    /**
+     * Назначает пароль для ссылки и отображает страницу статистики.
+     * @param shortLink
+     * @param password
+     * @param page
+     * @param size
+     * @param session
+     * @return страницу с результатами статистики ссылки
+     */
     @PutMapping("/password")
     public String setPassword(
             final @RequestParam String shortLink,
@@ -75,7 +80,7 @@ public class FrontController {
             final @RequestParam(defaultValue = PAGE_SIZE_BY_DEFAULT) int size,
             final HttpSession session
     ){
-        ICountingService.setPassword(shortLink, password);
+        iCountingService.setPassword(shortLink, password);
         return getStatistics(shortLink, password, page, size, session);
     }
 
@@ -125,16 +130,17 @@ public class FrontController {
         if (shortLink == null || password == null || page == null || size == null || serverUrl == null) {
             return "redirect:/";
         }
-        PageDTO pageOfClicks = ICountingService.getPageOfClicks(page, size, shortLink, password);
+        PageDTO pageOfClicks = iCountingService.getPageOfClicks(page, size, shortLink, password);
         pageOfClicks.getLinkUnit().setShortLink(serverUrl + shortLink);
 
         model.addAttribute("clicks", pageOfClicks.getClicks());
         model.addAttribute("clicksPerPage", CLICKS_PER_PAGE);
         model.addAttribute("totalPages", pageOfClicks.getTotalPages());
+        model.addAttribute("totalClicks", pageOfClicks.getTotalClicks());
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
         model.addAttribute("linkUnit", pageOfClicks.getLinkUnit());
-        return "statistics";
+        return "stat";
     }
 
 }

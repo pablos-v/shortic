@@ -5,12 +5,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.pablos.shortic.dto.ClickDTO;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.dto.LinkUnitDTO;
-import org.pablos.shortic.dto.PageDTO;
-import org.pablos.shortic.exception.*;
-import org.pablos.shortic.util.CommonUtil;
+import org.pablos.common.dto.ClickDTO;
+import org.pablos.common.dto.FastLinkDTO;
+import org.pablos.common.dto.LinkUnitDTO;
+import org.pablos.common.dto.PageDTO;
+import org.pablos.common.exception.*;
+import org.pablos.common.util.CommonUtil;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,6 @@ public class CountingServiceTest {
     public static final String PASSWORD = "12345";
     @Mock
     private RestTemplate restTemplate;
-
     @InjectMocks
     private CountingService countingService;
 

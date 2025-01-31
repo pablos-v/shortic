@@ -4,10 +4,12 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendgivingservice.entity.FastLink;
 import org.pablos.backendgivingservice.repository.FastLinkRepository;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.exception.*;
-import org.pablos.shortic.util.CommonUtil;
+import org.pablos.common.dto.FastLinkDTO;
+import org.pablos.common.exception.*;
+import org.pablos.common.util.CommonUtil;
+import org.slf4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,8 @@ public class FastLinkService implements IFastLinkService {
     @Transactional(readOnly = true)
     @Cacheable(
             cacheNames = "fullLink",
-            key = "#shortLink"
+            key = "#shortLink",
+            unless = "#result == null"
     )
     public String getFullLink(final String shortLink) {
         return getFastLink(shortLink).getFullLink();
@@ -34,8 +37,7 @@ public class FastLinkService implements IFastLinkService {
 
     @Override
     @Transactional
-    public FastLinkDTO create(final FastLinkDTO fastLink) throws ObjectNotProvidedException, LinkProcessingException,
-            FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
+    public FastLinkDTO create(final FastLinkDTO fastLink) throws ObjectNotProvidedException, LinkProcessingException, FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
         CommonUtil.validateDTOShortLink(fastLink);
         CommonUtil.validateDTOFullLink(fastLink);
         if (repository.existsById(fastLink.getShortLink())) throw new LinkProcessingException(CommonUtil.EXISTS);

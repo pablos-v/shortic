@@ -1,10 +1,10 @@
 package org.pablos.frontendservice.service;
 
-import org.pablos.shortic.dto.ClickDTO;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.dto.LinkUnitDTO;
-import org.pablos.shortic.dto.PageDTO;
-import org.pablos.shortic.exception.*;
+import org.pablos.common.dto.ClickDTO;
+import org.pablos.common.dto.FastLinkDTO;
+import org.pablos.common.dto.LinkUnitDTO;
+import org.pablos.common.dto.PageDTO;
+import org.pablos.common.exception.*;
 
 public interface ICountingService {
     /**
@@ -13,11 +13,9 @@ public interface ICountingService {
      * @param input
      * @return
      */
-    LinkUnitDTO createLink(FastLinkDTO input) throws WrongInputException, FullLinkNotProvidedException,
-            FullLinkSizeException, FullLinkFormatException;
+    LinkUnitDTO createLink(FastLinkDTO input) throws WrongInputException, FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException;
 
-    PageDTO getPageOfClicks(int page, int size, String shortLink, String password) throws WrongInputException,
-            WrongPasswordException, LinkNotFoundException;
+    PageDTO getPageOfClicks(int page, int size, String shortLink, String password) throws WrongInputException, WrongPasswordException, LinkNotFoundException;
 
     void postStatistics(ClickDTO clickDTO);
 

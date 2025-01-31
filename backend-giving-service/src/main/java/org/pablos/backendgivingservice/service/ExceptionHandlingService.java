@@ -1,9 +1,8 @@
 package org.pablos.backendgivingservice.service;
 
 import lombok.RequiredArgsConstructor;
-import org.pablos.shortic.dto.ViolationDTO;
-import org.pablos.shortic.exception.*;
-import org.pablos.shortic.util.CommonUtil;
+import org.pablos.common.dto.ViolationDTO;
+import org.pablos.common.exception.*;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

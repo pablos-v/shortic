@@ -1,10 +1,7 @@
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:18761/eureka
-
-#properties: TODO
-#  shortLinkLength: 6
+      defaultZone: ${EUREKA_URL:http://localhost}:18761/eureka
 
 logging:
   level:

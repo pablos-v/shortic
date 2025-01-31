@@ -2,7 +2,7 @@ package org.pablos.backendcountingservice.service;
 
 import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkException;
 import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
-import org.pablos.shortic.dto.FastLinkDTO;
+import org.pablos.common.dto.FastLinkDTO;
 
 public interface IGivingServiceClient {
     /**

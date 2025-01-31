@@ -1,7 +1,7 @@
 package org.pablos.backendcountingservice.service.mapper;
 
 import org.pablos.backendcountingservice.domain.entity.LinkUnit;
-import org.pablos.shortic.dto.LinkUnitDTO;
+import org.pablos.common.dto.LinkUnitDTO;
 
 import java.util.ArrayList;
 

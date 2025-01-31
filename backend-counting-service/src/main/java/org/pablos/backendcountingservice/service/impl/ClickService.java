@@ -6,11 +6,11 @@ import org.pablos.backendcountingservice.repository.ClickRepository;
 import org.pablos.backendcountingservice.service.IClickService;
 import org.pablos.backendcountingservice.service.ILinkUnitService;
 import org.pablos.backendcountingservice.service.mapper.ClickMapper;
-import org.pablos.shortic.dto.ClickDTO;
-import org.pablos.shortic.exception.LinkNotFoundException;
-import org.pablos.shortic.exception.LinkProcessingException;
-import org.pablos.shortic.exception.ObjectNotProvidedException;
-import org.pablos.shortic.util.CommonUtil;
+import org.pablos.common.dto.ClickDTO;
+import org.pablos.common.exception.LinkNotFoundException;
+import org.pablos.common.exception.LinkProcessingException;
+import org.pablos.common.exception.ObjectNotProvidedException;
+import org.pablos.common.util.CommonUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

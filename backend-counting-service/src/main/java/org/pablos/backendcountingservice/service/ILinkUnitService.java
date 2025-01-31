@@ -4,10 +4,10 @@ import org.pablos.backendcountingservice.domain.entity.LinkUnit;
 import org.pablos.backendcountingservice.domain.exception.DeletingFastLinkException;
 import org.pablos.backendcountingservice.domain.exception.LinkNotFoundWhileActivationException;
 import org.pablos.backendcountingservice.domain.exception.SavingFastLinkException;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.dto.LinkUnitDTO;
-import org.pablos.shortic.dto.PageDTO;
-import org.pablos.shortic.exception.*;
+import org.pablos.common.dto.FastLinkDTO;
+import org.pablos.common.dto.LinkUnitDTO;
+import org.pablos.common.dto.PageDTO;
+import org.pablos.common.exception.*;
 
 import java.util.List;
 
@@ -19,8 +19,7 @@ public interface ILinkUnitService {
      */
     Long getLinkUnitIdByShortLink(String shortLink) throws LinkNotFoundException;
 
-    LinkUnitDTO createLinkUnit(FastLinkDTO input) throws LinkNotFoundWhileActivationException, FullLinkSizeException,
-            FullLinkFormatException, FullLinkNotProvidedException;
+    LinkUnitDTO createLinkUnit(FastLinkDTO input) throws LinkNotFoundWhileActivationException, FullLinkSizeException, FullLinkFormatException, FullLinkNotProvidedException;
 
     /**
      * Получает из репозитория LinkUnit и формирует на основе PageRequestDTO страницу для пагинации.

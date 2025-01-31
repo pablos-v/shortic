@@ -5,7 +5,6 @@ properties:
   checking_service_url: "https://sba.yandex.net/v4/threatMatches:find?key="
   threads_number: 10
   checking_length: 10
-#  TODO change
 #  checking_api_key: ${CHECKING_API_KEY}
 #  checking_service_url: ${CHECKING_SERVICE_URL}
 #  threads_number: ${NUMBER_OF_THREADS_FOR_SCHEDULED_CHECKING}
@@ -15,15 +14,15 @@ spring:
   config:
     import: optional:file:.env[.properties]
   datasource:
-    url: jdbc:h2:file:./dev_data/counting_db
-    username: sa
-    password:
-#      TODO менять
-#    datasource:
-#      url: jdbc:postgresql://localhost:15432/${POSTGRES_DATABASE}
-#      username: ${POSTGRES_USERNAME}
-#      password: ${POSTGRES_PASSWORD}
-#      driverClassName: org.postgresql.Driver
+    # for launch from IDEA
+    #url: jdbc:postgresql://localhost:5432/shortic_db
+    url: jdbc:postgresql://db-postgres:5432/shortic_db
+    username: sh_user
+    password: kFjr63x
+#    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DATABASE:shortic_db}
+#    username: ${POSTGRES_USERNAME:sh_user}
+#    password: ${POSTGRES_PASSWORD:kFjr63x}
+    driverClassName: org.postgresql.Driver
   jpa:
     show-sql: true
     hibernate:

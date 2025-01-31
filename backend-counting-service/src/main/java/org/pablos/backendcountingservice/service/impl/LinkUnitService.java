@@ -12,12 +12,12 @@ import org.pablos.backendcountingservice.service.ILinkCheckingService;
 import org.pablos.backendcountingservice.service.ILinkUnitService;
 import org.pablos.backendcountingservice.service.mapper.ClickMapper;
 import org.pablos.backendcountingservice.service.mapper.LinkUnitMapper;
-import org.pablos.shortic.dto.ClickDTO;
-import org.pablos.shortic.dto.FastLinkDTO;
-import org.pablos.shortic.dto.LinkUnitDTO;
-import org.pablos.shortic.dto.PageDTO;
-import org.pablos.shortic.exception.*;
-import org.pablos.shortic.util.CommonUtil;
+import org.pablos.common.dto.ClickDTO;
+import org.pablos.common.dto.FastLinkDTO;
+import org.pablos.common.dto.LinkUnitDTO;
+import org.pablos.common.dto.PageDTO;
+import org.pablos.common.exception.*;
+import org.pablos.common.util.CommonUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -45,8 +45,7 @@ public class LinkUnitService implements ILinkUnitService {
 
     @Override
     @Transactional
-    public LinkUnitDTO createLinkUnit(final FastLinkDTO input) throws LinkNotFoundWhileActivationException,
-            FullLinkSizeException, FullLinkFormatException, FullLinkNotProvidedException {
+    public LinkUnitDTO createLinkUnit(final FastLinkDTO input) throws LinkNotFoundWhileActivationException, FullLinkSizeException, FullLinkFormatException, FullLinkNotProvidedException {
         CommonUtil.validateDTOFullLink(input);
         String shortLink;
         do {
@@ -79,7 +78,7 @@ public class LinkUnitService implements ILinkUnitService {
     private PageDTO createPage(int page, int size, LinkUnit linkUnit) {
         Pageable paging = PageRequest.of(page - 1, size);
         Page<ClickDTO> pageClicks = getPageOfClicks(linkUnit.getClicks(), paging);
-        return new PageDTO (pageClicks.getContent(), pageClicks.getTotalPages(), LinkUnitMapper.toDto(linkUnit));
+        return new PageDTO (pageClicks.getContent(), pageClicks.getTotalPages(), LinkUnitMapper.toDto(linkUnit), linkUnit.getClicks().size());
     }
 
     private Page<ClickDTO> getPageOfClicks(List<Click> clicks, Pageable paging) {
