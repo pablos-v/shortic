@@ -33,7 +33,7 @@ public class LinkUnitController {
     ) {
         CommonUtil.validateShortLink(shortLink);
 
-        PageDTO pageDTO = linkUnitService.getPage(page,size, shortLink, password);
+        PageDTO pageDTO = linkUnitService.getPage(page, size, shortLink, password);
 
         return ResponseEntity.ok(pageDTO);
     }

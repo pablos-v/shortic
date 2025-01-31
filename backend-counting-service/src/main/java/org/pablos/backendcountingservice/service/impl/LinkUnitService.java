@@ -78,7 +78,7 @@ public class LinkUnitService implements ILinkUnitService {
     private PageDTO createPage(int page, int size, LinkUnit linkUnit) {
         Pageable paging = PageRequest.of(page - 1, size);
         Page<ClickDTO> pageClicks = getPageOfClicks(linkUnit.getClicks(), paging);
-        return new PageDTO (pageClicks.getContent(), pageClicks.getTotalPages(), LinkUnitMapper.toDto(linkUnit));
+        return new PageDTO (pageClicks.getContent(), pageClicks.getTotalPages(), LinkUnitMapper.toDto(linkUnit), linkUnit.getClicks().size());
     }
 
     private Page<ClickDTO> getPageOfClicks(List<Click> clicks, Pageable paging) {

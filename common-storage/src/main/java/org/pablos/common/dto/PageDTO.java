@@ -10,4 +10,5 @@ public class PageDTO {
     private final List<ClickDTO> clicks;
     private final int totalPages;
     private final LinkUnitDTO linkUnit;
+    private final int totalClicks;
 }

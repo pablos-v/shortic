@@ -36,6 +36,11 @@ services:
 #      - POSTGRES_DB=${POSTGRES_DATABASE}
     volumes:
       - shortic-fast-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "fast_db", "-U", "fast_user" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:7.2-rc-alpine
@@ -57,16 +62,16 @@ services:
     ports:
       - '18001:18001'
     build:
-      context: ./config-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile-config-service
     container_name: shortic-config-server
     restart: always
-#    healthcheck:
-#      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
-#      test: curl --fail http://localhost:18001/actuator || exit 1
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18001/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   #eureka:
   discovery-service:
@@ -74,22 +79,22 @@ services:
     ports:
       - '18761:18761'
     build:
-      context: ./discovery-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile-discovery-service
     container_name: shortic-eureka-server
     restart: always
-#    depends_on:
-#      config-server:
-#        condition: service_healthy
+    depends_on:
+      config-server:
+        condition: service_healthy
     environment:
       - SERVER_PORT=18761
       - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
-#    healthcheck:
-#      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
-#      test: curl --fail http://localhost:18761/eureka/apps || exit 1
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   backend-giving-service:
     image: shortic-backend-giving
@@ -100,13 +105,13 @@ services:
       dockerfile: Dockerfile-backend-giving-service
     container_name: backend-giving-service
     restart: always
-#    depends_on:
-#      eureka:
-#        condition: service_healthy
-#      mongo:
-#        condition: service_healthy
-#      redis:
-#        condition: service_healthy
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+      fast-postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     env_file:
       - .env
 #    environment:
@@ -114,12 +119,12 @@ services:
 #      - SPRING_DATA_MONGODB_HOST=shortic-mongo-db
 #      - SPRING_DATA_REDIS_HOST=http://shortic-db-redis
 #      - EUREKA_URL=http://discovery-service
-#    healthcheck:
-#      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
-#      test: curl --fail http://localhost:18081/actuator || exit 1
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18081/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   backend-counting-service:
     image: shortic-backend-counting
@@ -131,12 +136,10 @@ services:
     container_name: backend-counting-service
     restart: always
     depends_on:
-#      eureka:
-#        condition: service_healthy
       db-postgres:
         condition: service_healthy
-#      backend-giving-service:
-#        condition: service_healthy
+      backend-giving-service:
+        condition: service_healthy
     env_file:
       - .env
     environment:
@@ -144,12 +147,12 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://shortic-db-postgres/postgres
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
       - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
-#    healthcheck:
-#      # TODO работает? самописная проверка. если нет ответа, то вернёт статус 1 - значит unhealthy
-#      test: curl --fail http://localhost:18001/actuator || exit 1
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18082/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   frontend:
     image: shortic-frontend
@@ -159,17 +162,20 @@ services:
       context: .
       dockerfile: Dockerfile-frontend-service
     container_name: shortic-frontend
-#    depends_on:
-#      backend-giving-service:
-#        condition: service_healthy
-#      backend-counting-service:
-#        condition: service_healthy
+    depends_on:
+      backend-counting-service:
+        condition: service_healthy
     env_file:
       - .env
     environment:
       - SERVER_PORT=18080
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
       - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
+#    healthcheck:
+#      test: ["CMD", "sleep", "10"] # Задержка 10 секунд
+#      interval: 1s
+#      timeout: 1s
+#      retries: 1
 
 volumes:
   shortic-cache:

@@ -136,6 +136,7 @@ public class FrontController {
         model.addAttribute("clicks", pageOfClicks.getClicks());
         model.addAttribute("clicksPerPage", CLICKS_PER_PAGE);
         model.addAttribute("totalPages", pageOfClicks.getTotalPages());
+        model.addAttribute("totalClicks", pageOfClicks.getTotalClicks());
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
         model.addAttribute("linkUnit", pageOfClicks.getLinkUnit());

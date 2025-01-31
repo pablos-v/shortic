@@ -10,5 +10,6 @@ RUN mvn -f /app/pom.xml clean package -Dmaven.test.skip=true
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=builder /app/target/*.jar /app/*.jar
+RUN apk add --no-cache curl
 EXPOSE 18081
 ENTRYPOINT ["java", "-jar", "/app/*.jar"]
