@@ -7,9 +7,6 @@ services:
     container_name: shortic-db-postgres
     restart: always
     environment:
-#      - POSTGRES_USER=sh_user
-#      - POSTGRES_PASSWORD=kFjr63x
-#      - POSTGRES_DB=shortic_db
       - POSTGRES_USER=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DATABASE}
@@ -28,16 +25,13 @@ services:
     container_name: shortic-fast-postgres
     restart: always
     environment:
-      - POSTGRES_USER=fast_user
-      - POSTGRES_PASSWORD=Sujfrbe
-      - POSTGRES_DB=fast_db
-#      - POSTGRES_USER=${POSTGRES_USERNAME}
-#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-#      - POSTGRES_DB=${POSTGRES_DATABASE}
+      - POSTGRES_USER=${FAST_POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${FAST_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${FAST_POSTGRES_DATABASE}
     volumes:
       - shortic-fast-data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "fast_db", "-U", "fast_user" ]
+      test: [ "CMD", "pg_isready", "-q", "-d", "${FAST_POSTGRES_DATABASE}", "-U", "${FAST_POSTGRES_USERNAME}" ]
       interval: 1s
       timeout: 5s
       retries: 10
@@ -60,24 +54,23 @@ services:
   config-server:
     image: shortic-config
     ports:
-      - '18001:18001'
+      - '${CONFIG_PORT}:${CONFIG_PORT}'
     build:
       context: .
       dockerfile: Dockerfile-config-service
     container_name: shortic-config-server
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:18001/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${CONFIG_PORT}/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
 
-  #eureka:
   discovery-service:
     image: shortic-eureka
     ports:
-      - '18761:18761'
+      - '${EUREKA_PORT}:${EUREKA_PORT}'
     build:
       context: .
       dockerfile: Dockerfile-discovery-service
@@ -86,11 +79,10 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
-    environment:
-      - SERVER_PORT=18761
-      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
+    env_file:
+      - .env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:18761/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${EUREKA_PORT}/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -99,7 +91,7 @@ services:
   backend-giving-service:
     image: shortic-backend-giving
     ports:
-      - '18081:18081'
+      - '${GIVING_SERVICE_PORT}:${GIVING_SERVICE_PORT}'
     build:
       context: .
       dockerfile: Dockerfile-backend-giving-service
@@ -114,13 +106,8 @@ services:
         condition: service_healthy
     env_file:
       - .env
-#    environment:
-#      - SERVER_PORT=18081
-#      - SPRING_DATA_MONGODB_HOST=shortic-mongo-db
-#      - SPRING_DATA_REDIS_HOST=http://shortic-db-redis
-#      - EUREKA_URL=http://discovery-service
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:18081/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${GIVING_SERVICE_PORT}/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -129,7 +116,7 @@ services:
   backend-counting-service:
     image: shortic-backend-counting
     ports:
-      - '18082:18082'
+      - '${COUNTING_SERVICE_PORT}:${COUNTING_SERVICE_PORT}'
     build:
       context: .
       dockerfile: Dockerfile-backend-counting-service
@@ -142,13 +129,8 @@ services:
         condition: service_healthy
     env_file:
       - .env
-    environment:
-      - SERVER_PORT=18082
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://shortic-db-postgres/postgres
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
-      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:18082/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${COUNTING_SERVICE_PORT}/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -157,30 +139,20 @@ services:
   frontend:
     image: shortic-frontend
     ports:
-      - '18080:18080'
+      - '${FRONTEND_SERVICE_PORT}:${FRONTEND_SERVICE_PORT}'
     build:
       context: .
       dockerfile: Dockerfile-frontend-service
     container_name: shortic-frontend
+    restart: always
     depends_on:
       backend-counting-service:
         condition: service_healthy
     env_file:
       - .env
-    environment:
-      - SERVER_PORT=18080
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:18761/eureka/
-      - SPRING_CLOUD_CONFIG_URI=http://shortic-config-server:18001
-#    healthcheck:
-#      test: ["CMD", "sleep", "10"] # Задержка 10 секунд
-#      interval: 1s
-#      timeout: 1s
-#      retries: 1
 
 volumes:
   shortic-cache:
-    driver: local
-  shortic-mongo:
     driver: local
   shortic-db-data:
     driver: local
