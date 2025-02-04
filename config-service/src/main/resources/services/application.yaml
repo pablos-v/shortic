@@ -1,7 +1,9 @@
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URL:http://localhost}:18761/eureka
+      defaultZone: ${EUREKA_URL:http://localhost}:${EUREKA_PORT}/eureka
+  config:
+    import: optional:file:.env[.properties]
 
 logging:
   level:

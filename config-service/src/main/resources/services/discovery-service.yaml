@@ -1,5 +1,5 @@
 server:
-  port: 18761
+  port: ${EUREKA_PORT}
 
 eureka:
   client:
@@ -7,3 +7,5 @@ eureka:
     fetch-registry: false
   server:
     waitTimeInMsWhenSyncEmpty: 0
+  config:
+    import: optional:file:.env[.properties]

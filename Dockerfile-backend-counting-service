@@ -4,12 +4,14 @@ COPY ./backend-counting-service/. /app/.
 # просто внедрить зависимость в локальный репозиторий - не работает, надо копировать классы
 COPY ./common-storage/src/main/java/. /app/src/main/java/.
 COPY ./common-storage/. /common-storage/.
+COPY .env /app/.env
 RUN mvn -f /common-storage/pom.xml clean install -Dmaven.test.skip=true
 RUN mvn -f /app/pom.xml clean package -Dmaven.test.skip=true
 
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=builder /app/target/*.jar /app/*.jar
+COPY .env /app/.env
 RUN apk add --no-cache curl
 EXPOSE 18082
 ENTRYPOINT ["java", "-jar", "/app/*.jar"]

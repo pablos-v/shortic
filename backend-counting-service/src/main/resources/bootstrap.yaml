@@ -3,5 +3,5 @@ spring:
     name: backend-counting-service
   cloud:
     config:
-      uri: ${CONFIG_URL:http://localhost}:18001
+      uri: ${CONFIG_URL:http://localhost}:${CONFIG_PORT}
       fail-fast: true

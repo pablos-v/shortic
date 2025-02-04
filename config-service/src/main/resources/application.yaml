@@ -6,6 +6,5 @@ spring:
       server:
         native:
           search-locations: classpath:/services
-
 server:
-  port: 18001
+  port: ${CONFIG_PORT}

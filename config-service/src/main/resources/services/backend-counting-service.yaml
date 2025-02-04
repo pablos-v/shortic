@@ -1,27 +1,18 @@
 server:
-  port: 18082
+  port: ${COUNTING_SERVICE_PORT}
 properties:
-  checking_api_key: 0bb48c73-c350-4ea5-a6bd-16134983ff53
-  checking_service_url: "https://sba.yandex.net/v4/threatMatches:find?key="
-  threads_number: 10
-  checking_length: 10
-#  checking_api_key: ${CHECKING_API_KEY}
-#  checking_service_url: ${CHECKING_SERVICE_URL}
-#  threads_number: ${NUMBER_OF_THREADS_FOR_SCHEDULED_CHECKING}
-#  checking_length: ${TIME_LIMIT_FOR_SCHEDULED_CHECKING_IN_MINUTES}
+  checking_api_key: ${CHECKING_API_KEY}
+  checking_service_url: ${CHECKING_SERVICE_URL}
+  threads_number: ${NUMBER_OF_THREADS_FOR_SCHEDULED_CHECKING}
+  checking_length: ${TIME_LIMIT_FOR_SCHEDULED_CHECKING_IN_MINUTES}
 
 spring:
   config:
     import: optional:file:.env[.properties]
   datasource:
-    # for launch from IDEA
-    #url: jdbc:postgresql://localhost:5432/shortic_db
-    url: jdbc:postgresql://db-postgres:5432/shortic_db
-    username: sh_user
-    password: kFjr63x
-#    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DATABASE:shortic_db}
-#    username: ${POSTGRES_USERNAME:sh_user}
-#    password: ${POSTGRES_PASSWORD:kFjr63x}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DATABASE}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     driverClassName: org.postgresql.Driver
   jpa:
     show-sql: true

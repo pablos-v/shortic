@@ -1,8 +1,7 @@
 server:
-  port: 18080
+  port: ${FRONTEND_SERVICE_PORT}
 properties:
-  from_who: vasya
-#  TODO from_who: ${OFFER_FROM_WHO}
+  from_who: ${OFFER_FROM_WHO}
 spring:
   config:
     import: optional:file:.env[.properties]
