@@ -11,14 +11,23 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 
 import java.time.Duration;
 
+/**
+ * Конфигурация сервиса
+ */
 @Configuration
 public class ServiceConfiguration {
 
+    /**
+     * Возвращает логгер для записи сообщений
+     */
     @Bean
     public Logger getLogger() {
         return LoggerFactory.getLogger(getClass());
     }
 
+    /**
+     * Возвращает конфигурацию Redis-кэша
+     */
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
@@ -27,6 +36,9 @@ public class ServiceConfiguration {
                 .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
     }
 
+    /**
+     * Возвращает настройщик RedisCacheManagerBuilder
+     */
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         return (builder) -> builder

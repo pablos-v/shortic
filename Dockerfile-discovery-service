@@ -7,5 +7,5 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=builder /app/target/*.jar /app/*.jar
 RUN apk add --no-cache curl
-EXPOSE 18761
+EXPOSE ${EUREKA_PORT}
 ENTRYPOINT ["java", "-jar", "/app/*.jar"]
