@@ -5,6 +5,8 @@ properties:
   checking_service_url: ${CHECKING_SERVICE_URL}
   threads_number: ${NUMBER_OF_THREADS_FOR_SCHEDULED_CHECKING}
   checking_length: ${TIME_LIMIT_FOR_SCHEDULED_CHECKING_IN_MINUTES}
+  full_link_max_length: ${FULL_LINK_MAX_LENGTH}
+  short_link_length: ${SHORT_LINK_LENGTH}
 
 spring:
   config:

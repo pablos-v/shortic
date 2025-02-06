@@ -2,6 +2,8 @@ server:
   port: ${FRONTEND_SERVICE_PORT}
 properties:
   from_who: ${OFFER_FROM_WHO}
+  full_link_max_length: ${FULL_LINK_MAX_LENGTH}
+  short_link_length: ${SHORT_LINK_LENGTH}
 spring:
   config:
     import: optional:file:.env[.properties]

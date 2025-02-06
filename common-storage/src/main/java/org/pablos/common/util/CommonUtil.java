@@ -12,8 +12,8 @@ public class CommonUtil {
      * Здесь задаётся длина сокращённой ссылки.
      */
     public static final String EXISTS = "This short link already exists";
-    public static final int SHORT_LINK_LENGTH = 6;
-    private static final int FULL_LINK_MAX_LENGTH = 4096;
+    public static int SHORT_LINK_LENGTH;
+    public static int FULL_LINK_MAX_LENGTH;
     private static final String NOT_PROVIDED = "Link was not provided";
     private static final String BAD_SIZE = "Link length is wrong";
     private static final String CONTAINS_SPACES = "Link contains spaces";

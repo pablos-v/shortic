@@ -2,9 +2,11 @@ package org.pablos.backendcountingservice.configuration;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.pablos.backendcountingservice.service.ILinkCheckingService;
+import org.pablos.common.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +21,20 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @RequiredArgsConstructor
 public class ServiceConfiguration {
+
+    /**
+     * Длина сокращённой ссылки
+     */
+    @Getter
+    @Value("${properties.short_link_length}")
+    private int shortLinkLength;
+
+    /**
+     * Максимальная длина сокращаемой ссылки
+     */
+    @Getter
+    @Value("${properties.full_link_max_length}")
+    private int fullLinkMaxLength;
 
     /**
      * Количество потоков
@@ -47,9 +63,6 @@ public class ServiceConfiguration {
     @Value("${properties.checking_api_key}")
     private String APIKey;
 
-    /**
-     * Клиент Eureka
-     */
     private final EurekaClient eurekaClient;
 
     /**
@@ -96,4 +109,14 @@ public class ServiceConfiguration {
     public String getAPIKey(Object asking) {
         return asking instanceof ILinkCheckingService ? APIKey : null;
     }
+
+    /**
+     * Инициализация длин ссылок.
+     */
+    @PostConstruct
+    public void init() {
+        CommonUtil.FULL_LINK_MAX_LENGTH = fullLinkMaxLength;
+        CommonUtil.SHORT_LINK_LENGTH = shortLinkLength;
+    }
+
 }

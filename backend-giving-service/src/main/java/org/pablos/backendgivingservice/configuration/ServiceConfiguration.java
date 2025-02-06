@@ -1,7 +1,11 @@
 package org.pablos.backendgivingservice.configuration;
 
+import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import org.pablos.common.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +18,21 @@ import java.time.Duration;
 /**
  * Конфигурация сервиса
  */
+@Getter
 @Configuration
 public class ServiceConfiguration {
+
+    /**
+     * Длина сокращённой ссылки
+     */
+    @Value("${properties.short_link_length}")
+    private int shortLinkLength;
+
+    /**
+     * Максимальная длина сокращаемой ссылки
+     */
+    @Value("${properties.full_link_max_length}")
+    private int fullLinkMaxLength;
 
     /**
      * Возвращает логгер для записи сообщений
@@ -44,6 +61,15 @@ public class ServiceConfiguration {
         return (builder) -> builder
                 .withCacheConfiguration("fullLink",
                         RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)));
+    }
+
+    /**
+     * Инициализация длин ссылок.
+     */
+    @PostConstruct
+    public void init() {
+        CommonUtil.FULL_LINK_MAX_LENGTH = fullLinkMaxLength;
+        CommonUtil.SHORT_LINK_LENGTH = shortLinkLength;
     }
 
 }

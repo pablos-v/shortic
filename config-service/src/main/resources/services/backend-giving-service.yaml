@@ -1,5 +1,8 @@
 server:
   port: ${GIVING_SERVICE_PORT}
+properties:
+  full_link_max_length: ${FULL_LINK_MAX_LENGTH}
+  short_link_length: ${SHORT_LINK_LENGTH}
 spring:
   config:
     import: optional:file:.env[.properties]
