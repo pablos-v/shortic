@@ -52,7 +52,7 @@ public class FrontendConfiguration {
      */
     @Bean
     public String countingServiceUrl() {
-        return getBackendIp("BACKEND-COUNTING-SERVICE");
+        return getBackendURL("BACKEND-COUNTING-SERVICE");
     }
 
     /**
@@ -60,7 +60,7 @@ public class FrontendConfiguration {
      */
     @Bean
     public String givingServiceUrl() {
-        return getBackendIp("BACKEND-GIVING-SERVICE");
+        return getBackendURL("BACKEND-GIVING-SERVICE");
     }
 
     /**
@@ -93,9 +93,9 @@ public class FrontendConfiguration {
      * Вытаскивает из эврики адрес бэкенда
      *
      * @param app имя сервиса
-     * @return IP адрес запрошенного сервиса
+     * @return URL запрошенного сервиса
      */
-    private String getBackendIp(String app) {
+    private String getBackendURL(String app) {
         InstanceInfo info = eurekaClient.getApplication(app).getInstances().get(0);
         return "http://" + info.getIPAddr() + ":" + info.getPort();
     }

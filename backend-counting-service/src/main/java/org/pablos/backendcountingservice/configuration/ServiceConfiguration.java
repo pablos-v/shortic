@@ -70,7 +70,7 @@ public class ServiceConfiguration {
      */
     @Bean
     public String givingServiceUrl(){
-        return getBackendIp("BACKEND-GIVING-SERVICE");
+        return getBackendURL("BACKEND-GIVING-SERVICE");
     }
 
     /**
@@ -93,9 +93,9 @@ public class ServiceConfiguration {
      * Вытаскивает из эврики адрес бэкенда
      *
      * @param app имя сервиса
-     * @return IP адрес запрошенного сервиса
+     * @return URL адрес запрошенного сервиса
      */
-    private String getBackendIp(String app) {
+    private String getBackendURL(String app) {
         InstanceInfo info = eurekaClient.getApplication(app).getInstances().get(0);
         return "http://" + info.getIPAddr() + ":" + info.getPort();
     }
