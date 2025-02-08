@@ -1,4 +1,34 @@
+version: '3.8'
+
 services:
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+    networks:
+      - proxy-network
+
+  letsencrypt:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-letsencrypt
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+    environment:
+      - DEFAULT_EMAIL=${ADMIN_EMAIL}
+    networks:
+      - proxy-network
 
   db-postgres:
     image: postgres
@@ -17,6 +47,9 @@ services:
       interval: 1s
       timeout: 5s
       retries: 10
+    # вот тут я не уверен, но кажется надо указать
+    networks:
+      - app-network
 
   fast-postgres:
     image: postgres
@@ -35,6 +68,9 @@ services:
       interval: 1s
       timeout: 5s
       retries: 10
+    # вот тут я не уверен, но кажется надо указать
+    networks:
+      - app-network
 
   redis:
     image: redis:7.2-rc-alpine
@@ -50,6 +86,9 @@ services:
       interval: 1s
       timeout: 5s
       retries: 10
+    # вот тут я не уверен, но кажется надо указать
+    networks:
+      - app-network
 
   config-server:
     image: shortic-config
@@ -68,6 +107,9 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    # вот тут я не уверен, но кажется надо указать
+    networks:
+      - app-network
 
   discovery-service:
     image: shortic-eureka
@@ -89,6 +131,9 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    # вот тут я не уверен, но кажется надо указать
+    networks:
+      - app-network
 
   backend-giving-service:
     image: shortic-backend-giving
@@ -114,6 +159,9 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    # вот тут я не уверен, но кажется надо указать
+    networks:
+      - app-network
 
   backend-counting-service:
     image: shortic-backend-counting
@@ -137,11 +185,12 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    # вот тут я не уверен, но кажется надо указать
+    networks:
+      - app-network
 
   frontend:
     image: shortic-frontend
-    ports:
-      - '${FRONTEND_SERVICE_PORT}:${FRONTEND_SERVICE_PORT}'
     build:
       context: .
       dockerfile: Dockerfile-frontend-service
@@ -152,6 +201,13 @@ services:
         condition: service_healthy
     env_file:
       - .env
+    environment:
+      - VIRTUAL_HOST=${DOMAIN_ADDRESS}
+      - LETSENCRYPT_HOST=${DOMAIN_ADDRESS}
+      - LETSENCRYPT_EMAIL=${ADMIN_EMAIL}
+    networks:
+      - proxy-network
+      - app-network
 
 volumes:
   shortic-cache:
@@ -160,3 +216,7 @@ volumes:
     driver: local
   shortic-fast-data:
     driver: local
+
+networks:
+  proxy-network:
+  app-network:
