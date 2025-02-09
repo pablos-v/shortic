@@ -4,9 +4,11 @@ services:
   nginx-proxy:
     image: nginxproxy/nginx-proxy
     container_name: nginx-proxy
+    labels:
+      - com.github.nginx-proxy.nginx
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./certs:/etc/nginx/certs
@@ -27,6 +29,7 @@ services:
       - ./html:/usr/share/nginx/html
     environment:
       - DEFAULT_EMAIL=${ADMIN_EMAIL}
+      - NGINX_PROXY_CONTAINER=nginx-proxy
     networks:
       - proxy-network
 
@@ -47,7 +50,6 @@ services:
       interval: 1s
       timeout: 5s
       retries: 10
-    # вот тут я не уверен, но кажется надо указать
     networks:
       - app-network
 
@@ -68,7 +70,6 @@ services:
       interval: 1s
       timeout: 5s
       retries: 10
-    # вот тут я не уверен, но кажется надо указать
     networks:
       - app-network
 
@@ -86,7 +87,6 @@ services:
       interval: 1s
       timeout: 5s
       retries: 10
-    # вот тут я не уверен, но кажется надо указать
     networks:
       - app-network
 
@@ -107,7 +107,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-    # вот тут я не уверен, но кажется надо указать
     networks:
       - app-network
 
@@ -131,7 +130,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-    # вот тут я не уверен, но кажется надо указать
     networks:
       - app-network
 
@@ -158,8 +156,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
-    # вот тут я не уверен, но кажется надо указать
+      start_period: 20s
     networks:
       - app-network
 
@@ -184,8 +181,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
-    # вот тут я не уверен, но кажется надо указать
+      start_period: 20s
     networks:
       - app-network
 

@@ -36,10 +36,10 @@
             <column name="click_time" type="datetime">
                 <constraints nullable="false"/>
             </column>
-            <column name="ip_address" type="varchar(45)"/>
+            <column name="ip_address" type="varchar(127)"/>
             <column name="user_agent" type="varchar(255)"/>
-            <column name="referrer" type="varchar(4096)"/>
-            <column name="language" type="varchar(30)"/>
+            <column name="referrer" type="varchar(2047)"/>
+            <column name="language" type="varchar(127)"/>
             <column name="link_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk-link-id" references="shortic.link_units(id)"/>
             </column>
