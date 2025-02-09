@@ -60,10 +60,10 @@ public class GivingService implements IGivingService {
 
         // Валидатор. Значения здесь совпадают со значениями настройки создания таблиц
         // из \resources\db\changelog\v.1.0.0\create-tables.xml
-        ipAddress = ipAddress.length() > 127 ? ipAddress.substring(0, 127) : ipAddress;
-        userAgent = userAgent.length() > 255 ? userAgent.substring(0, 255) : userAgent;
-        referer = referer.length() > 2047 ? referer.substring(0, 2047) : referer;
-        language = language.length() > 127 ? language.substring(0, 127) : language;
+        ipAddress = (ipAddress == null || ipAddress.length() < 127) ? ipAddress : ipAddress.substring(0, 127);
+        userAgent = (userAgent == null ||  userAgent.length() < 255) ? userAgent : userAgent.substring(0, 255);
+        referer = (referer == null || referer.length() < 2047) ? referer : referer.substring(0, 2047);
+        language = (language == null || language.length() < 127) ? language : language.substring(0, 127);
 
         return new ClickDTO(0, shortLink, LocalDateTime.now(), ipAddress, language, referer, userAgent);
     }
