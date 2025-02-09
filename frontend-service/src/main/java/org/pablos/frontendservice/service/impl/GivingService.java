@@ -58,6 +58,13 @@ public class GivingService implements IGivingService {
         String referer = request.getHeader("Referer");
         String language = request.getHeader("Accept-Language");
 
+        // Валидатор. Значения здесь совпадают со значениями настройки создания таблиц
+        // из \resources\db\changelog\v.1.0.0\create-tables.xml
+        ipAddress = (ipAddress == null || ipAddress.length() < 127) ? ipAddress : ipAddress.substring(0, 127);
+        userAgent = (userAgent == null ||  userAgent.length() < 255) ? userAgent : userAgent.substring(0, 255);
+        referer = (referer == null || referer.length() < 2047) ? referer : referer.substring(0, 2047);
+        language = (language == null || language.length() < 127) ? language : language.substring(0, 127);
+
         return new ClickDTO(0, shortLink, LocalDateTime.now(), ipAddress, language, referer, userAgent);
     }
 }
