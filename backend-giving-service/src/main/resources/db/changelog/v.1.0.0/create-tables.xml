@@ -14,7 +14,7 @@
             <column name="short_link" type="varchar(10)">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="full_link" type="varchar(255)">
+            <column name="full_link" type="varchar(2048)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

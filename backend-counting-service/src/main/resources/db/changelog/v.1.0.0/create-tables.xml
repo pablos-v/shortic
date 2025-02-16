@@ -19,7 +19,7 @@
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="password" type="varchar(255)"/>
-            <column name="full_link" type="varchar(255)">
+            <column name="full_link" type="varchar(2048)">
                 <constraints nullable="false"/>
             </column>
             <column name="created_at" type="datetime">
@@ -36,10 +36,10 @@
             <column name="click_time" type="datetime">
                 <constraints nullable="false"/>
             </column>
-            <column name="ip_address" type="varchar(127)"/>
+            <column name="ip_address" type="varchar(128)"/>
             <column name="user_agent" type="varchar(255)"/>
-            <column name="referrer" type="varchar(2047)"/>
-            <column name="language" type="varchar(127)"/>
+            <column name="referrer" type="varchar(2048)"/>
+            <column name="language" type="varchar(128)"/>
             <column name="link_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk-link-id" references="shortic.link_units(id)"/>
             </column>
