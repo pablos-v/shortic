@@ -9,6 +9,9 @@ import org.pablos.common.util.CommonUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Контроллер для работы со ссылками.
+ */
 @RestController
 @RequestMapping("/link")
 @RequiredArgsConstructor
@@ -16,6 +19,12 @@ public class LinkUnitController {
 
     private final ILinkUnitService linkUnitService;
 
+    /**
+     * Создает новую ссылку.
+     *
+     * @param input DTO с информацией о новой ссылке.
+     * @return DTO с информацией о созданной ссылке.
+     */
     @PostMapping
     public ResponseEntity<LinkUnitDTO> createLinkUnit(final @RequestBody FastLinkDTO input) {
 
@@ -24,6 +33,15 @@ public class LinkUnitController {
         return ResponseEntity.ok(link);
     }
 
+    /**
+     * Возвращает страницу ссылок.
+     *
+     * @param page номер страницы.
+     * @param size размер страницы.
+     * @param shortLink короткая ссылка.
+     * @param password пароль.
+     * @return DTO с информацией о странице ссылок.
+     */
     @GetMapping
     public ResponseEntity<PageDTO> getPage(
             int page,
@@ -38,6 +56,13 @@ public class LinkUnitController {
         return ResponseEntity.ok(pageDTO);
     }
 
+    /**
+     * Обновляет полную ссылку в ссылке.
+     *
+     * @param shortLink короткая ссылка.
+     * @param fullLink полная ссылка.
+     * @return ответ с кодом 200 OK.
+     */
     @PutMapping
     public ResponseEntity<Void> updateFullLinkInLinkUnit(
             final @RequestParam String shortLink,
@@ -48,6 +73,13 @@ public class LinkUnitController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Устанавливает пароль для ссылки.
+     *
+     * @param shortLink короткая ссылка.
+     * @param password пароль.
+     * @return ответ с кодом 200 OK.
+     */
     @PutMapping("/password")
     public ResponseEntity<Void> setPassword(
             final @RequestParam String shortLink,

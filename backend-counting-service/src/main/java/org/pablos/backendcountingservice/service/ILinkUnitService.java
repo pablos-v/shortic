@@ -19,6 +19,12 @@ public interface ILinkUnitService {
      */
     Long getLinkUnitIdByShortLink(String shortLink) throws LinkNotFoundException;
 
+    /**
+     * Создает новую ссылку.
+     *
+     * @param input DTO с информацией о новой ссылке.
+     * @return DTO с информацией о созданной ссылке.
+     */
     LinkUnitDTO createLinkUnit(FastLinkDTO input) throws LinkNotFoundWhileActivationException, FullLinkSizeException, FullLinkFormatException, FullLinkNotProvidedException;
 
     /**

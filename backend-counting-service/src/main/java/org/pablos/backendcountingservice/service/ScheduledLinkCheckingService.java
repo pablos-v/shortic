@@ -19,11 +19,18 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class ScheduledLinkCheckingService {
 
+    // Периодичность постоянной проверки ссылок
+    public static final String CRON_PERIOD = "0 0 3 * * ?"; // ежедневно в 3 утра
+
     private final ServiceConfiguration serviceConfiguration;
 
     private final ILinkUnitService linkUnitService;
 
-    @Scheduled(cron = "0 0 3 * * ?") // Каждый день в 3 утра
+    /**
+     * Метод, который запускается каждый день в 3 утра и проверяет все ссылки на безопасность.
+     * Использует ExecutorService для параллельного выполнения задач.
+     */
+    @Scheduled(cron = CRON_PERIOD)
     private void checkAllLinksByPeriod() {
         ExecutorService service = Executors.newFixedThreadPool(serviceConfiguration.getNumberOfThreads());
         List<LinkUnit> linkUnits = linkUnitService.getAllLinks();

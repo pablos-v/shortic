@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * Класс для обработки исключений, возникающих в процессе работы приложения.
+ */
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionHandlingService {
@@ -34,6 +37,13 @@ public class ExceptionHandlingService {
         logger.warn(e.getMessage(), e);
         return e.getMessage();
     }
+
+    /**
+     * Метод обрабатывает исключения {@link LinkNotFoundException}, возникающие при попытке активации ссылки, которая не была найдена.
+     * Передаёт статус ответа 404 и сообщение об ошибке.
+     * @param e выбрасываемое исключение
+     * @return сообщение об ошибке
+     */
     @ResponseBody
     @ExceptionHandler(LinkNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -42,6 +52,12 @@ public class ExceptionHandlingService {
         return e.getMessage();
     }
 
+    /**
+     * Метод обрабатывает исключения {@link WrongPasswordException}, возникающие при попытке активации ссылки с неправильным паролем.
+     * Передаёт статус ответа 401 и сообщение об ошибке.
+     * @param e выбрасываемое исключение
+     * @return сообщение об ошибке
+     */
     @ResponseBody
     @ExceptionHandler(WrongPasswordException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -50,10 +66,22 @@ public class ExceptionHandlingService {
         return e.getMessage();
     }
 
+    /**
+     * Метод обрабатывает исключения {@link LinkNotFoundWhileActivationException}, возникающие при попытке активации ссылки, которая не была найдена.
+     * Логирует ошибку.
+     * @param e выбрасываемое исключение
+     */
     @ExceptionHandler(LinkNotFoundWhileActivationException.class)
     public void onLinkNotFoundWhileActivationException(LinkNotFoundWhileActivationException e) {
         logger.error(e.getMessage(), e);
     }
+
+    /**
+     * Метод обрабатывает исключения {@link SavingFastLinkException}, {@link UpdatingFastLinkException}, {@link DeletingFastLinkException},
+     * возникающие при попытке сохранения, обновления или удаления быстрой ссылки.
+     * Логирует ошибку.
+     * @param e выбрасываемое исключение
+     */
     @ExceptionHandler({SavingFastLinkException.class, UpdatingFastLinkException.class, DeletingFastLinkException.class})
     public void onAnyChangingFastLinkException(Exception e) {
         logger.error(e.getMessage(), e);

@@ -6,9 +6,13 @@ import org.pablos.common.exception.LinkNotFoundException;
 import org.pablos.common.exception.LinkProcessingException;
 import org.pablos.common.exception.ObjectNotProvidedException;
 
+/**
+ * Интерфейс сервиса для работы с кликами.
+ */
 public interface IClickService {
+
     /**
-     * Метод создания и записи в БД объекта {@link Click}. В процессе валидирует ссылку.
+     * Создает и записывает в БД объект {@link Click}. В процессе валидирует ссылку.
      *
      * @param dto DTO с параметрами клика
      * @throws ObjectNotProvidedException если объект не был передан
@@ -17,3 +21,4 @@ public interface IClickService {
      */
     void createClick(ClickDTO dto) throws ObjectNotProvidedException, LinkNotFoundException, LinkProcessingException;
 }
+

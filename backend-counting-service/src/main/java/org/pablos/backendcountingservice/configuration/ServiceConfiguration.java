@@ -51,6 +51,13 @@ public class ServiceConfiguration {
     private int timeLimitForCheckInMinutes;
 
     /**
+     * Расписание задач по проверке ссылок
+     */
+    @Getter
+    @Value("${properties.cron_period}")
+    private String cronPeriod;
+
+    /**
      * URL сервиса проверки
      */
     @Getter

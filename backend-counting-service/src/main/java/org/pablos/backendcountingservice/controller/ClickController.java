@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Контроллер для работы с кликами.
+ */
 @RestController
 @RequestMapping("/click")
 @RequiredArgsConstructor
@@ -16,6 +19,9 @@ public class ClickController {
 
     private final IClickService clickService;
 
+    /**
+     * Принимает объект с данными клика и сохраняет в БД
+     */
     @PostMapping
     public ResponseEntity<Void> createClick (@RequestBody ClickDTO clickDTO){
         clickService.createClick(clickDTO);
