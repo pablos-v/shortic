@@ -148,7 +148,7 @@ public class FrontControllerTest {
         session.setAttribute("size", 10);
         LinkUnitDTO linkUnit = new LinkUnitDTO();
         when(iCountingService.getPageOfClicks(anyInt(), anyInt(), anyString(), anyString()))
-                .thenReturn(new PageDTO(new ArrayList<>(), 0, linkUnit));
+                .thenReturn(new PageDTO(new ArrayList<>(), 0, linkUnit, 0));
 
         mockMvc.perform(get("/statistics")
                 .session(session))

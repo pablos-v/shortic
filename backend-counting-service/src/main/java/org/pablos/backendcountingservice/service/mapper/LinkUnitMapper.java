@@ -20,8 +20,8 @@ public class LinkUnitMapper {
         return new LinkUnit(
                 linkUnitDTO.getId(),
                 linkUnitDTO.getShortLink(),
-                linkUnitDTO.getPassword(),
                 linkUnitDTO.getFullLink(),
+                linkUnitDTO.getPassword(),
                 linkUnitDTO.getCreatedAt(),
                 linkUnitDTO.isActive(),
                 new ArrayList<>()
