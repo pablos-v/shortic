@@ -6,7 +6,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
- * Основное приложение spring boot, которое запустит веб-контейнер и подключит все необходимые компоненты.
+ * Основной класс модуля, который быстро отдаёт полные ссылки по запросу. Использует кэширование.
  */
 @EnableDiscoveryClient
 @SpringBootApplication

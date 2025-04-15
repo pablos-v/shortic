@@ -7,9 +7,7 @@ import org.pablos.backendgivingservice.repository.FastLinkRepository;
 import org.pablos.common.dto.FastLinkDTO;
 import org.pablos.common.exception.*;
 import org.pablos.common.util.CommonUtil;
-import org.slf4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +22,14 @@ public class FastLinkService implements IFastLinkService {
 
     private final FastLinkRepository repository;
 
+    /**
+     * Возвращает полную ссылку по короткой ссылке.
+     * При наличии в Кэше - возвращает из Кэша, иначе - возвращает и записывает в Кэш.
+     * @param shortLink короткая ссылка
+     * @return полная ссылка
+     * @throws LinkNotFoundException если ссылка не найдена
+     * @throws LinkProcessingException если произошла ошибка при обработке ссылки
+     */
     @Override
     @Transactional(readOnly = true)
     @Cacheable(
@@ -31,10 +37,20 @@ public class FastLinkService implements IFastLinkService {
             key = "#shortLink",
             unless = "#result == null"
     )
-    public String getFullLink(final String shortLink) {
+    public String getFullLink(final String shortLink) throws LinkNotFoundException, LinkProcessingException {
         return getFastLink(shortLink).getFullLink();
     }
 
+    /**
+     * Создаёт объект {@link FastLink} на основе переданного DTO
+     * @param fastLink объект DTO, содержащий короткую и полную ссылки
+     * @return {@link FastLinkDTO} DTO созданного объекта
+     * @throws ObjectNotProvidedException если DTO не был предоставлен
+     * @throws LinkProcessingException если произошла ошибка при обработке ссылки
+     * @throws FullLinkNotProvidedException если полная ссылка не была предоставлена
+     * @throws FullLinkSizeException если размер полной ссылки превышает допустимый
+     * @throws FullLinkFormatException если формат полной ссылки некорректен
+     */
     @Override
     @Transactional
     public FastLinkDTO create(final FastLinkDTO fastLink) throws ObjectNotProvidedException, LinkProcessingException, FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
@@ -45,6 +61,17 @@ public class FastLinkService implements IFastLinkService {
         return FastLinkMapper.toDTO(repository.save(FastLinkMapper.toEntity(fastLink)));
     }
 
+    /**
+     * Обновляет объект {@link FastLink} на основе переданного DTO, и также обновляет его в Кэше
+     * @param dto объект DTO, содержащий короткую и обновлённую полную ссылки
+     * @return {@link FastLinkDTO} DTO измененного объекта
+     * @throws LinkNotFoundException если ссылка не найдена
+     * @throws ObjectNotProvidedException если DTO не был предоставлен
+     * @throws LinkProcessingException если произошла ошибка при обработке ссылки
+     * @throws FullLinkNotProvidedException если полная ссылка не была предоставлена
+     * @throws FullLinkSizeException если размер полной ссылки превышает допустимый
+     * @throws FullLinkFormatException если формат полной ссылки некорректен
+     */
     @Override
     @Transactional
     @CacheEvict(
@@ -60,6 +87,13 @@ public class FastLinkService implements IFastLinkService {
         return FastLinkMapper.toDTO(repository.save(fastLink));
     }
 
+    /**
+     * Удаляет объект {@link FastLink} из БД и из Кэша.
+     * @param shortLink Короткая ссылка, она же ID удаляемого объекта {@link FastLink}
+     * @return {@link FastLinkDTO} DTO удалённого объекта
+     * @throws LinkNotFoundException если ссылка не найдена
+     * @throws LinkProcessingException если произошла ошибка при обработке ссылки
+     */
     @Override
     @Transactional
     @CacheEvict(
@@ -72,9 +106,18 @@ public class FastLinkService implements IFastLinkService {
         return FastLinkMapper.toDTO(fastLink);
     }
 
+    /**
+     * Возвращает объект {@link FastLink} по короткой ссылке
+     * @param shortLink короткая ссылка
+     * @return объект {@link FastLink}
+     * @throws LinkNotFoundException если ссылка не найдена
+     * @throws LinkProcessingException если произошла ошибка при обработке ссылки
+     */
     private FastLink getFastLink(String shortLink) throws LinkNotFoundException, LinkProcessingException {
         CommonUtil.validateShortLink(shortLink);
         return repository.findById(shortLink).orElseThrow(LinkNotFoundException::new);
     }
 
 }
+
+

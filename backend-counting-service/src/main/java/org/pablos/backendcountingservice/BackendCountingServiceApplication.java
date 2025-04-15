@@ -6,7 +6,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * модуль, который ведёт учёт кликов по ссылкам и проверяет ссылки на безопасность.
+ * Основной класс модуля, который ведёт учёт кликов по ссылкам и проверяет ссылки на безопасность.
  */
 @EnableDiscoveryClient
 @EnableScheduling

@@ -10,12 +10,11 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 
 /**
- * Класс, для хранения в БД пары ссылок.
+ * Класс для хранения в БД пары ссылок.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@Document(collection = "fastLinks") // к какой коллекции обращаемся, создаст если её нет
 @Schema(name = "FastLink", description = "Represents short and full links.")
 @Entity
 @Table(schema = "fast", name = "fast_links")
@@ -24,7 +23,6 @@ public class FastLink {
      * Краткая ссылка, она же будет использоваться в качестве идентификатора.
      */
     @Id
-//    @Indexed(unique = true)
     @Column(name = "short_link")
     private String shortLink;
 
