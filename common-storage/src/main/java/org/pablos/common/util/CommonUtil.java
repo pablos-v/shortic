@@ -7,10 +7,11 @@ import org.pablos.common.exception.*;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+/**
+ * Вспомогательный класс, который содержит общие методы.
+ */
 public class CommonUtil {
-    /**
-     * Здесь задаётся длина сокращённой ссылки.
-     */
+
     public static final String EXISTS = "This short link already exists";
     public static int SHORT_LINK_LENGTH;
     public static int FULL_LINK_MAX_LENGTH;
@@ -49,6 +50,9 @@ public class CommonUtil {
         validateShortLink(dto.getShortLink());
     }
 
+    /**
+     * Валидирует короткую ссылку и выбрасывает исключение с соответствующим сообщением.
+     */
     public static void validateShortLink(String link) throws LinkProcessingException {
         if (link == null || link.isEmpty()) {
             throw new LinkProcessingException(NOT_PROVIDED);
@@ -64,6 +68,10 @@ public class CommonUtil {
         }
     }
 
+    /**
+     * Валидирует полную ссылку и выбрасывает исключения, которые обрабатываются дальше в сервисах.
+     * @param dto полная ссылка.
+     */
     public static void validateDTOFullLink(IFullLink dto) throws FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
         if (dto == null || dto.getFullLink() == null || dto.getFullLink().isEmpty()) {
             throw new FullLinkNotProvidedException();
@@ -71,6 +79,10 @@ public class CommonUtil {
         validateFullLink(dto.getFullLink());
     }
 
+    /**
+     * Валидирует полную ссылку и выбрасывает исключения, которые обрабатываются выше.
+     * @param link полная ссылка.
+     */
     public static void validateFullLink(String link) throws FullLinkSizeException, FullLinkFormatException {
         if (link.length() > FULL_LINK_MAX_LENGTH) {
             throw new FullLinkSizeException();
@@ -80,21 +92,33 @@ public class CommonUtil {
         }
     }
 
+    /**
+     * Валидирует пароль пользователя. Пароль должен состоять из 5 цифр.
+     */
     public static void validatePassword(String password) throws WrongInputException {
         if (password == null || !password.matches("\\d{5}")) {
             throw new WrongInputException(PASSWORD_NOT_MATCHES_PATTERN);
         }
     }
 
+    /**
+     * Кодирует пароль пользователя в строку в формате Base64.
+     */
     public static String encodePassword(String input) {
         return Base64.getEncoder().encodeToString(input.getBytes());
     }
 
+    /**
+     * Декодирует пароль пользователя из строки в формате Base64.
+     */
     public static String decodePassword(String input) {
         byte[] decodedBytes = Base64.getDecoder().decode(input);
         return new String(decodedBytes);
     }
 
+    /**
+     * Получая ссылку вида https://shortL возвращает только shortL
+     */
     public static String clearShortLink(String shortLink) {
         shortLink = shortLink.trim();
         int length = shortLink.length();
