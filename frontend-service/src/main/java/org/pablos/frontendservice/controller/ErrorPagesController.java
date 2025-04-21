@@ -3,6 +3,9 @@ package org.pablos.frontendservice.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * Контроллер для обработки ошибок.
+ */
 @Controller
 public class ErrorPagesController {
 

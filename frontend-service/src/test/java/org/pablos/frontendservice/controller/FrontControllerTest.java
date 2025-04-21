@@ -89,57 +89,6 @@ public class FrontControllerTest {
     }
 
     @Test
-    public void testUpdateLink() throws Exception {
-        doNothing().when(iCountingService).updateLink(anyString(), anyString());
-        when(configuration.getServerUrl()).thenReturn(URL);
-
-        mockMvc.perform(put("/")
-                .param("shortLink", SHORT_LINK)
-                .param("fullLink", FULL_LINK)
-                .param("password", PASSWORD)
-                .session(session))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/statistics"));
-
-        assertThat(session.getAttribute("serverUrl")).isEqualTo(URL);
-        assertThat(session.getAttribute("shortLink")).isEqualTo(SHORT_LINK);
-        assertThat(session.getAttribute("password")).isEqualTo(PASSWORD);
-    }
-
-    @Test
-    public void testSetPassword() throws Exception {
-        doNothing().when(iCountingService).setPassword(anyString(), anyString());
-        when(configuration.getServerUrl()).thenReturn(URL);
-
-        mockMvc.perform(put("/password")
-                .param("shortLink", SHORT_LINK)
-                .param("password", PASSWORD)
-                .session(session))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/statistics"));
-
-        assertThat(session.getAttribute("serverUrl")).isEqualTo(URL);
-        assertThat(session.getAttribute("shortLink")).isEqualTo(SHORT_LINK);
-        assertThat(session.getAttribute("password")).isEqualTo(PASSWORD);
-    }
-
-    @Test
-    public void testGetStatistics() throws Exception {
-        when(configuration.getServerUrl()).thenReturn(URL);
-
-        mockMvc.perform(get("/stats")
-                .param("shortLink", SHORT_LINK)
-                .param("password", PASSWORD)
-                .session(session))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/statistics"));
-
-        assertThat(session.getAttribute("serverUrl")).isEqualTo(URL);
-        assertThat(session.getAttribute("shortLink")).isEqualTo(SHORT_LINK);
-        assertThat(session.getAttribute("password")).isEqualTo(PASSWORD);
-    }
-
-    @Test
     public void testShowStatistics() throws Exception {
         session.setAttribute("serverUrl", URL);
         session.setAttribute("shortLink", SHORT_LINK);

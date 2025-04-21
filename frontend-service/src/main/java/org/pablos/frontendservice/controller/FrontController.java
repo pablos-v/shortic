@@ -18,6 +18,9 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Контроллер для обработки запросов на главной странице.
+ */
 @Controller
 @RequestMapping("/")
 @RequiredArgsConstructor
@@ -29,18 +32,36 @@ public class FrontController {
     private final ICountingService iCountingService;
     private final FrontendConfiguration configuration;
 
+    /**
+     * Обрабатывает GET-запрос на главной странице.
+     * @param model модель для передачи данных в представление
+     * @param input объект DTO для передачи данных в представление
+     * @return имя представления для отображения главной страницы
+     */
     @GetMapping
     public String mainPage(final Model model, final @ModelAttribute FastLinkDTO input){
         model.addAttribute("input", input);
         return "index";
     }
 
+    /**
+     * Обрабатывает GET-запрос на короткую ссылку.
+     * @param shortLink короткая ссылка
+     * @param request объект запроса
+     * @return объект RedirectView для перенаправления на полную ссылку
+     */
     @GetMapping("{shortLink}")
     public RedirectView getLink(final @PathVariable String shortLink, final HttpServletRequest request) {
         String fullLink = iGivingService.clickProcessing(shortLink, request);
         return new RedirectView(fullLink);
     }
 
+    /**
+     * Обрабатывает POST-запрос на создание ссылки.
+     * @param input объект DTO для передачи данных в сервис
+     * @param model модель для передачи данных в представление
+     * @return имя представления для отображения созданной ссылки
+     */
     @PostMapping
     public String createLink(final FastLinkDTO input, final Model model) {
         LinkUnitDTO linkUnit = iCountingService.createLink(input);
@@ -49,6 +70,16 @@ public class FrontController {
         return "created";
     }
 
+    /**
+     * Обрабатывает PUT-запрос на обновление ссылки.
+     * @param shortLink короткая ссылка
+     * @param fullLink полная ссылка
+     * @param password пароль
+     * @param page номер страницы
+     * @param size размер страницы
+     * @param session объект сессии
+     * @return имя представления для отображения статистики ссылки
+     */
     @PutMapping
     public String updateLink(
             @RequestParam String shortLink,
@@ -65,12 +96,12 @@ public class FrontController {
 
     /**
      * Назначает пароль для ссылки и отображает страницу статистики.
-     * @param shortLink
-     * @param password
-     * @param page
-     * @param size
-     * @param session
-     * @return страницу с результатами статистики ссылки
+     * @param shortLink короткая ссылка
+     * @param password пароль
+     * @param page номер страницы
+     * @param size размер страницы
+     * @param session объект сессии
+     * @return имя представления для отображения статистики ссылки
      */
     @PutMapping("/password")
     public String setPassword(
@@ -88,10 +119,11 @@ public class FrontController {
      * Переадресует на страницу с результатами статистики.
      * Метод нужен для сокрытия параметров запроса в адресной строке.
      * Предварительно обрезает переданную короткую ссылку, убирая домен, и валидирует.
-     * @param shortLink
-     * @param password
-     * @param page
-     * @param size
+     * @param shortLink короткая ссылка
+     * @param password пароль
+     * @param page номер страницы
+     * @param size размер страницы
+     * @param session объект сессии
      * @return редирект на страницу с результатами статистики
      */
     @GetMapping("/stats")
@@ -117,7 +149,8 @@ public class FrontController {
      * Вызывает страницу с результатами статистики кликов по ссылке.
      * Метод нужен для сокрытия параметров запроса в адресной строке.
      * @param model модель с параметрами запроса
-     * @return шаблон страницы с результатами статистики
+     * @param session объект сессии
+     * @return представление с результатами статистики
      */
     @GetMapping("/statistics")
     public String showStatistics(final Model model, final HttpSession session) {
@@ -144,3 +177,4 @@ public class FrontController {
     }
 
 }
+

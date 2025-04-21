@@ -6,6 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * Контроллер для обработки запросов на страницы с юридической информацией.
+ */
 @Controller
 @RequiredArgsConstructor
 public class LegacyPagesController {

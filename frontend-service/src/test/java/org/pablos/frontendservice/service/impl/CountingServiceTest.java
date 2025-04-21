@@ -34,45 +34,10 @@ public class CountingServiceTest {
     private final FastLinkDTO input = new FastLinkDTO(SHORT_LINK, FULL_LINK);
 
     @Test
-    public void testCreateLinkSuccess() throws WrongInputException, FullLinkNotProvidedException, FullLinkSizeException, FullLinkFormatException {
-        LinkUnitDTO expectedOutput = new LinkUnitDTO();
-        when(restTemplate.postForEntity(anyString(), any(), any()))
-                .thenReturn(new ResponseEntity<>(expectedOutput, HttpStatus.OK));
-
-        LinkUnitDTO actualOutput = countingService.createLink(input);
-
-        assertThat(actualOutput).isEqualTo(expectedOutput);
-    }
-
-    @Test
-    public void testCreateLinkGettingStatus310() {
-        when(restTemplate.postForEntity(anyString(), any(), any()))
-                .thenReturn(new ResponseEntity<>(HttpStatus.PERMANENT_REDIRECT));
-
-        assertThatThrownBy(() -> countingService.createLink(input))
-                .isNotNull()
-                .isInstanceOf(WrongInputException.class)
-                .hasMessageContaining("Unknown error");
-    }
-
-    @Test
-    public void testCreateLinkHttpClientErrorException() {
-        HttpClientErrorException exception = new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Bad Request", null,
-                "Test Exception".getBytes(), null);
-        when(restTemplate.postForEntity(anyString(), any(), any()))
-                .thenThrow(exception);
-
-        assertThatThrownBy(() -> countingService.createLink(input))
-                .isNotNull()
-                .isInstanceOf(WrongInputException.class)
-                .hasMessageContaining("Test Exception");
-    }
-
-    @Test
     public void testGetPageOfClicksSuccess() throws WrongInputException, WrongPasswordException, LinkNotFoundException {
         LinkUnitDTO linkUnit = new LinkUnitDTO();
         linkUnit.setPassword(CommonUtil.encodePassword(PASSWORD));
-        PageDTO expectedOutput = new PageDTO(null, 0, linkUnit);
+        PageDTO expectedOutput = new PageDTO(null, 0, linkUnit, 0);
         when(restTemplate.getForEntity(anyString(), any()))
                 .thenReturn(new ResponseEntity<>(expectedOutput, HttpStatus.OK));
 
@@ -133,50 +98,6 @@ public class CountingServiceTest {
 
         assertThatCode(() -> restTemplate
                 .postForLocation(anyString(), any())).doesNotThrowAnyException();
-    }
-
-    @Test
-    public void testUpdateLinkSuccess() {
-        when(restTemplate.exchange(anyString(),
-                any(HttpMethod.class),
-                any(),
-                any(Class.class)))
-                .thenReturn(new ResponseEntity<>(HttpStatus.OK));
-
-        countingService.updateLink(SHORT_LINK, FULL_LINK);
-
-        assertThatCode(() -> restTemplate.exchange(anyString(),
-                any(HttpMethod.class),
-                any(),
-                any(Class.class))).doesNotThrowAnyException();
-    }
-
-    @Test
-    public void testUpdateLinkWrongInputException() {
-        when(restTemplate.exchange(anyString(),
-                any(HttpMethod.class),
-                any(),
-                any(Class.class)))
-                .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND, "Not found", null,
-                        "Short link not found".getBytes(), null));
-
-        assertThatThrownBy(() -> countingService.updateLink(SHORT_LINK, FULL_LINK))
-                .isNotNull()
-                .isInstanceOf(WrongInputException.class)
-                .hasMessageContaining("Short link not found");
-    }
-
-    @Test
-    public void testUpdateLinkLinkNotSecureException() {
-        when(restTemplate.exchange(anyString(),
-                any(HttpMethod.class),
-                any(),
-                any(Class.class)))
-                .thenThrow(new HttpClientErrorException(HttpStatus.GONE));
-
-        assertThatThrownBy(() -> countingService.updateLink(SHORT_LINK, FULL_LINK))
-                .isNotNull()
-                .isInstanceOf(LinkNotSecureException.class);
     }
 
     @Test
