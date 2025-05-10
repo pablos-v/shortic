@@ -41,8 +41,4 @@
 backend-counting-service/src/main/resources/db/changelog/v.1.0.0/create-tables.xml и
 backend-giving-service/src/main/resources/db/changelog/v.1.0.0/create-tables.xml
 
-При создании короткой ссылки длинная ссылка проверяется на опасность сервисом Яндекса "Safe browsing" - если ссылка безопасна, то короткая ссылка будет активна.
-Длинную ссылку в дальнейшем можно изменить. При попытках изменения на опасную ссылку - короткая ссылка блокируется, и дальнейшая работа с ней невозможна.
-Также, происходит периодическая проверка ссылок на опасность. Периодичность определяется в файле .env параметром TIME_LIMIT_FOR_SCHEDULED_CHECKING_IN_MINUTES.
-
 После конфигурации достаточно перейти в директорию с docker-compose.yaml и запустить команду docker-compose up.
