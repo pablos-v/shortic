@@ -11,10 +11,10 @@
             </not>
         </preConditions>
         <createTable schemaName="fast" tableName="fast_links">
-            <column name="short_link" type="varchar(10)">
+            <column name="short_link" type="varchar(${short_link_length})">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="full_link" type="varchar(2048)">
+            <column name="full_link" type="varchar(${full_link_max_length})">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -26,3 +26,6 @@ spring:
     change-log: classpath:db/changelog/changelog-master.xml
     contexts: development, production
     drop-first: false
+    parameters:
+      short_link_length: ${SHORT_LINK_LENGTH}
+      full_link_max_length: ${FULL_LINK_MAX_LENGTH}

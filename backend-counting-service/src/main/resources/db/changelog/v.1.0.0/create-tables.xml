@@ -15,11 +15,11 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="short_link" type="varchar(10)">
+            <column name="short_link" type="varchar(${short_link_length})">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="password" type="varchar(255)"/>
-            <column name="full_link" type="varchar(2048)">
+            <column name="full_link" type="varchar(${full_link_max_length})">
                 <constraints nullable="false"/>
             </column>
             <column name="created_at" type="datetime">
